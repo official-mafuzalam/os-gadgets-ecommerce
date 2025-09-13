@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', config('app.name', 'Octosync Software Ltd'))</title>
+    <title>@yield('title', config('app.name', 'OS Gadgets'))</title>
+    <link rel="icon" type="image/png" href="{{ asset('assets/logo/icon.png') }}">
 
 
     <!-- Fonts -->

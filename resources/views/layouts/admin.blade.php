@@ -5,6 +5,16 @@
 
 <!-- Content -->
 <div class="w-full pt-10 px-4 sm:px-6 md:px-8 lg:pl-72">
+    @if ($errors->any())
+        <div class="bg-red-100 text-red-600 p-2 rounded">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     @if (session('success'))
         <div id="dismiss-alert"
             class="hs-removing:translate-x-5 hs-removing:opacity-0 transition duration-300 bg-teal-50 border border-teal-200 rounded-md p-4"

@@ -1,9 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 
@@ -41,6 +46,12 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
     Route::prefix('admin')->group(function () {
 
         Route::get('/', [HomeController::class, 'index'])->name('admin.index');
+
+        Route::resource('products', ProductController::class)->names('admin.products');
+        Route::resource('categories', CategoryController::class)->names('admin.categories');
+        Route::resource('brands', BrandController::class)->names('admin.brands');
+        Route::resource('orders', OrderController::class)->names('admin.orders');
+        Route::resource('reviews', ReviewController::class)->names('admin.reviews');
 
 
         // Profile
