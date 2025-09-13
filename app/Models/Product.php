@@ -31,6 +31,14 @@ class Product extends Model
         'price' => 'decimal:2',
     ];
 
+    protected $appends = ['average_rating', 'reviews_count'];
+
+    
+    public function isActive()
+    {
+        return $this->is_active;
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -56,5 +64,10 @@ class Product extends Model
     public function getAverageRatingAttribute()
     {
         return $this->reviews()->avg('rating') ?? 0;
+    }
+
+    public function getReviewsCountAttribute()
+    {
+        return $this->reviews()->count();
     }
 }

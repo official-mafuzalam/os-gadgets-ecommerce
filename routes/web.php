@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 
+use App\Http\Controllers\Public\HomeController as PublicHomeController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,16 +28,26 @@ use App\Http\Controllers\Admin\UserController;
 Route::get('/session', function () {
 
     $session = session()->all();
-
-    echo "<pre>";
-    print_r($session);
-    echo "</pre>";
-
+    dd($session);
 });
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('public.welcome');
+
+
+
+
+
+// For all public pages -->
+
+Route::get('/', [PublicHomeController::class, 'index'])->name('public.welcome');
+Route::get('/product/{product}', [PublicHomeController::class, 'show'])->name('public.products.show');
+Route::get('/categories/{category}', [CategoryController::class, 'show'])
+    ->name('public.categories.show');
+
+// For brand page
+Route::get('/brands/{brand}', [BrandController::class, 'show'])
+    ->name('public.brands.show');
+
+Route::get('/search', [PublicHomeController::class, 'search'])->name('public.search');
 
 
 
