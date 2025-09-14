@@ -39,13 +39,11 @@ Route::get('/session', function () {
 // For all public pages -->
 
 Route::get('/', [PublicHomeController::class, 'index'])->name('public.welcome');
-Route::get('/product/{product}', [PublicHomeController::class, 'show'])->name('public.products.show');
-Route::get('/categories/{category}', [CategoryController::class, 'show'])
-    ->name('public.categories.show');
+Route::get('/product/{product}', [PublicHomeController::class, 'productShow'])->name('public.products.show');
+Route::get('/categories/{category}', [PublicHomeController::class, 'categoryShow'])->name('public.categories.show');
 
 // For brand page
-Route::get('/brands/{brand}', [BrandController::class, 'show'])
-    ->name('public.brands.show');
+Route::get('/brands/{brand}', [PublicHomeController::class, 'brandShow'])->name('public.brands.show');
 
 Route::get('/search', [PublicHomeController::class, 'search'])->name('public.search');
 

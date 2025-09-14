@@ -277,12 +277,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         @foreach ($relatedProducts as $relatedProduct)
                             <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
-                                <a href="{{ route('products.show', $relatedProduct) }}">
+                                <a href="{{ route('public.products.show', $relatedProduct) }}">
                                     <img src="{{ asset('storage/' . $relatedProduct->image) }}"
                                         alt="{{ $relatedProduct->name }}" class="w-full h-48 object-cover">
                                 </a>
                                 <div class="p-4">
-                                    <a href="{{ route('products.show', $relatedProduct) }}"
+                                    <a href="{{ route('public.products.show', $relatedProduct) }}"
                                         class="font-semibold text-lg mb-1 hover:text-indigo-600">
                                         {{ Str::limit($relatedProduct->name, 40) }}
                                     </a>

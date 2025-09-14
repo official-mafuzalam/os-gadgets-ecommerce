@@ -17,7 +17,7 @@ class HomeController extends Controller
         return view('public.index', compact('products'));
     }
 
-    public function show(Product $product)
+    public function productShow(Product $product)
     {
         // Eager load relationships to avoid N+1 queries
         $product->load(['category', 'brand', 'reviews.user']);
