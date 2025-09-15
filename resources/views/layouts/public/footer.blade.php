@@ -1,24 +1,9 @@
- <!-- Newsletter -->
- <section class="py-16 bg-gray-100">
-     <div class="container mx-auto px-4 text-center">
-         <h2 class="text-3xl font-bold mb-4">Stay Updated</h2>
-         <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">Subscribe to our newsletter for the latest product
-             updates, exclusive deals, and tech news.</p>
-         <form class="max-w-lg mx-auto flex flex-col md:flex-row gap-4">
-             <input type="email" placeholder="Enter your email"
-                 class="flex-grow px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-             <button type="submit"
-                 class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-lg transition duration-300">Subscribe</button>
-         </form>
-     </div>
- </section>
-
  <!-- Footer -->
  <footer class="bg-gray-800 text-white pt-12 pb-8">
      <div class="container mx-auto px-4">
          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
              <div>
-                 <h3 class="text-xl font-bold mb-4">TechSphere</h3>
+                 <h3 class="text-xl font-bold mb-4">{{ config('app.name', 'OS Gadgets') }}</h3>
                  <p class="text-gray-400 mb-4">Your one-stop shop for the latest gadgets and electronics.</p>
                  <div class="flex space-x-4">
                      <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
@@ -26,17 +11,6 @@
                      <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
                      <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
                  </div>
-             </div>
-
-             <div>
-                 <h3 class="text-lg font-semibold mb-4">Shop</h3>
-                 <ul class="space-y-2">
-                     <li><a href="#" class="text-gray-400 hover:text-white">Smartphones</a></li>
-                     <li><a href="#" class="text-gray-400 hover:text-white">Laptops</a></li>
-                     <li><a href="#" class="text-gray-400 hover:text-white">Tablets</a></li>
-                     <li><a href="#" class="text-gray-400 hover:text-white">Wearables</a></li>
-                     <li><a href="#" class="text-gray-400 hover:text-white">Accessories</a></li>
-                 </ul>
              </div>
 
              <div>
@@ -59,10 +33,22 @@
                      <li class="text-gray-400"><i class="fas fa-envelope mr-2"></i> support@techsphere.com</li>
                  </ul>
              </div>
+             <div>
+                 <h3 class="text-lg font-semibold mb-4">Newsletter</h3>
+                 <p class="text-gray-400 mb-4">Subscribe to our newsletter for the latest updates and offers.</p>
+                 <form action="#" method="POST" class="flex">
+                     <input type="email" name="email" placeholder="Your email address"
+                         class="w-full px-4 py-2 rounded-l bg-gray-700 text-white focus:outline-none" required>
+                     <button type="submit"
+                         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r">Subscribe</button>
+                 </form>
+             </div>
+
          </div>
 
          <div class="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
-             <a href="{{ route('admin.index',) }}" class="text-gray-400 text-sm mb-4 md:mb-0">© {{ date('Y') }} {{ config('app.name', 'OS Gadgets') }}.
+             <a href="{{ route('admin.index') }}" class="text-gray-400 text-sm mb-4 md:mb-0">© {{ date('Y') }}
+                 {{ config('app.name', 'OS Gadgets') }}.
                  All rights reserved.</a>
              <div class="flex space-x-6">
                  <a href="#" class="text-gray-400 hover:text-white text-sm">Privacy Policy</a>

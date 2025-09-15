@@ -13,18 +13,18 @@ return new class extends Migration {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('order_number')->unique();
-            $table->foreignId('user_id')->constrained();
+            $table->string('customer_email')->nullable();
+            $table->string('customer_phone');
             $table->decimal('subtotal', 10, 2);
-            $table->decimal('tax', 10, 2)->default(0);
             $table->decimal('shipping_cost', 10, 2)->default(0);
-            $table->decimal('discount', 10, 2)->default(0);
-            $table->decimal('total', 10, 2);
-            $table->string('status')->default('pending'); // pending, processing, shipped, delivered, cancelled
-            $table->text('shipping_address');
-            $table->text('billing_address')->nullable();
-            $table->string('payment_method');
-            $table->string('payment_status')->default('pending'); // pending, completed, failed
+            $table->decimal('discount_amount', 10, 2)->default(0);
+            $table->decimal('total_amount', 10, 2);
+            $table->foreignId('shipping_address_id')->nullable()->constrained()->nullOnDelete();
+            $table->enum('status', ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
+            $table->enum('payment_method', ['cash_on_delivery', 'bkash', 'nagad', 'sslcommerz'])->default('cash_on_delivery');
+            $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');
             $table->text('notes')->nullable();
+            $table->string('tracking_number')->nullable();
             $table->timestamps();
         });
     }

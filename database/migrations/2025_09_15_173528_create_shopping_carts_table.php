@@ -10,15 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('shopping_carts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('product_id')->constrained();
-            $table->integer('rating');
-            $table->text('comment')->nullable();
-            $table->boolean('is_approved')->default(false);
+            $table->string('session_id')->unique();
+            $table->string('customer_email')->nullable();
+            $table->string('customer_phone')->nullable();
             $table->timestamps();
-            $table->unique(['user_id', 'product_id']);
         });
     }
 
@@ -27,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('shopping_carts');
     }
 };

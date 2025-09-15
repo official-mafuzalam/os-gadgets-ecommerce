@@ -11,8 +11,9 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
-
+use App\Http\Controllers\Public\CartController;
 use App\Http\Controllers\Public\HomeController as PublicHomeController;
+use App\Http\Controllers\Public\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,13 +40,34 @@ Route::get('/session', function () {
 // For all public pages -->
 
 Route::get('/', [PublicHomeController::class, 'index'])->name('public.welcome');
+
+// web.php
+// Search routes
+Route::get('/search', [SearchController::class, 'index'])->name('public.search');
+Route::get('/search/live', [SearchController::class, 'liveSearch'])->name('public.search.live');
+
+// Cart routes
+Route::get('/cart', [CartController::class, 'index'])->name('public.cart');
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update/{rowId}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove/{rowId}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+
+Route::get('/buy-now/{product}', [CartController::class, 'buyNow'])->name('public.products.buy-now');
+
+Route::get('/products', [PublicHomeController::class, 'products'])->name('public.products');
 Route::get('/product/{product}', [PublicHomeController::class, 'productShow'])->name('public.products.show');
+Route::get('/brands', [PublicHomeController::class, 'brands'])->name('public.brands');
+Route::get('/brands/{brand}', [PublicHomeController::class, 'brandShow'])->name('public.brands.show');
+Route::get('/categories', [PublicHomeController::class, 'categories'])->name('public.categories');
 Route::get('/categories/{category}', [PublicHomeController::class, 'categoryShow'])->name('public.categories.show');
 
-// For brand page
-Route::get('/brands/{brand}', [PublicHomeController::class, 'brandShow'])->name('public.brands.show');
+Route::get('/deals', [PublicHomeController::class, 'deals'])->name('public.deals');
+Route::get('/about', [PublicHomeController::class, 'about'])->name('public.about');
+Route::get('/contact', [PublicHomeController::class, 'contact'])->name('public.contact');
+Route::post('/contact', [PublicHomeController::class, 'submitContact'])->name('public.contact.submit');
 
-Route::get('/search', [PublicHomeController::class, 'search'])->name('public.search');
+
 
 
 
@@ -58,6 +80,9 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::get('/', [HomeController::class, 'index'])->name('admin.index');
 
         Route::resource('products', ProductController::class)->names('admin.products');
+        Route::post('products/{product}/set-primary-image', [ProductController::class, 'setPrimaryImage'])->name('admin.products.set-primary-image');
+
+
         Route::resource('categories', CategoryController::class)->names('admin.categories');
         Route::resource('brands', BrandController::class)->names('admin.brands');
         Route::resource('orders', OrderController::class)->names('admin.orders');

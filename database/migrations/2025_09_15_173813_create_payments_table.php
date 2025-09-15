@@ -10,13 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('order_items', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->decimal('unit_price', 10, 2);
-            $table->integer('quantity');
-            $table->decimal('total_price', 10, 2);
+            $table->string('transaction_id')->nullable();
+            $table->enum('payment_method', ['cash_on_delivery', 'bkash', 'nagad', 'sslcommerz']);
+            $table->decimal('amount', 10, 2);
+            $table->enum('status', ['pending', 'completed', 'failed', 'refunded'])->default('pending');
+            $table->json('payment_details')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_items');
+        Schema::dropIfExists('payments');
     }
 };

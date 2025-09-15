@@ -75,39 +75,89 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    @forelse ($products as $item)
-                        <a href="{{ route('public.products.show', $item) }}" class="product-card bg-white rounded-lg overflow-hidden shadow-md">
-                            <div class="relative">
-                                <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}"
-                                    class="w-full h-56 object-cover">
-                                <div
-                                    class="absolute top-0 right-0 bg-indigo-600 text-white text-xs font-bold px-2 py-1 m-2 rounded-full">
-                                    NEW</div>
-                            </div>
+                    @forelse ($featuredProducts as $item)
+                        <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
+                            <a href="{{ route('public.products.show', $item->slug) }}" class="block">
+                                <div class="relative">
+                                    <img src="{{ $item->images->where('is_primary', true)->first() ? Storage::url($item->images->where('is_primary', true)->first()->image_path) : 'https://via.placeholder.com/40' }}"
+                                        alt="{{ $item->name }}" class="w-full h-56 object-cover">
+                                    @if ($item->created_at->gt(now()->subDays(30)))
+                                        <div
+                                            class="absolute top-0 right-0 bg-indigo-600 text-white text-xs font-bold px-2 py-1 m-2 rounded-full">
+                                            NEW
+                                        </div>
+                                    @endif
+                                    @if ($item->discount > 0)
+                                        <div
+                                            class="absolute top-0 left-0 bg-red-600 text-white text-xs font-bold px-2 py-1 m-2 rounded-full">
+                                            {{ number_format(($item->discount / $item->price) * 100) }}% OFF
+                                        </div>
+                                    @endif
+                                </div>
+                            </a>
                             <div class="p-4">
-                                <h3 class="font-semibold text-lg mb-1">{{ $item->name }}</h3>
+                                <a href="{{ route('public.products.show', $item->slug) }}" class="block mb-2">
+                                    <h3 class="font-semibold text-lg hover:text-indigo-600 transition-colors line-clamp-2"
+                                        title="{{ $item->name }}">
+                                        {{ $item->name }}
+                                    </h3>
+                                </a>
                                 <div class="flex items-center mb-2">
                                     <div class="flex text-yellow-400">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            @if ($i <= floor($item->average_rating))
+                                                <i class="fas fa-star"></i>
+                                            @elseif($i - 0.5 <= $item->average_rating)
+                                                <i class="fas fa-star-half-alt"></i>
+                                            @else
+                                                <i class="far fa-star"></i>
+                                            @endif
+                                        @endfor
                                     </div>
-                                    <span class="text-gray-600 text-sm ml-2">(4.5)</span>
+                                    <span
+                                        class="text-gray-600 text-sm ml-2">({{ number_format($item->average_rating, 1) }})</span>
                                 </div>
-                                <div class="flex justify-between items-center">
-                                    <span class="text-2xl font-bold text-gray-900">{{ number_format($item->price) }}
-                                        TK</span>
-                                    <button
-                                        class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition duration-300">
-                                        <i class="fas fa-shopping-cart"></i>
-                                    </button>
+
+                                <div class="mb-3">
+                                    @if ($item->discount > 0)
+                                        <div class="flex items-center space-x-2">
+                                            <span
+                                                class="text-2xl font-bold text-gray-900">{{ number_format($item->final_price) }}
+                                                TK</span>
+                                            <span
+                                                class="text-sm text-gray-500 line-through">{{ number_format($item->price) }}
+                                                TK</span>
+                                        </div>
+                                    @else
+                                        <span
+                                            class="text-2xl font-bold text-gray-900">{{ number_format($item->price) }}
+                                            TK</span>
+                                    @endif
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="flex space-x-2">
+                                    <form action="{{ route('cart.add', $item) }}" method="POST" class="flex-1">
+                                        @csrf
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit"
+                                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-2 rounded transition duration-300 text-xs flex items-center justify-center">
+                                            <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
+                                        </button>
+                                    </form>
+                                    <a href="{{ route('public.products.buy-now', $item) }}"
+                                        class="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded transition duration-300 text-xs flex items-center justify-center">
+                                        Buy Now
+                                    </a>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     @empty
-                        <p class="text-gray-600">No products available at the moment. Please check back later.</p>
+                        <div class="col-span-4 text-center py-8">
+                            <i class="fas fa-box-open text-4xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-600 text-lg">No featured products available at the moment.</p>
+                            <p class="text-gray-500">Please check back later for new arrivals.</p>
+                        </div>
                     @endforelse
                 </div>
             </div>

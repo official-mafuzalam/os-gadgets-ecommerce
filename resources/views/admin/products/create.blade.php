@@ -38,7 +38,7 @@
                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Product
                                             Name *</label>
                                         <input type="text" id="name" name="name"
-                                            value="{{ old('name', $product->name ?? '') }}"
+                                            value="{{ old('name', $product->name) }}"
                                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white py-2 px-3"
                                             required>
                                         @error('name')
@@ -95,8 +95,20 @@
                                         @enderror
                                     </div>
 
-                                    <!-- Stock Quantity -->
+                                    <!-- Discount -->
                                     <div>
+                                        <label for="discount"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Discount</label>
+                                        <input type="number" id="discount" name="discount" step="0.01"
+                                            min="0" value="{{ old('discount', $product->discount) }}"
+                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white py-2 px-3">
+                                        @error('discount')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <!-- Stock Quantity -->
+                                    <div class="col-span-2">
                                         <label for="stock_quantity"
                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock
                                             Quantity *</label>
@@ -171,7 +183,7 @@
 
                                 <div class="space-y-4">
                                     <!-- Main Image -->
-                                    <div>
+                                    {{-- <div>
                                         <label for="image"
                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Main
                                             Image</label>
@@ -186,7 +198,7 @@
                                                     class="h-20 w-20 object-cover rounded-md">
                                             </div>
                                         @endif
-                                    </div>
+                                    </div> --}}
 
                                     <!-- Gallery Images -->
                                     <div>
@@ -199,11 +211,18 @@
                                         @error('image_gallery')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror
-                                        @if ($product->image_gallery && count($product->image_gallery) > 0)
+                                        @if ($product->images->count() > 0)
                                             <div class="mt-2 flex flex-wrap gap-2">
-                                                @foreach ($product->image_gallery as $image)
-                                                    <img src="{{ Storage::url($image) }}" alt="Gallery image"
-                                                        class="h-16 w-16 object-cover rounded-md">
+                                                @foreach ($product->images as $image)
+                                                    <div class="relative">
+                                                        <img src="{{ Storage::url($image->image_path) }}"
+                                                            alt="Gallery image"
+                                                            class="h-16 w-16 object-cover rounded-md">
+                                                        @if ($image->is_primary)
+                                                            <span
+                                                                class="absolute top-0 right-0 bg-blue-600 text-white text-xs px-1 rounded">Primary</span>
+                                                        @endif
+                                                    </div>
                                                 @endforeach
                                             </div>
                                         @endif
@@ -215,16 +234,31 @@
                             <div>
                                 <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">Status</h3>
 
-                                <div class="flex items-center">
-                                    <input type="checkbox" id="is_active" name="is_active" value="1"
-                                        {{ old('is_active', $product->is_active) ? 'checked' : '' }}
-                                        class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
-                                    <label for="is_active"
-                                        class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Active Product
-                                    </label>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="is_active" name="is_active" value="1"
+                                            {{ old('is_active', $product->is_active) ? 'checked' : '' }}
+                                            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="is_active"
+                                            class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Active Product
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="is_featured" name="is_featured" value="1"
+                                            {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}
+                                            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="is_featured"
+                                            class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            Featured Product
+                                        </label>
+                                    </div>
                                 </div>
                                 @error('is_active')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                                @error('is_featured')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -242,6 +276,9 @@
                             Add Specification
                         </button>
                         <textarea id="specifications-json" name="specifications" class="hidden">{{ old('specifications', $product->specifications ? json_encode($product->specifications) : '{}') }}</textarea>
+                        @error('specifications')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Form Actions -->

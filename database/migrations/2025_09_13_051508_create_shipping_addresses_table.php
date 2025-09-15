@@ -10,15 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('shipping_addresses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('product_id')->constrained();
-            $table->integer('rating');
-            $table->text('comment')->nullable();
-            $table->boolean('is_approved')->default(false);
+            $table->string('full_name');
+            $table->string('phone');
+            $table->string('email')->nullable();
+            $table->text('full_address');
+            $table->enum('delivery_area', ['inside_dhaka', 'outside_dhaka'])->default('inside_dhaka');
             $table->timestamps();
-            $table->unique(['user_id', 'product_id']);
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('shipping_addresses');
     }
 };

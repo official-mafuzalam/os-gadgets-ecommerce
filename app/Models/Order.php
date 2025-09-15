@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
@@ -11,47 +12,87 @@ class Order extends Model
 
     protected $fillable = [
         'order_number',
-        'user_id',
+        'customer_email',
+        'customer_phone',
         'subtotal',
-        'tax',
         'shipping_cost',
-        'discount',
-        'total',
+        'discount_amount',
+        'total_amount',
+        'shipping_address_id',
         'status',
-        'shipping_address',
-        'billing_address',
         'payment_method',
         'payment_status',
-        'notes'
+        'notes',
+        'tracking_number'
     ];
 
     protected $casts = [
         'subtotal' => 'decimal:2',
-        'tax' => 'decimal:2',
         'shipping_cost' => 'decimal:2',
-        'discount' => 'decimal:2',
-        'total' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'total_amount' => 'decimal:2'
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
+    // Relationships
     public function items()
     {
         return $this->hasMany(OrderItem::class);
     }
 
+    public function shippingAddress()
+    {
+        return $this->belongsTo(ShippingAddress::class);
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    // Scopes
     public function scopePending($query)
     {
         return $query->where('status', 'pending');
     }
 
-    public function scopeProcessing($query)
+    public function scopeCompleted($query)
     {
-        return $query->where('status', 'processing');
+        return $query->where('status', 'delivered');
     }
 
-    // Add other scopes for different statuses
+    // Methods
+    public static function generateOrderNumber()
+    {
+        return 'OS-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+    }
+
+    public function canBeCancelled()
+    {
+        return in_array($this->status, ['pending', 'confirmed']);
+    }
+
+    public function markAsPaid()
+    {
+        $this->payment_status = 'paid';
+        $this->save();
+
+        if ($this->status === 'pending') {
+            $this->status = 'confirmed';
+            $this->save();
+        }
+
+        return $this;
+    }
+
+    public function updateStatus($status)
+    {
+        $validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+
+        if (in_array($status, $validStatuses)) {
+            $this->status = $status;
+            $this->save();
+        }
+
+        return $this;
+    }
 }

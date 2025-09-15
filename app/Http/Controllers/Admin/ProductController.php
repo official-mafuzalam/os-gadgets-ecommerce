@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -26,6 +27,7 @@ class ProductController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
     public function create()
     {
         $categories = Category::where('is_active', true)->get();
@@ -39,50 +41,69 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
+            'discount' => 'nullable|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'sku' => 'required|string|unique:products,sku',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'specifications' => 'nullable',
-            'is_active' => 'boolean'
+            'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'specifications' => 'nullable|json',
+            'is_active' => 'sometimes|boolean',
+            'is_featured' => 'sometimes|boolean'
         ]);
 
         try {
             DB::beginTransaction();
 
-            // ✅ Auto-generate SKU if not provided
+            // Auto-generate SKU if not provided
             if (empty($validated['sku'])) {
                 $validated['sku'] = 'SKU-' . strtoupper(uniqid());
             }
 
-            // ✅ Handle main image upload
+            // Generate slug from name
+            $validated['slug'] = Str::slug($validated['name']);
+
+            // Ensure unique slug
+            $originalSlug = $validated['slug'];
+            $count = 1;
+            while (Product::where('slug', $validated['slug'])->exists()) {
+                $validated['slug'] = $originalSlug . '-' . $count++;
+            }
+
+            // Handle main image upload
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('products', 'public');
                 $validated['image'] = $imagePath;
             }
 
-            // ✅ Handle gallery images upload
-            $galleryPaths = [];
-            if ($request->hasFile('image_gallery')) {
-                foreach ($request->file('image_gallery') as $image) {
-                    $galleryPaths[] = $image->store('products/gallery', 'public');
-                }
-                // Store as JSON in DB if column is `text/json`
-                $validated['image_gallery'] = json_encode($galleryPaths);
+            // Set boolean fields
+            $validated['is_active'] = $request->boolean('is_active');
+            $validated['is_featured'] = $request->boolean('is_featured');
+
+            // Parse specifications JSON
+            if ($request->has('specifications')) {
+                $validated['specifications'] = json_decode($validated['specifications'], true);
             }
 
-            // ✅ Set default active status
-            $validated['is_active'] = $request->boolean('is_active', false);
+            // Create product
+            $product = Product::create($validated);
 
-            // ✅ Create product
-            Product::create($validated);
+            // Handle gallery images upload
+            if ($request->hasFile('image_gallery')) {
+                foreach ($request->file('image_gallery') as $index => $image) {
+                    $galleryPath = $image->store('products/gallery', 'public');
+
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_path' => $galleryPath,
+                        'is_primary' => $index === 0 // Set first image as primary
+                    ]);
+                }
+            }
 
             DB::commit();
 
@@ -92,7 +113,6 @@ class ProductController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            // Log error for debugging
             Log::error('Product creation failed: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
@@ -108,7 +128,7 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        $product->load(['category', 'brand', 'reviews.user']);
+        $product->load(['category', 'brand', 'images']);
         return view('admin.products.show', compact('product'));
     }
 
@@ -119,7 +139,9 @@ class ProductController extends Controller
     {
         $categories = Category::where('is_active', true)->get();
         $brands = Brand::where('is_active', true)->get();
-        return view('admin.products.create', compact('product', 'categories', 'brands'));
+        $product->load('images');
+
+        return view('admin.products.create', compact('categories', 'brands', 'product'));
     }
 
     /**
@@ -131,51 +153,87 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
+            'discount' => 'nullable|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'sku' => 'required|string|unique:products,sku,' . $product->id,
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'specifications' => 'nullable',
-            'is_active' => 'boolean'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'specifications' => 'nullable|json',
+            'is_active' => 'sometimes|boolean',
+            'is_featured' => 'sometimes|boolean'
         ]);
 
-        // Handle main image upload
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
+        try {
+            DB::beginTransaction();
 
-            $imagePath = $request->file('image')->store('products', 'public');
-            $validated['image'] = $imagePath;
-        }
+            // Generate slug if name changed
+            if ($product->name !== $validated['name']) {
+                $validated['slug'] = Str::slug($validated['name']);
 
-        // Handle gallery images upload
-        if ($request->hasFile('image_gallery')) {
-            // Delete old gallery images if exists
-            if ($product->image_gallery) {
-                foreach ($product->image_gallery as $oldImage) {
-                    Storage::disk('public')->delete($oldImage);
+                // Ensure unique slug
+                $originalSlug = $validated['slug'];
+                $count = 1;
+                while (Product::where('slug', $validated['slug'])->where('id', '!=', $product->id)->exists()) {
+                    $validated['slug'] = $originalSlug . '-' . $count++;
                 }
             }
 
-            $galleryPaths = [];
-            foreach ($request->file('image_gallery') as $image) {
-                $galleryPaths[] = $image->store('products/gallery', 'public');
+            // Handle main image upload
+            if ($request->hasFile('image')) {
+                // Delete old image
+                if ($product->image) {
+                    Storage::disk('public')->delete($product->image);
+                }
+
+                $imagePath = $request->file('image')->store('products', 'public');
+                $validated['image'] = $imagePath;
             }
-            $validated['image_gallery'] = $galleryPaths;
+
+            // Set boolean fields
+            $validated['is_active'] = $request->boolean('is_active');
+            $validated['is_featured'] = $request->boolean('is_featured');
+
+            // Parse specifications JSON
+            if ($request->has('specifications')) {
+                $validated['specifications'] = json_decode($validated['specifications'], true);
+            }
+
+            // Update product
+            $product->update($validated);
+
+            // Handle gallery images upload
+            if ($request->hasFile('image_gallery')) {
+                foreach ($request->file('image_gallery') as $image) {
+                    $galleryPath = $image->store('products/gallery', 'public');
+
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_path' => $galleryPath,
+                        'is_primary' => false
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Product updated successfully.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Product update failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()
+                ->withInput()
+                ->withErrors(['error' => 'Something went wrong while updating the product.']);
         }
-
-        // Set active status
-        $validated['is_active'] = $request->has('is_active');
-
-        $product->update($validated);
-
-        return redirect()->route('admin.products.index')
-            ->with('success', 'Product updated successfully.');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -197,5 +255,45 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Product deleted successfully.');
+    }
+
+    /**
+     * Set primary image for the product.
+     */
+    public function setPrimaryImage(Request $request, Product $product)
+    {
+        $request->validate([
+            'image_id' => 'required|exists:product_images,id'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // Reset all images to non-primary
+            ProductImage::where('product_id', $product->id)
+                ->update(['is_primary' => false]);
+
+            // Set the selected image as primary
+            $image = ProductImage::find($request->image_id);
+            $image->is_primary = true;
+            $image->save();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Primary image updated successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Failed to set primary image: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to set primary image'
+            ], 500);
+        }
     }
 }
