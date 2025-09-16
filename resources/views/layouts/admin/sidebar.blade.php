@@ -11,7 +11,7 @@
     <nav class="hs-accordion-group p-6 w-full flex flex-col flex-wrap" data-hs-accordion-always-open>
         <ul class="space-y-1.5">
             <li>
-                <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-900 dark:text-white
+                <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white
                 {{ in_array(Route::currentRouteName(), ['admin.index', '']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
                     href="{{ route('admin.index') }}">
                     <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -22,6 +22,20 @@
                             d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z" />
                     </svg>
                     Dashboard
+                </a>
+            </li>
+            <li>
+                <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white
+                {{ in_array(Route::currentRouteName(), ['admin.orders.index', '']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                    href="{{ route('admin.orders.index') }}">
+                    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd"
+                            d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z" />
+                        <path fill-rule="evenodd"
+                            d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z" />
+                    </svg>
+                    Orders
                 </a>
             </li>
 
@@ -75,6 +89,57 @@
                         {{ in_array(Route::currentRouteName(), ['admin.brands.index', 'admin.brands.create', 'admin.brands.edit', 'admin.brands.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
                                 href="{{ route('admin.brands.index') }}">
                                 Brands
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.settings', 'admin.settings.general', 'admin.settings.privacy', 'admin.settings.notifications']) ? 'hs-accordion-active' : '' }}"
+                id="settings-accordion">
+                <a class="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
+                    href="javascript:;">
+                    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1c.895.264 1.318 1.285.872 2.105l-.169.31c-.699 1.282.704 2.685 1.987 1.987l.31-.169c.82-.446 1.841-.023 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311c-.446-.82-.023-1.841.872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1c-.895-.264-1.318-1.285-.872-2.105l.169-.31c.699-1.282-.704-2.685-1.987-1.987l-.31.169c-.82.446-1.841.023-2.105-.872l-.1-.34zM8 5.5a2.5 2.5 0 1 0 0 5 0 2.5 2.5 0 0 0 0-5z" />
+                    </svg>
+                    Settings
+                    <svg class="hs-accordion-active:block ml-auto hidden w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
+                        width="16" height="16" viewBox="0 0 16 16" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 11L8.16086 5.31305C8.35239 5.13625 8.64761 5.13625 8.83914 5.31305L15 11"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    </svg>
+                    <svg class="hs-accordion-active:hidden ml-auto block w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
+                        width="16" height="16" viewBox="0 0 16 16" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    </svg>
+                </a>
+                <div id="settings-accordion-sub"
+                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 {{ in_array(Route::currentRouteName(), ['admin.settings', 'admin.settings.general', 'admin.settings.privacy', 'admin.settings.notifications']) ? 'block' : 'hidden' }}">
+                    <ul class="pt-2 pl-2">
+                        <li>
+                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
+                                    {{ in_array(Route::currentRouteName(), ['admin.settings', 'admin.settings.general']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                href="{{ route('admin.settings') }}">
+                                General
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
+                                    {{ in_array(Route::currentRouteName(), ['admin.settings.privacy']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                href="{{ route('admin.settings.privacy') }}">
+                                Privacy
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
+                                    {{ in_array(Route::currentRouteName(), ['admin.settings.notifications']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                href="{{ route('admin.settings.notifications') }}">
+                                Notifications
                             </a>
                         </li>
                     </ul>

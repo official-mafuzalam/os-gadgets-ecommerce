@@ -86,6 +86,19 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
     Route::prefix('admin')->group(function () {
 
         Route::get('/', [HomeController::class, 'index'])->name('admin.index');
+        // Admin Order Routes
+        Route::prefix('/orders')->name('admin.orders.')->group(function () {
+            Route::get('/', [OrderController::class, 'index'])->name('index');
+            Route::get('/today', [OrderController::class, 'todayOrders'])->name('today');
+            Route::get('/by-date', [OrderController::class, 'ordersByDate'])->name('by-date');
+            Route::get('/status/{status}', [OrderController::class, 'ordersByStatus'])->name('by-status');
+            Route::get('/{id}', [OrderController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [OrderController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [OrderController::class, 'update'])->name('update');
+            Route::patch('/{id}/status', [OrderController::class, 'updateStatus'])->name('update-status');
+            Route::patch('/{id}/mark-paid', [OrderController::class, 'markAsPaid'])->name('mark-paid');
+            Route::delete('/{id}', [OrderController::class, 'destroy'])->name('destroy');
+        });
 
         Route::resource('products', ProductController::class)->names('admin.products');
         Route::patch('products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('admin.products.toggle-status');
@@ -98,6 +111,11 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::resource('orders', OrderController::class)->names('admin.orders');
         Route::resource('reviews', ReviewController::class)->names('admin.reviews');
 
+
+        Route::get('/settings', [HomeController::class, 'settings'])->name('admin.settings');
+        Route::post('/settings', [HomeController::class, 'updateSettings'])->name('admin.settings.update');
+        Route::get('/settings/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('admin.settings.privacy');
+        Route::get('/settings/notifications', [HomeController::class, 'notifications'])->name('admin.settings.notifications');
 
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
