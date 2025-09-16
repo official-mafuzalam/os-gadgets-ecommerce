@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -13,7 +18,12 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Order::with('shippingAddress', 'items');
+        // Get filter data for dropdowns
+        $categories = Category::orderBy('name')->get();
+        $brands = Brand::orderBy('name')->get();
+        $products = Product::orderBy('name')->get();
+
+        $query = Order::with(['shippingAddress', 'items', 'items.product']);
 
         // Search filter
         if ($request->has('search') && !empty($request->search)) {
@@ -21,7 +31,10 @@ class OrderController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->where('order_number', 'like', "%{$search}%")
                     ->orWhere('customer_email', 'like', "%{$search}%")
-                    ->orWhere('customer_phone', 'like', "%{$search}%");
+                    ->orWhere('customer_phone', 'like', "%{$search}%")
+                    ->orWhereHas('shippingAddress', function ($q) use ($search) {
+                        $q->where('full_name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -31,82 +44,67 @@ class OrderController extends Controller
         }
 
         // Date range filter
-        if ($request->has('start_date') && !empty($request->start_date)) {
-            $startDate = $request->start_date;
-            $endDate = $request->end_date ?? $request->start_date;
+        $startDate = $request->has('start_date') && !empty($request->start_date)
+            ? $request->start_date
+            : date('Y-m-d');
 
-            $query->whereBetween('created_at', [
-                $startDate . ' 00:00:00',
-                $endDate . ' 23:59:59'
-            ]);
+        $endDate = $request->has('end_date') && !empty($request->end_date)
+            ? $request->end_date
+            : date('Y-m-d');
+
+        $query->whereBetween('created_at', [
+            $startDate . ' 00:00:00',
+            $endDate . ' 23:59:59'
+        ]);
+
+        // Category filter
+        if ($request->has('category_id') && !empty($request->category_id)) {
+            $query->whereHas('items.product', function ($q) use ($request) {
+                $q->where('category_id', $request->category_id);
+            });
+        }
+
+        // Brand filter
+        if ($request->has('brand_id') && !empty($request->brand_id)) {
+            $query->whereHas('items.product', function ($q) use ($request) {
+                $q->where('brand_id', $request->brand_id);
+            });
+        }
+
+        // Product filter
+        if ($request->has('product_id') && !empty($request->product_id)) {
+            $query->whereHas('items', function ($q) use ($request) {
+                $q->where('product_id', $request->product_id);
+            });
         }
 
         $orders = $query->orderBy('created_at', 'desc')->paginate(15);
 
+        $totalAmount = $orders->sum('total_amount');
         // Get counts for stats
         $totalOrders = Order::count();
         $pendingOrders = Order::where('status', 'pending')->count();
+        $confirmedOrders = Order::where('status', 'confirmed')->count();
         $processingOrders = Order::where('status', 'processing')->count();
+        $shippedOrders = Order::where('status', 'shipped')->count();
         $completedOrders = Order::where('status', 'delivered')->count();
+        $cancelledOrders = Order::where('status', 'cancelled')->count();
+
 
         return view('admin.orders.index', compact(
             'orders',
             'totalOrders',
             'pendingOrders',
             'processingOrders',
-            'completedOrders'
+            'completedOrders',
+            'confirmedOrders',
+            'shippedOrders',
+            'cancelledOrders',
+            'categories',
+            'brands',
+            'products',
+            'totalAmount'
         ));
-    }
-
-    /**
-     * Display today's orders.
-     */
-    public function todayOrders()
-    {
-        $orders = Order::with('shippingAddress', 'items')
-            ->whereDate('created_at', today())
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
-        return view('admin.orders.index', compact('orders'));
-    }
-
-    /**
-     * Display orders by date range.
-     */
-    public function ordersByDate(Request $request)
-    {
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date') ?? $startDate;
-
-        $orders = Order::with('shippingAddress', 'items')
-            ->whereBetween('created_at', [
-                $startDate . ' 00:00:00',
-                $endDate . ' 23:59:59'
-            ])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
-        return view('admin.orders.index', compact('orders', 'startDate', 'endDate'));
-    }
-
-    /**
-     * Display orders by status.
-     */
-    public function ordersByStatus($status)
-    {
-        $validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
-
-        if (!in_array($status, $validStatuses)) {
-            abort(404, 'Invalid order status');
-        }
-
-        $orders = Order::with('shippingAddress', 'items')
-            ->where('status', $status)
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-
-        return view('admin.orders.index', compact('orders', 'status'));
     }
 
     /**
@@ -130,25 +128,32 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $order = Order::with('shippingAddress', 'items.product', 'payment')
-            ->findOrFail($id);
+        $order = Order::with([
+            'shippingAddress',
+            'items.product.category',
+            'items.product.images',
+            'payment'
+        ])->findOrFail($id);
 
         return view('admin.orders.show', compact('order'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified order.
      */
     public function edit($id)
     {
-        $order = Order::with('shippingAddress', 'items.product')
-            ->findOrFail($id);
+        $order = Order::with([
+            'shippingAddress',
+            'items.product.category',
+            'items.product.images'
+        ])->findOrFail($id);
 
         return view('admin.orders.edit', compact('order'));
     }
 
     /**
-     * Update the specified order.
+     * Update the specified order in storage.
      */
     public function update(Request $request, $id)
     {
@@ -156,11 +161,35 @@ class OrderController extends Controller
 
         $validated = $request->validate([
             'status' => 'required|in:pending,confirmed,processing,shipped,delivered,cancelled',
+            'payment_status' => 'required|in:pending,paid,failed,refunded',
             'tracking_number' => 'nullable|string|max:255',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable|string',
+            'customer_email' => 'required|email',
+            'customer_phone' => 'required|string',
+            'subtotal' => 'required|numeric|min:0',
+            'shipping_cost' => 'required|numeric|min:0',
+            'discount_amount' => 'required|numeric|min:0',
+            'total_amount' => 'required|numeric|min:0',
+            'items.*.quantity' => 'sometimes|required|integer|min:1',
+            'items.*.unit_price' => 'sometimes|required|numeric|min:0',
         ]);
 
+        // Update order
         $order->update($validated);
+
+        // Update order items if provided
+        if ($request->has('items')) {
+            foreach ($request->items as $itemId => $itemData) {
+                $orderItem = OrderItem::find($itemId);
+                if ($orderItem && $orderItem->order_id == $order->id) {
+                    $orderItem->update([
+                        'quantity' => $itemData['quantity'],
+                        'unit_price' => $itemData['unit_price'],
+                        'total_price' => $itemData['quantity'] * $itemData['unit_price']
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('admin.orders.show', $order->id)
             ->with('success', 'Order updated successfully');
@@ -212,5 +241,33 @@ class OrderController extends Controller
 
         return redirect()->route('admin.orders.index')
             ->with('success', 'Order deleted successfully');
+    }
+
+    /**
+     * Download invoice as PDF
+     */
+    public function downloadInvoice($id)
+    {
+        $order = Order::with(['shippingAddress', 'items.product'])->findOrFail($id);
+        
+        $pdf = PDF::loadView('admin.orders.invoice', compact('order'));
+
+        return $pdf->download('invoice-' . $order->order_number . '.pdf');
+    }
+
+    /**
+     * Email invoice to customer
+     */
+    public function emailInvoice($id)
+    {
+        $order = Order::with(['shippingAddress', 'items.product'])->findOrFail($id);
+
+        // Generate PDF
+        $pdf = PDF::loadView('admin.orders.invoice', compact('order'));
+
+        // Email the invoice
+        // Mail::to($order->customer_email)->send(new OrderInvoice($order, $pdf));
+
+        return redirect()->back()->with('success', 'Invoice sent to customer successfully.');
     }
 }

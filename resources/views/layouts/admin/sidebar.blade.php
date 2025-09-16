@@ -26,7 +26,7 @@
             </li>
             <li>
                 <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white
-                {{ in_array(Route::currentRouteName(), ['admin.orders.index', '']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                {{ in_array(Route::currentRouteName(), ['admin.orders.index', 'admin.orders.show', 'admin.orders.edit']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
                     href="{{ route('admin.orders.index') }}">
                     <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                         fill="currentColor" viewBox="0 0 16 16">
@@ -95,7 +95,7 @@
                 </div>
             </li>
 
-            <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.settings', 'admin.settings.general', 'admin.settings.privacy', 'admin.settings.notifications']) ? 'hs-accordion-active' : '' }}"
+            <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.settings.index', 'admin.settings.general', 'admin.settings.privacy', 'admin.settings.notifications']) ? 'hs-accordion-active' : '' }}"
                 id="settings-accordion">
                 <a class="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
                     href="javascript:;">
@@ -123,8 +123,8 @@
                     <ul class="pt-2 pl-2">
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
-                                    {{ in_array(Route::currentRouteName(), ['admin.settings', 'admin.settings.general']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
-                                href="{{ route('admin.settings') }}">
+                                    {{ in_array(Route::currentRouteName(), ['admin.settings.index']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                href="{{ route('admin.settings.index') }}">
                                 General
                             </a>
                         </li>

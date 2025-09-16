@@ -64,6 +64,7 @@ class CheckoutController extends Controller
             'full_address' => 'required|string|max:500',
             'delivery_area' => 'required|in:inside_dhaka,outside_dhaka',
             'payment_method' => 'nullable|in:cash_on_delivery,bkash,nagad,sslcommerz',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         // Determine delivery charge
@@ -131,6 +132,7 @@ class CheckoutController extends Controller
                 'shipping_address_id' => $shippingAddress->id,
                 'payment_method' => $request->payment_method ?? 'cash_on_delivery',
                 'status' => 'pending',
+                'notes' => $request->notes,
                 'payment_status' => 'pending',
             ]);
 

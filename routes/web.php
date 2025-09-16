@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Public\CartController;
 use App\Http\Controllers\Public\CheckoutController;
@@ -89,15 +90,18 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         // Admin Order Routes
         Route::prefix('/orders')->name('admin.orders.')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('index');
-            Route::get('/today', [OrderController::class, 'todayOrders'])->name('today');
-            Route::get('/by-date', [OrderController::class, 'ordersByDate'])->name('by-date');
-            Route::get('/status/{status}', [OrderController::class, 'ordersByStatus'])->name('by-status');
             Route::get('/{id}', [OrderController::class, 'show'])->name('show');
             Route::get('/{id}/edit', [OrderController::class, 'edit'])->name('edit');
             Route::put('/{id}', [OrderController::class, 'update'])->name('update');
             Route::patch('/{id}/status', [OrderController::class, 'updateStatus'])->name('update-status');
             Route::patch('/{id}/mark-paid', [OrderController::class, 'markAsPaid'])->name('mark-paid');
             Route::delete('/{id}', [OrderController::class, 'destroy'])->name('destroy');
+        });
+
+        // Invoice routes
+        Route::prefix('/orders/{order}/invoice')->name('admin.orders.invoice.')->group(function () {
+            Route::get('/pdf', [OrderController::class, 'downloadInvoice'])->name('pdf');
+            Route::get('/email', [OrderController::class, 'emailInvoice'])->name('email');
         });
 
         Route::resource('products', ProductController::class)->names('admin.products');
@@ -112,8 +116,11 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::resource('reviews', ReviewController::class)->names('admin.reviews');
 
 
-        Route::get('/settings', [HomeController::class, 'settings'])->name('admin.settings');
-        Route::post('/settings', [HomeController::class, 'updateSettings'])->name('admin.settings.update');
+        Route::prefix('admin/settings')->name('admin.settings.')->group(function () {
+            Route::get('/', [SettingController::class, 'index'])->name('index');
+            Route::put('/', [SettingController::class, 'update'])->name('update');
+        });
+
         Route::get('/settings/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('admin.settings.privacy');
         Route::get('/settings/notifications', [HomeController::class, 'notifications'])->name('admin.settings.notifications');
 

@@ -28,9 +28,6 @@
         </div>
 
         <div class="container mx-auto px-4 py-8">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Checkout</h1>
-            <p class="text-gray-600 mb-8">Complete your purchase with secure payment</p>
-
             @if (session('success'))
                 <div
                     class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">
@@ -61,14 +58,14 @@
                             @csrf
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
                                     <input type="text" name="full_name" required
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                                         placeholder="Enter your full name">
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
                                     <input type="text" name="phone" required
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                                         placeholder="Your phone number">
@@ -77,20 +74,28 @@
 
                             <div class="mb-4">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                <input type="email" name="email" required
+                                <input type="email" name="email"
                                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                                     placeholder="your.email@example.com">
                             </div>
 
                             <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Address</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Full Address
+                                    *</label>
                                 <textarea name="full_address" required rows="3"
                                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
                                     placeholder="Enter your complete delivery address"></textarea>
                             </div>
 
                             <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Option</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+                                <textarea name="notes" rows="3"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
+                                    placeholder="Enter any additional notes or instructions"></textarea>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Option *</label>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div class="relative">
                                         <input class="sr-only peer" type="radio" name="delivery_area"
@@ -176,7 +181,7 @@
                                 <span class="text-gray-900">{{ number_format($subtotal, 2) }} TK</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Delivery</span>
+                                <span class="text-gray-600">Delivery charge</span>
                                 <span id="delivery_charge" class="text-gray-900">80.00 TK</span>
                             </div>
                             <div class="flex justify-between text-lg font-semibold pt-3 border-t border-gray-200">
@@ -192,7 +197,7 @@
 
         <script>
             function updateDelivery() {
-                const selectedOption = document.querySelector('input[name="delivery_option"]:checked');
+                const selectedOption = document.querySelector('input[name="delivery_area"]:checked');
                 const deliveryCharge = selectedOption.value === 'inside_dhaka' ? 80 : 150;
 
                 document.getElementById('delivery_charge').innerText = deliveryCharge.toFixed(2) + ' TK';
@@ -206,16 +211,22 @@
             // Initialize on page load
             document.addEventListener('DOMContentLoaded', function() {
                 // Set up delivery option change listeners
-                document.querySelectorAll('input[name="delivery_option"]').forEach(option => {
+                document.querySelectorAll('input[name="delivery_area"]').forEach(option => {
                     option.addEventListener('change', updateDelivery);
                 });
 
-                // Form submission handler
-                document.getElementById('checkout-form').addEventListener('submit', function(e) {
-                    const btn = document.getElementById('place-order-btn');
-                    btn.disabled = true;
-                    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
-                });
+                // Run once on load to ensure correct value
+                updateDelivery();
+
+                // Form submission handler (if checkout form exists)
+                const checkoutForm = document.getElementById('checkout-form');
+                if (checkoutForm) {
+                    checkoutForm.addEventListener('submit', function(e) {
+                        const btn = document.getElementById('place-order-btn');
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                    });
+                }
             });
         </script>
     </x-slot>

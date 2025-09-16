@@ -9,6 +9,8 @@
     <title>@yield('title', config('app.name', 'OS Gadgets'))</title>
     <link rel="icon" type="image/png" href="{{ asset('assets/logo/icon.png') }}">
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
