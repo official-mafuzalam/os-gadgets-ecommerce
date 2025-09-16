@@ -132,12 +132,6 @@
                             @endif
                         </div>
 
-                        <!-- Description -->
-                        {{-- <div class="mb-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Description</h3>
-                            <p class="text-gray-700">{{ $product->description }}</p>
-                        </div> --}}
-
                         <!-- Add to Cart -->
                         <div class="mb-6">
                             <div class="flex items-center space-x-4 mb-4">
@@ -165,7 +159,7 @@
                             </div>
 
                             <div class="flex space-x-4">
-                                <form action="#" method="POST" class="flex-1">
+                                <form action="{{ route('public.products.buy-now', $product) }}" method="GET" class="flex-1">
                                     @csrf
                                     <input type="hidden" name="quantity" value="1">
                                     <button type="submit"
@@ -221,7 +215,9 @@
                 <div class="p-6">
                     <!-- Description Tab -->
                     <div id="content-description" class="prose max-w-none">
-                        <p>{{ $product->description }}</p>
+                        <p>
+                            {!! nl2br(e($product->description)) !!}
+                        </p>
                     </div>
 
                     <!-- Specifications Tab -->

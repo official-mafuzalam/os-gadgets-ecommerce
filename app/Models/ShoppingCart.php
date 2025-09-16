@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ShoppingCart extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'session_id',
         'customer_email',
@@ -21,23 +22,23 @@ class ShoppingCart extends Model
 
     public function getTotalQuantityAttribute()
     {
-        return $this->items->sum('quantity');
+        return $this->items()->sum('quantity');
     }
 
     public function getSubtotalAttribute()
     {
-        return $this->items->sum(function ($item) {
-            return $item->product->final_price * $item->quantity;
+        return $this->items()->with('product')->get()->sum(function ($item) {
+            return $item->product ? $item->product->final_price * $item->quantity : 0;
         });
     }
 
     public function addItem($productId, $quantity = 1)
     {
-        $existingItem = $this->items()->where('product_id', $productId)->first();
+        $item = $this->items()->where('product_id', $productId)->first();
 
-        if ($existingItem) {
-            $existingItem->quantity += $quantity;
-            $existingItem->save();
+        if ($item) {
+            $item->quantity += $quantity;
+            $item->save();
         } else {
             $this->items()->create([
                 'product_id' => $productId,
@@ -50,15 +51,15 @@ class ShoppingCart extends Model
 
     public function updateItem($productId, $quantity)
     {
-        if ($quantity <= 0) {
-            return $this->removeItem($productId);
-        }
-
         $item = $this->items()->where('product_id', $productId)->first();
 
         if ($item) {
-            $item->quantity = $quantity;
-            $item->save();
+            if ($quantity <= 0) {
+                $item->delete();
+            } else {
+                $item->quantity = $quantity;
+                $item->save();
+            }
         }
 
         return $this;

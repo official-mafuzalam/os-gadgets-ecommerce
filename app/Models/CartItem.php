@@ -17,7 +17,7 @@ class CartItem extends Model
 
     public function cart()
     {
-        return $this->belongsTo(ShoppingCart::class);
+        return $this->belongsTo(ShoppingCart::class, 'cart_id');
     }
 
     public function product()
@@ -27,6 +27,6 @@ class CartItem extends Model
 
     public function getTotalPriceAttribute()
     {
-        return $this->product->final_price * $this->quantity;
+        return $this->product ? $this->product->final_price * $this->quantity : 0;
     }
 }

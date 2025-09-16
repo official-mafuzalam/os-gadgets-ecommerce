@@ -3,99 +3,170 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
-use App\Models\CartItem;
-use App\Models\Product;
 use App\Models\ShoppingCart;
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
+use function Symfony\Component\String\b;
 
 class CartController extends Controller
 {
+    // Get or create the current session cart
+    protected function getCart()
+    {
+        $sessionId = session()->getId();
+        return ShoppingCart::firstOrCreate(['session_id' => $sessionId]);
+    }
+
+    // Show cart page
     public function index()
     {
-        $cartItems = ShoppingCart::content();
-        $subtotal = ShoppingCart::subtotal();
-        $tax = ShoppingCart::tax();
-        $total = ShoppingCart::total();
+        $cart = $this->getCart();
+        $items = $cart->items()->with('product')->get();
 
-        return view('public.cart.index', compact('cartItems', 'subtotal', 'tax', 'total'));
+        return view('public.cart.index', [
+            'cart' => $cart,
+            'cartItems' => $items,
+            'subtotal' => $cart->subtotal,
+            'total' => $cart->subtotal,
+            'tax' => 0,
+        ]);
     }
 
+    // Add product to cart
     public function add(Request $request, Product $product)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1|max:' . $product->stock_quantity
-        ]);
+        try {
+            $request->validate([
+                'quantity' => 'required|integer|min:1|max:' . $product->stock_quantity
+            ]);
 
-        CartItem::add([
-            'id' => $product->id,
-            'name' => $product->name,
-            'qty' => $request->quantity,
-            'price' => $product->final_price,
-            'options' => [
-                'image' => $product->image,
-                'slug' => $product->slug,
-                'sku' => $product->sku,
-                'stock' => $product->stock_quantity
-            ]
-        ]);
+            $cart = $this->getCart();
+            $cart->addItem($product->id, $request->quantity);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Product added to cart',
-            'cart_count' => ShoppingCart::count()
-        ]);
+            return back()->with('success', 'Product added to cart!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to add product to cart: ' . $e->getMessage());
+        }
     }
 
-    public function update(Request $request, $rowId)
+    // Update quantity of a cart item
+    public function update(Request $request, $itemId)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1'
-        ]);
+        try {
+            $request->validate([
+                'quantity' => 'required|integer|min:1'
+            ]);
 
-        $item = ShoppingCart::get($rowId);
-        $product = Product::find($item->id);
+            $cart = $this->getCart();
+            $item = $cart->items()->find($itemId);
 
-        if ($request->quantity > $product->stock_quantity) {
+            if (!$item) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cart item not found'
+                ], 404);
+            }
+
+            $product = $item->product;
+
+            if ($request->quantity > $product->stock_quantity) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Requested quantity exceeds available stock'
+                ], 422);
+            }
+
+            $cart->updateItem($product->id, $request->quantity);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cart updated successfully',
+                'cart_count' => $cart->total_quantity,
+                'subtotal' => $cart->subtotal,
+                'total' => $cart->subtotal,
+            ]);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Requested quantity exceeds available stock'
-            ], 422);
+                'message' => 'Failed to update cart: ' . $e->getMessage()
+            ], 500);
         }
-
-        ShoppingCart::update($rowId, $request->quantity);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Cart updated successfully',
-            'cart_count' => ShoppingCart::count(),
-            'subtotal' => ShoppingCart::subtotal(),
-            'total' => ShoppingCart::total()
-        ]);
     }
 
-    public function remove($rowId)
+    // Remove a cart item
+    public function remove($itemId)
     {
-        ShoppingCart::remove($rowId);
+        try {
+            $cart = $this->getCart();
+            $item = $cart->items()->find($itemId);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Item removed from cart',
-            'cart_count' => ShoppingCart::count(),
-            'subtotal' => ShoppingCart::subtotal(),
-            'total' => ShoppingCart::total()
-        ]);
+            if (!$item) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cart item not found'
+                ], 404);
+            }
+
+            $cart->removeItem($item->product_id);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Item removed from cart',
+                'cart_count' => $cart->total_quantity,
+                'subtotal' => $cart->subtotal,
+                'total' => $cart->subtotal,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove item: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
+    // Clear the cart
     public function clear()
     {
-        ShoppingCart::destroy();
+        try {
+            $cart = $this->getCart();
+            $cart->clear();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Cart cleared successfully',
-            'cart_count' => ShoppingCart::count()
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Cart cleared successfully',
+                'cart_count' => 0,
+                'subtotal' => 0,
+                'total' => 0,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to clear cart: ' . $e->getMessage()
+            ], 500);
+        }
     }
+
+
+    public function buyNow(Product $product, Request $request)
+    {
+        $quantity = $request->input('quantity', 1);
+
+        if ($quantity < 1)
+            $quantity = 1;
+        if ($quantity > $product->stock_quantity) {
+            return redirect()->back()->with('error', 'Requested quantity exceeds available stock.');
+        }
+
+        $cart = $this->getCart();
+
+        // Clear current cart for single product checkout
+        $cart->clear();
+
+        $cart->addItem($product->id, $quantity);
+
+        return redirect()->route('public.checkout')->with('success', $product->name . ' added for checkout.');
+    }
+
+
 }

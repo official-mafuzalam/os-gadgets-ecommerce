@@ -73,7 +73,7 @@
                             </svg>
                         </button>
 
-                        <div class="hs-dropdown-menu sm:transition-[opacity,margin] sm:ease-in-out sm:duration-[350ms] hs-dropdown-open:opacity-100 opacity-0 hidden z-50 top-full end-0 sm:w-[800px] bg-gray-100 sm:shadow-lg rounded-lg py-4 sm:px-4 dark:bg-neutral-800 dark:border dark:border-neutral-700"
+                        <div class="hs-dropdown-menu sm:transition-[opacity,margin] sm:ease-in-out sm:duration-[350ms] hs-dropdown-open:opacity-100 opacity-0 hidden z-50 top-full left-1/2 transform -translate-x-1/2 sm:w-[800px] bg-gray-100 sm:shadow-lg rounded-lg py-4 sm:px-4 dark:bg-neutral-800 dark:border dark:border-neutral-700"
                             role="menu" aria-orientation="vertical" aria-labelledby="hs-mega-menu-categories">
                             <div class="sm:grid sm:grid-cols-4 gap-4">
                                 <!-- Category Columns -->
@@ -133,12 +133,17 @@
                     </button>
 
                     <!-- Cart Icon -->
+                    @php
+                        $sessionCart = App\Models\ShoppingCart::where('session_id', session()->getId())->first();
+                        $cartCount = $sessionCart ? $sessionCart->items()->sum('quantity') : 0;
+                    @endphp
+
                     <a href="{{ route('public.cart') }}" class="text-gray-800 hover:text-indigo-600 relative">
                         <i class="fas fa-shopping-cart text-lg"></i>
-                        @if (App\Models\ShoppingCart::count() > 0)
+                        @if ($cartCount > 0)
                             <span
                                 class="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                {{ App\Models\ShoppingCart::count() }}
+                                {{ $cartCount }}
                             </span>
                         @endif
                     </a>

@@ -36,6 +36,14 @@
                                 </div>
                             </li>
                         @endif
+                        @if (isset($is_featured) && $is_featured)
+                            <li>
+                                <div class="flex items-center">
+                                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                    <span class="ml-3 text-sm font-medium text-gray-500">Featured</span>
+                                </div>
+                            </li>
+                        @endif
                     </ol>
                 </nav>
             </div>
@@ -51,6 +59,8 @@
                                 {{ $category->name }} Products
                             @elseif(isset($brand))
                                 {{ $brand->name }} Products
+                            @elseif(isset($is_featured) && $is_featured)
+                                Featured Products
                             @else
                                 All Products
                             @endif
@@ -60,6 +70,8 @@
                                 {{ $category->description ?? 'Browse our collection of ' . $category->name . ' products' }}
                             @elseif(isset($brand))
                                 Discover premium products from {{ $brand->name }}
+                            @elseif(isset($is_featured) && $is_featured)
+                                Discover our handpicked collection of featured products
                             @else
                                 Discover our complete collection of premium products
                             @endif

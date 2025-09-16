@@ -258,6 +258,26 @@ class ProductController extends Controller
     }
 
     /**
+     * Toggle the active status of the product.
+     */
+    public function toggleStatus(Product $product)
+    {
+        $product->update(['is_active' => !$product->is_active]);
+
+        return back()->with('success', 'Product status updated successfully');
+    }
+
+    /**
+     * Toggle the featured status of the product.
+     */
+    public function toggleFeatured(Product $product)
+    {
+        $product->update(['is_featured' => !$product->is_featured]);
+
+        return back()->with('success', 'Product featured status updated successfully');
+    }
+
+    /**
      * Set primary image for the product.
      */
     public function setPrimaryImage(Request $request, Product $product)

@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Public\CartController;
+use App\Http\Controllers\Public\CheckoutController;
 use App\Http\Controllers\Public\HomeController as PublicHomeController;
 use App\Http\Controllers\Public\SearchController;
 
@@ -49,11 +50,17 @@ Route::get('/search/live', [SearchController::class, 'liveSearch'])->name('publi
 // Cart routes
 Route::get('/cart', [CartController::class, 'index'])->name('public.cart');
 Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-Route::post('/cart/update/{rowId}', [CartController::class, 'update'])->name('cart.update');
-Route::post('/cart/remove/{rowId}', [CartController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/update/{itemId}', [CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove/{itemId}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
+// Buy Now route
 Route::get('/buy-now/{product}', [CartController::class, 'buyNow'])->name('public.products.buy-now');
+
+// Checkout page
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('public.checkout');
+Route::post('/checkout', [CheckoutController::class, 'process'])->name('public.checkout.process');
+
 
 Route::get('/products', [PublicHomeController::class, 'products'])->name('public.products');
 Route::get('/product/{product}', [PublicHomeController::class, 'productShow'])->name('public.products.show');
@@ -61,6 +68,7 @@ Route::get('/brands', [PublicHomeController::class, 'brands'])->name('public.bra
 Route::get('/brands/{brand}', [PublicHomeController::class, 'brandShow'])->name('public.brands.show');
 Route::get('/categories', [PublicHomeController::class, 'categories'])->name('public.categories');
 Route::get('/categories/{category}', [PublicHomeController::class, 'categoryShow'])->name('public.categories.show');
+Route::get('/featured-products', [PublicHomeController::class, 'featuredProducts'])->name('public.featured.products');
 
 Route::get('/deals', [PublicHomeController::class, 'deals'])->name('public.deals');
 Route::get('/about', [PublicHomeController::class, 'about'])->name('public.about');
@@ -80,6 +88,8 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::get('/', [HomeController::class, 'index'])->name('admin.index');
 
         Route::resource('products', ProductController::class)->names('admin.products');
+        Route::patch('products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('admin.products.toggle-status');
+        Route::patch('products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('admin.products.toggle-featured');
         Route::post('products/{product}/set-primary-image', [ProductController::class, 'setPrimaryImage'])->name('admin.products.set-primary-image');
 
 

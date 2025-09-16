@@ -99,6 +99,16 @@
          });
      });
  </script>
+ <script>
+     document.addEventListener('DOMContentLoaded', function() {
+         const notifications = document.querySelectorAll('#notification-success, #notification-error');
+         notifications.forEach(notification => {
+             setTimeout(() => {
+                 notification.remove();
+             }, 5000); // 5 seconds
+         });
+     });
+ </script>
  </body>
 
  </html>
