@@ -9,15 +9,53 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     /**
-     * Display a listing of all orders.
+     * Display a listing of the orders with filtering.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('shippingAddress', 'items')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $query = Order::with('shippingAddress', 'items');
 
-        return view('admin.orders.index', compact('orders'));
+        // Search filter
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                    ->orWhere('customer_email', 'like', "%{$search}%")
+                    ->orWhere('customer_phone', 'like', "%{$search}%");
+            });
+        }
+
+        // Status filter
+        if ($request->has('status') && !empty($request->status)) {
+            $query->where('status', $request->status);
+        }
+
+        // Date range filter
+        if ($request->has('start_date') && !empty($request->start_date)) {
+            $startDate = $request->start_date;
+            $endDate = $request->end_date ?? $request->start_date;
+
+            $query->whereBetween('created_at', [
+                $startDate . ' 00:00:00',
+                $endDate . ' 23:59:59'
+            ]);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->paginate(15);
+
+        // Get counts for stats
+        $totalOrders = Order::count();
+        $pendingOrders = Order::where('status', 'pending')->count();
+        $processingOrders = Order::where('status', 'processing')->count();
+        $completedOrders = Order::where('status', 'delivered')->count();
+
+        return view('admin.orders.index', compact(
+            'orders',
+            'totalOrders',
+            'pendingOrders',
+            'processingOrders',
+            'completedOrders'
+        ));
     }
 
     /**
