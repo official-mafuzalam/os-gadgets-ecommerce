@@ -3,13 +3,17 @@
      <div class="container mx-auto px-4">
          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
              <div>
-                 <h3 class="text-xl font-bold mb-4">{{ config('app.name', 'OS Gadgets') }}</h3>
+                 <h3 class="text-xl font-bold mb-4">{{ setting('site_name', 'Octosync Software Ltd') }}</h3>
                  <p class="text-gray-400 mb-4">Your one-stop shop for the latest gadgets and electronics.</p>
                  <div class="flex space-x-4">
-                     <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
-                     <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
-                     <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
-                     <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                     <a href="{{ setting('facebook_url', '#') }}" class="text-gray-400 hover:text-white"><i
+                             class="fab fa-facebook-f"></i></a>
+                     <a href="{{ setting('twitter_url', '#') }}" class="text-gray-400 hover:text-white"><i
+                             class="fab fa-twitter"></i></a>
+                     <a href="{{ setting('instagram_url', '#') }}" class="text-gray-400 hover:text-white"><i
+                             class="fab fa-instagram"></i></a>
+                     <a href="{{ setting('linkedin_url', '#') }}" class="text-gray-400 hover:text-white"><i
+                             class="fab fa-linkedin-in"></i></a>
                  </div>
              </div>
 
@@ -27,10 +31,14 @@
              <div>
                  <h3 class="text-lg font-semibold mb-4">Contact</h3>
                  <ul class="space-y-2">
-                     <li class="text-gray-400"><i class="fas fa-map-marker-alt mr-2"></i> 123 Tech Street, San
-                         Francisco, CA</li>
-                     <li class="text-gray-400"><i class="fas fa-phone-alt mr-2"></i> +1 (555) 123-4567</li>
-                     <li class="text-gray-400"><i class="fas fa-envelope mr-2"></i> support@techsphere.com</li>
+                     <li class="text-gray-400">
+                         <i class="fas fa-map-marker-alt mr-2"></i>
+                         {{ setting('site_address', 'Dhaka, Bangladesh') }}
+                     </li>
+                     <li class="text-gray-400"><i class="fas fa-phone-alt mr-2"></i>
+                         {{ setting('site_phone', '+8801621833839') }}</li>
+                     <li class="text-gray-400"><i class="fas fa-envelope mr-2"></i>
+                         {{ setting('site_email', 'support@octosyncsoftware.com') }}</li>
                  </ul>
              </div>
              <div>
@@ -58,6 +66,25 @@
          </div>
      </div>
  </footer>
+
+ @if (setting('whatsapp_enabled', true))
+     <!-- Animated Floating WhatsApp Button -->
+     <div class="fixed bottom-6 right-6 z-50">
+         <div class="relative">
+             <!-- Pulsing ring effect -->
+             <div class="absolute inset-0 animate-ping bg-green-400 rounded-full opacity-75"
+                 style="animation-duration: 3s;"></div>
+
+             <!-- WhatsApp Button -->
+             <a href="https://wa.me/{{ setting('whatsapp_number', '+8801621833839') }}?text={{ urlencode(setting('whatsapp_message', 'Hello! I have a question about your products.')) }}"
+                 target="_blank" rel="noopener noreferrer"
+                 class="relative flex items-center justify-center w-14 h-14 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-110">
+                 <i class="fab fa-whatsapp text-xl"></i>
+                 <span class="sr-only">Chat on WhatsApp</span>
+             </a>
+         </div>
+     </div>
+ @endif
 
  <!-- Shopping Cart Modal (Hidden by default) -->
  <div class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden" id="cartModal">

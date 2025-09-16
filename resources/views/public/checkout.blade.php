@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'Checkout')
     <x-slot name="main">
         <div class="bg-gray-50 py-6">
             <div class="container mx-auto px-4">
@@ -105,7 +106,11 @@
                                             for="inside_dhaka">
                                             <div class="ml-3">
                                                 <span class="mt-1 font-semibold text-gray-900">Inside Dhaka</span>
-                                                <p class="mt-1 text-sm text-gray-500">80 TK - 1-2 business days</p>
+                                                <p class="mt-1 text-sm text-gray-500">
+                                                    <span
+                                                        id="inside_dhaka_price">{{ setting('inside_dhaka_shipping_cost') }}</span>
+                                                    TK - 1-2 business days
+                                                </p>
                                             </div>
                                         </label>
                                     </div>
@@ -118,7 +123,11 @@
                                             for="outside_dhaka">
                                             <div class="ml-3">
                                                 <span class="mt-1 font-semibold text-gray-900">Outside Dhaka</span>
-                                                <p class="mt-1 text-sm text-gray-500">150 TK - 3-5 business days</p>
+                                                <p class="mt-1 text-sm text-gray-500">
+                                                    <span
+                                                        id="outside_dhaka_price">{{ setting('outside_dhaka_shipping_cost') }}</span>
+                                                    TK - 3-5 business days
+                                                </p>
                                             </div>
                                         </label>
                                     </div>
@@ -182,12 +191,15 @@
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Delivery charge</span>
-                                <span id="delivery_charge" class="text-gray-900">80.00 TK</span>
+                                <span id="delivery_charge" class="text-gray-900">
+                                    {{ number_format(setting('inside_dhaka_shipping_cost'), 2) }} TK
+                                </span>
                             </div>
                             <div class="flex justify-between text-lg font-semibold pt-3 border-t border-gray-200">
                                 <span class="text-gray-900">Total</span>
-                                <span id="total_amount" class="text-gray-900">{{ number_format($subtotal + 80, 2) }}
-                                    TK</span>
+                                <span id="total_amount" class="text-gray-900">
+                                    {{ number_format($subtotal + setting('inside_dhaka_shipping_cost'), 2) }} TK
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -198,13 +210,20 @@
         <script>
             function updateDelivery() {
                 const selectedOption = document.querySelector('input[name="delivery_area"]:checked');
-                const deliveryCharge = selectedOption.value === 'inside_dhaka' ? 80 : 150;
 
+                // Get the actual prices from the spans
+                const insideDhakaPrice = parseFloat(document.getElementById('inside_dhaka_price').textContent);
+                const outsideDhakaPrice = parseFloat(document.getElementById('outside_dhaka_price').textContent);
+
+                // Determine the delivery charge based on selection
+                const deliveryCharge = selectedOption.value === 'inside_dhaka' ? insideDhakaPrice : outsideDhakaPrice;
+
+                // Update the delivery charge display
                 document.getElementById('delivery_charge').innerText = deliveryCharge.toFixed(2) + ' TK';
 
+                // Calculate and update total
                 const subtotal = parseFloat("{{ $subtotal }}");
                 const total = subtotal + deliveryCharge;
-
                 document.getElementById('total_amount').innerText = total.toFixed(2) + ' TK';
             }
 

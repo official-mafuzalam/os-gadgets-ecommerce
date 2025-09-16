@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', config('app.name', 'OS Gadgets'))</title>
+    <title>@yield('title', setting('site_name', 'Octosync Software Ltd'))</title>
     <link rel="icon" type="image/png" href="{{ asset('assets/logo/icon.png') }}">
 
     <!-- Font Awesome -->
@@ -18,6 +18,12 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- <link rel="preload" as="style" href="{{ asset('build/assets/app-e64e5c60.css') }}" />
+    <link rel="stylesheet" href="{{ asset('build/assets/app-e64e5c60.css') }}" />
+    <link rel="modulepreload" href="{{ asset('build/assets/app-37a11075.js') }}" />
+    <script type="module" src="{{ asset('build/assets/app-37a11075.js') }}"></script> --}}
+
 </head>
 
 <body class="bg-gray-200 dark:bg-slate-900">
@@ -27,8 +33,8 @@
         <nav class="flex basis-full items-center w-full mx-auto px-4 sm:px-6 md:px-8" aria-label="Global">
             <div class="mr-5 lg:mr-0 lg:hidden">
                 <a class="flex-none text-xl font-semibold dark:text-white" href="{{ route('admin.index') }}"
-                    aria-label="{{ config('app.name', 'Octosync Software Ltd') }}">
-                    {{ config('app.name', 'Octosync Software Ltd') }}
+                    aria-label="{{ setting('site_name', 'Octosync Software Ltd') }}">
+                    {{ setting('site_name', 'Octosync Software Ltd') }}
                 </a>
             </div>
 
@@ -185,7 +191,7 @@
             <!-- End Navigation Toggle -->
 
             <!-- Breadcrumb -->
-            <ol class="ml-3 flex items-center whitespace-nowrap min-w-0" aria-label="Breadcrumb">
+            {{-- <ol class="ml-3 flex items-center whitespace-nowrap min-w-0" aria-label="Breadcrumb">
                 <li class="flex items-center text-sm text-gray-800 dark:text-gray-400">
                     Application Layout
                     <svg class="flex-shrink-0 mx-3 overflow-visible h-2.5 w-2.5 text-gray-400 dark:text-gray-600"
@@ -198,7 +204,7 @@
                 <li class="text-sm font-semibold text-gray-800 truncate dark:text-gray-400" aria-current="page">
                     Dashboard
                 </li>
-            </ol>
+            </ol> --}}
             <!-- End Breadcrumb -->
         </div>
     </div>

@@ -81,6 +81,9 @@ class OrderController extends Controller
         $orders = $query->orderBy('created_at', 'desc')->paginate(15);
 
         $totalAmount = $orders->sum('total_amount');
+        $totalCompletedAmount = $orders->where('status', 'delivered')->sum('total_amount');
+        $totalCancelledAmount = $orders->where('status', 'cancelled')->sum('total_amount');
+        
         // Get counts for stats
         $totalOrders = Order::count();
         $pendingOrders = Order::where('status', 'pending')->count();
@@ -103,7 +106,9 @@ class OrderController extends Controller
             'categories',
             'brands',
             'products',
-            'totalAmount'
+            'totalAmount',
+            'totalCompletedAmount',
+            'totalCancelledAmount'
         ));
     }
 
@@ -135,7 +140,25 @@ class OrderController extends Controller
             'payment'
         ])->findOrFail($id);
 
-        return view('admin.orders.show', compact('order'));
+        // get customer (assuming order has `user_id`)
+        $customerPhone = $order->customer_phone;
+
+        // fetch order history stats
+        $totalOrders = Order::where('customer_phone', $customerPhone)->count();
+        $completedOrders = Order::where('customer_phone', $customerPhone)->where('status', 'delivered')->count();
+        $cancelledOrders = Order::where('customer_phone', $customerPhone)->where('status', 'cancelled')->count();
+
+        $completedPercent = $totalOrders > 0 ? round(($completedOrders / $totalOrders) * 100, 2) : 0;
+        $cancelledPercent = $totalOrders > 0 ? round(($cancelledOrders / $totalOrders) * 100, 2) : 0;
+
+        return view('admin.orders.show', compact(
+            'order',
+            'totalOrders',
+            'completedOrders',
+            'cancelledOrders',
+            'completedPercent',
+            'cancelledPercent'
+        ));
     }
 
     /**
@@ -249,7 +272,7 @@ class OrderController extends Controller
     public function downloadInvoice($id)
     {
         $order = Order::with(['shippingAddress', 'items.product'])->findOrFail($id);
-        
+
         $pdf = PDF::loadView('admin.orders.invoice', compact('order'));
 
         return $pdf->download('invoice-' . $order->order_number . '.pdf');

@@ -5,8 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'OS Gadgets') }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/logo/icon.png') }}">
+    <title>@yield('title', setting('site_name', 'Octosync Software Ltd'))</title>
+
+    @if (setting('site_favicon'))
+        <link rel="icon" href="{{ Storage::url(setting('site_favicon')) }}" type="image/x-icon">
+    @endif
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -15,6 +18,11 @@
         rel="stylesheet">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- <link rel="preload" as="style" href="{{ asset('build/assets/app-e64e5c60.css') }}" />
+    <link rel="stylesheet" href="{{ asset('build/assets/app-e64e5c60.css') }}" />
+    <link rel="modulepreload" href="{{ asset('build/assets/app-37a11075.js') }}" />
+    <script type="module" src="{{ asset('build/assets/app-37a11075.js') }}"></script> --}}
     <!-- Custom Styles -->
     <style>
         body {
@@ -41,6 +49,15 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
     </style>
+    <!-- Google Analytics -->
+    @if (setting('google_analytics_code'))
+        {!! setting('google_analytics_code') !!}
+    @endif
+
+    <!-- Facebook Pixel -->
+    @if (setting('facebook_pixel_code'))
+        {!! setting('facebook_pixel_code') !!}
+    @endif
 </head>
 
 <body class="bg-gray-50">
@@ -50,7 +67,7 @@
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
                     <a href="{{ route('public.welcome') }}"
-                        class="text-2xl font-bold text-indigo-600">{{ config('app.name', 'OS Gadgets') }}</a>
+                        class="text-2xl font-bold text-indigo-600">{{ setting('site_name', 'Octosync Software Ltd') }}</a>
                 </div>
 
                 <div class="hidden md:flex space-x-8">

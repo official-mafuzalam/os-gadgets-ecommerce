@@ -352,10 +352,21 @@
                         @endforelse
                     </tbody>
                     <tfoot>
-
                         <tr>
-                            <td colspan="5" class="px-6 py-4 font-bold text-right text-sm text-gray-600">
-                                Total:
+                            <td colspan="1" class="px-6 py-4 font-bold text-right text-sm text-gray-600">
+                                Total Canceled Amount:
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap font-bold text-sm text-gray-900">
+                                {{ number_format($totalCancelledAmount) }} TK
+                            </td>
+                            <td colspan="1" class="px-6 py-4 font-bold text-right text-sm text-gray-600">
+                                Total Completed Amount:
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap font-bold text-sm text-gray-900">
+                                {{ number_format($totalCompletedAmount) }} TK
+                            </td>
+                            <td colspan="1" class="px-6 py-4 font-bold text-right text-sm text-gray-600">
+                                Total Ordered Amount:
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap font-bold text-sm text-gray-900">
                                 {{ number_format($totalAmount) }} TK

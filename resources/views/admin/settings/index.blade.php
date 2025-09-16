@@ -1,308 +1,170 @@
 <x-admin-layout>
+    @section('title', 'Site Settings')
     <x-slot name="main">
-        <!-- Header -->
-        <div class="bg-white shadow-sm rounded-lg mb-6">
-            <div class="px-6 py-4 border-b border-gray-200">
-                <div class="flex justify-between items-center">
-                    <h1 class="text-2xl font-bold text-gray-900">Site Settings</h1>
-                    <button type="submit" form="settings-form"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-save mr-2"></i> Save Settings
-                    </button>
-                </div>
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-900">Site Settings</h1>
             </div>
-        </div>
 
-        @if (session('success'))
-            <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6">
-                <div class="flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    {{ session('success') }}
-                </div>
-            </div>
-        @endif
+            <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <!-- Tabs Navigation -->
+                    <div class="border-b border-gray-200">
+                        <nav class="flex -mb-px">
+                            @php $firstTab = true; @endphp
+                            @foreach ($groups as $groupName => $groupSettings)
+                                @php
+                                    $tabSlug = \Illuminate\Support\Str::slug($groupName);
+                                @endphp
+                                <button type="button"
+                                    class="tab-button mr-8 py-4 px-1 text-sm font-medium border-b-2 {{ $firstTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}"
+                                    data-tab="{{ $tabSlug }}">
+                                    {{ ucfirst($groupName) }}
+                                </button>
+                                @php $firstTab = false; @endphp
+                            @endforeach
+                        </nav>
+                    </div>
 
-        <form id="settings-form" action="#" method="POST"
-            enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+                    <!-- Tabs Content -->
+                    <div class="p-6">
+                        @php $firstTab = true; @endphp
+                        @foreach ($groups as $groupName => $groupSettings)
+                            @php
+                                $tabSlug = \Illuminate\Support\Str::slug($groupName);
+                            @endphp
+                            <div class="tab-content {{ $firstTab ? '' : 'hidden' }}" id="tab-{{ $tabSlug }}">
+                                <h2 class="text-lg font-medium text-gray-900 mb-4">{{ ucfirst($groupName) }} Settings
+                                </h2>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Left Column -->
-                <div class="lg:col-span-2 space-y-6">
-                    <!-- General Settings -->
-                    <div class="bg-white shadow-sm rounded-lg">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <h2 class="text-lg font-medium text-gray-900 flex items-center">
-                                <i class="fas fa-cog mr-2 text-blue-600"></i> General Settings
-                            </h2>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Site Name</label>
-                                    <input type="text" name="site_name"
-                                        value="{{ old('site_name', $settings['site_name'] ?? '') }}"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                        placeholder="Your Site Name">
-                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    @foreach ($groupSettings as $setting)
+                                        <div class="md:col-span-{{ in_array($setting->type, ['textarea']) ? 2 : 1 }}">
+                                            <label for="setting-{{ $setting->key }}"
+                                                class="block text-sm font-medium text-gray-700 mb-1">
+                                                {{ $setting->label }}
+                                            </label>
 
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                    <input type="email" name="email"
-                                        value="{{ old('email', $settings['email'] ?? '') }}"
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                        placeholder="contact@example.com">
-                                </div>
-                            </div>
+                                            @if ($setting->type === 'text' || $setting->type === 'email')
+                                                <input type="{{ $setting->type }}" name="{{ $setting->key }}"
+                                                    id="setting-{{ $setting->key }}"
+                                                    value="{{ old($setting->key, $setting->value) }}"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            @elseif($setting->type === 'textarea')
+                                                <textarea name="{{ $setting->key }}" id="setting-{{ $setting->key }}" rows="4"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">{{ old($setting->key, $setting->value) }}</textarea>
+                                            @elseif($setting->type === 'image')
+                                                <div class="flex items-center space-x-4">
+                                                    @if ($setting->value)
+                                                        <div class="w-16 h-16 bg-gray-200 rounded overflow-hidden">
+                                                            <img src="{{ Storage::url($setting->value) }}"
+                                                                alt="{{ $setting->label }}"
+                                                                class="w-full h-full object-cover">
+                                                        </div>
+                                                    @endif
+                                                    <input type="file" name="{{ $setting->key }}"
+                                                        id="setting-{{ $setting->key }}"
+                                                        class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                        accept="image/*">
+                                                </div>
+                                            @elseif($setting->type === 'select')
+                                                <select name="{{ $setting->key }}" id="setting-{{ $setting->key }}"
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                    @if ($setting->options)
+                                                        @foreach (json_decode($setting->options, true) as $value => $label)
+                                                            <option value="{{ $value }}"
+                                                                {{ $setting->value == $value ? 'selected' : '' }}>
+                                                                {{ $label }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            @elseif($setting->type === 'boolean')
+                                                <div class="flex items-center">
+                                                    <input type="hidden" name="{{ $setting->key }}" value="0">
+                                                    <input type="checkbox" name="{{ $setting->key }}"
+                                                        id="setting-{{ $setting->key }}" value="1"
+                                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                                        {{ $setting->value ? 'checked' : '' }}>
+                                                    <label for="setting-{{ $setting->key }}"
+                                                        class="ml-2 block text-sm text-gray-900">Enable</label>
+                                                </div>
+                                            @endif
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
-                                <input type="text" name="mobile"
-                                    value="{{ old('mobile', $settings['mobile'] ?? '') }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="+880 XXXX XXXXXX">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                                <textarea name="address" rows="3"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="Full business address">{{ old('address', $settings['address'] ?? '') }}</textarea>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Site Logo</label>
-                                <div class="flex items-center space-x-4">
-                                    @if ($settings['logo'] ?? false)
-                                        <div class="w-16 h-16 rounded-lg overflow-hidden border border-gray-300">
-                                            <img src="{{ Storage::url($settings['logo']) }}" alt="Site Logo"
-                                                class="w-full h-full object-contain">
+                                            @error($setting->key)
+                                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                            @enderror
                                         </div>
-                                    @endif
-                                    <input type="file" name="logo" accept="image/*"
-                                        class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                                    @endforeach
                                 </div>
-                                <p class="text-xs text-gray-500 mt-1">Recommended: 200x60px PNG or JPG</p>
                             </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Favicon</label>
-                                <div class="flex items-center space-x-4">
-                                    @if ($settings['favicon'] ?? false)
-                                        <div class="w-8 h-8 rounded-lg overflow-hidden border border-gray-300">
-                                            <img src="{{ Storage::url($settings['favicon']) }}" alt="Favicon"
-                                                class="w-full h-full object-contain">
-                                        </div>
-                                    @endif
-                                    <input type="file" name="favicon" accept="image/*"
-                                        class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                                </div>
-                                <p class="text-xs text-gray-500 mt-1">Recommended: 32x32px ICO or PNG</p>
-                            </div>
-                        </div>
+                            @php $firstTab = false; @endphp
+                        @endforeach
                     </div>
 
-                    <!-- Analytics Settings -->
-                    <div class="bg-white shadow-sm rounded-lg">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <h2 class="text-lg font-medium text-gray-900 flex items-center">
-                                <i class="fas fa-chart-line mr-2 text-green-600"></i> Analytics & Tracking
-                            </h2>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Google Analytics ID</label>
-                                <input type="text" name="google_analytics"
-                                    value="{{ old('google_analytics', $settings['google_analytics'] ?? '') }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="G-XXXXXXXXXX">
-                                <p class="text-xs text-gray-500 mt-1">Your Google Analytics tracking ID</p>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Facebook Pixel ID</label>
-                                <input type="text" name="facebook_pixel"
-                                    value="{{ old('facebook_pixel', $settings['facebook_pixel'] ?? '') }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="XXXXXXXXXXXXXXX">
-                                <p class="text-xs text-gray-500 mt-1">Your Facebook Pixel ID</p>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Additional Tracking
-                                    Code</label>
-                                <textarea name="additional_tracking" rows="4"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-mono text-sm"
-                                    placeholder="Paste your tracking code here">{{ old('additional_tracking', $settings['additional_tracking'] ?? '') }}</textarea>
-                                <p class="text-xs text-gray-500 mt-1">Any additional tracking or analytics code</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column -->
-                <div class="space-y-6">
-                    <!-- Shipping Settings -->
-                    <div class="bg-white shadow-sm rounded-lg">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <h2 class="text-lg font-medium text-gray-900 flex items-center">
-                                <i class="fas fa-truck mr-2 text-purple-600"></i> Shipping Settings
-                            </h2>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Inside Dhaka Charge
-                                    (TK)</label>
-                                <input type="number" step="0.01" name="shipping_inside_dhaka"
-                                    value="{{ old('shipping_inside_dhaka', $settings['shipping_inside_dhaka'] ?? '') }}"
-                                    min="0"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="0.00">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Outside Dhaka Charge
-                                    (TK)</label>
-                                <input type="number" step="0.01" name="shipping_outside_dhaka"
-                                    value="{{ old('shipping_outside_dhaka', $settings['shipping_outside_dhaka'] ?? '') }}"
-                                    min="0"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="0.00">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Free Shipping Minimum
-                                    (TK)</label>
-                                <input type="number" step="0.01" name="free_shipping_minimum"
-                                    value="{{ old('free_shipping_minimum', $settings['free_shipping_minimum'] ?? '') }}"
-                                    min="0"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="0.00">
-                                <p class="text-xs text-gray-500 mt-1">Order amount for free shipping (0 to disable)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Social Media Links -->
-                    <div class="bg-white shadow-sm rounded-lg">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <h2 class="text-lg font-medium text-gray-900 flex items-center">
-                                <i class="fas fa-share-alt mr-2 text-red-600"></i> Social Media Links
-                            </h2>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                    <i class="fab fa-facebook text-blue-600 mr-2"></i> Facebook
-                                </label>
-                                <input type="url" name="social_facebook"
-                                    value="{{ old('social_facebook', $settings['social_facebook'] ?? '') }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="https://facebook.com/yourpage">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                    <i class="fab fa-twitter text-blue-400 mr-2"></i> Twitter
-                                </label>
-                                <input type="url" name="social_twitter"
-                                    value="{{ old('social_twitter', $settings['social_twitter'] ?? '') }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="https://twitter.com/yourpage">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                    <i class="fab fa-instagram text-pink-600 mr-2"></i> Instagram
-                                </label>
-                                <input type="url" name="social_instagram"
-                                    value="{{ old('social_instagram', $settings['social_instagram'] ?? '') }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="https://instagram.com/yourpage">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                    <i class="fab fa-linkedin text-blue-700 mr-2"></i> LinkedIn
-                                </label>
-                                <input type="url" name="social_linkedin"
-                                    value="{{ old('social_linkedin', $settings['social_linkedin'] ?? '') }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="https://linkedin.com/company/yourpage">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center">
-                                    <i class="fab fa-youtube text-red-600 mr-2"></i> YouTube
-                                </label>
-                                <input type="url" name="social_youtube"
-                                    value="{{ old('social_youtube', $settings['social_youtube'] ?? '') }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="https://youtube.com/yourchannel">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Save Button for Mobile -->
-                    <div class="lg:hidden bg-white shadow-sm rounded-lg p-6">
+                    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
                         <button type="submit"
-                            class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                            <i class="fas fa-save mr-2"></i> Save All Settings
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md">
+                            Save Settings
                         </button>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
 
-        <!-- JavaScript for handling form -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById('settings-form');
+        @push('scripts')
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Tab functionality
+                    const tabButtons = document.querySelectorAll('.tab-button');
+                    const tabContents = document.querySelectorAll('.tab-content');
 
-                form.addEventListener('submit', function(e) {
-                    // Add loading state
-                    const submitButton = form.querySelector('button[type="submit"]');
-                    const originalText = submitButton.innerHTML;
-                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
-                    submitButton.disabled = true;
-
-                    // Form will submit normally
-                });
-
-                // Image preview for logo and favicon
-                const logoInput = document.querySelector('input[name="logo"]');
-                const faviconInput = document.querySelector('input[name="favicon"]');
-
-                if (logoInput) {
-                    logoInput.addEventListener('change', function(e) {
-                        previewImage(this, this.previousElementSibling);
-                    });
-                }
-
-                if (faviconInput) {
-                    faviconInput.addEventListener('change', function(e) {
-                        previewImage(this, this.previousElementSibling);
-                    });
-                }
-
-                function previewImage(input, previewContainer) {
-                    if (input.files && input.files[0]) {
-                        const reader = new FileReader();
-
-                        reader.onload = function(e) {
-                            if (!previewContainer.querySelector('img')) {
-                                const img = document.createElement('img');
-                                img.className = 'w-full h-full object-contain';
-                                previewContainer.appendChild(img);
-                            }
-                            previewContainer.querySelector('img').src = e.target.result;
-                        }
-
-                        reader.readAsDataURL(input.files[0]);
+                    // If no tabs are visible, show the first one
+                    const visibleTabs = Array.from(tabContents).filter(tab => !tab.classList.contains('hidden'));
+                    if (visibleTabs.length === 0 && tabContents.length > 0) {
+                        tabContents[0].classList.remove('hidden');
+                        tabButtons[0].classList.add('border-indigo-500', 'text-indigo-600');
+                        tabButtons[0].classList.remove('text-gray-500', 'border-transparent');
                     }
-                }
-            });
-        </script>
+
+                    tabButtons.forEach(button => {
+                        button.addEventListener('click', function() {
+                            const tabId = this.getAttribute('data-tab');
+
+                            // Update button styles
+                            tabButtons.forEach(btn => {
+                                btn.classList.remove('border-indigo-500', 'text-indigo-600');
+                                btn.classList.add('border-transparent', 'text-gray-500',
+                                    'hover:text-gray-700', 'hover:border-gray-300');
+                            });
+                            this.classList.add('border-indigo-500', 'text-indigo-600');
+                            this.classList.remove('border-transparent', 'text-gray-500',
+                                'hover:text-gray-700', 'hover:border-gray-300');
+
+                            // Show selected tab content
+                            tabContents.forEach(content => {
+                                content.classList.add('hidden');
+                            });
+
+                            const targetTab = document.getElementById(`tab-${tabId}`);
+                            if (targetTab) {
+                                targetTab.classList.remove('hidden');
+                            }
+                        });
+                    });
+
+                    // Handle tab from URL hash
+                    const hash = window.location.hash.substring(1);
+                    if (hash) {
+                        const tabButton = document.querySelector(`.tab-button[data-tab="${hash}"]`);
+                        if (tabButton) {
+                            tabButton.click();
+                        }
+                    }
+                });
+            </script>
+        @endpush
     </x-slot>
 </x-admin-layout>

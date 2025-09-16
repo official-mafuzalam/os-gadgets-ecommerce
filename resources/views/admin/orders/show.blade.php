@@ -54,6 +54,31 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Order Summary -->
             <div class="lg:col-span-2">
+
+                <div class="bg-white shadow rounded-lg p-6 mb-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">
+                        Customer Order History
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="p-4 bg-green-50 rounded-lg border border-green-200 text-center">
+                            <p class="text-2xl font-bold text-green-700">{{ $completedOrders }}</p>
+                            <p class="text-sm text-green-600">Completed Orders</p>
+                            <p class="text-xs text-green-500">{{ $completedPercent }}%</p>
+                        </div>
+
+                        <div class="p-4 bg-red-50 rounded-lg border border-red-200 text-center">
+                            <p class="text-2xl font-bold text-red-700">{{ $cancelledOrders }}</p>
+                            <p class="text-sm text-red-600">Cancelled Orders</p>
+                            <p class="text-xs text-red-500">{{ $cancelledPercent }}%</p>
+                        </div>
+
+                        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 text-center">
+                            <p class="text-2xl font-bold text-blue-700">{{ $totalOrders }}</p>
+                            <p class="text-sm text-blue-600">Total Orders</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Order Status Card -->
                 <div class="bg-white shadow-sm rounded-lg mb-6">
                     <div class="px-6 py-4 border-b border-gray-200">
@@ -287,15 +312,16 @@
                                 </div>
                                 <div>
                                     <p class="text-sm text-gray-600">Delivery Area</p>
-                                    <p class="text-gray-900 font-medium">{{ $order->shippingAddress->delivery_area }}
+                                    <p class="text-gray-900 font-medium">
+                                        @if ($order->shippingAddress->delivery_area === 'outside_dhaka')
+                                            Outside Dhaka
+                                        @elseif ($order->shippingAddress->delivery_area === 'inside_dhaka')
+                                            Inside Dhaka
+                                        @else
+                                            {{ ucfirst(str_replace('_', ' ', $order->shippingAddress->delivery_area)) }}
+                                        @endif
                                     </p>
                                 </div>
-                                @if ($order->notes)
-                                    <div>
-                                        <p class="text-sm text-gray-600">Notes</p>
-                                        <p class="text-gray-900 font-medium">{{ $order->notes }}</p>
-                                    </div>
-                                @endif
                             </div>
                         </div>
                     </div>

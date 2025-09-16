@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'Products')
     <x-slot name="main">
         <!-- Breadcrumb -->
         <div class="bg-gray-100 py-4">

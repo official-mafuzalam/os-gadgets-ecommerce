@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Login | Octosync Software Ltd</title>
+    <title>Login | {{ setting('site_name') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('assets/logo/icon.png') }}">
 
     <!-- Fonts -->
@@ -15,6 +15,11 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- <link rel="preload" as="style" href="{{ asset('build/assets/app-e64e5c60.css') }}" />
+    <link rel="stylesheet" href="{{ asset('build/assets/app-e64e5c60.css') }}" />
+    <link rel="modulepreload" href="{{ asset('build/assets/app-37a11075.js') }}" />
+    <script type="module" src="{{ asset('build/assets/app-37a11075.js') }}"></script> --}}
 </head>
 
 <body class="font-sans text-gray-900 antialiased">

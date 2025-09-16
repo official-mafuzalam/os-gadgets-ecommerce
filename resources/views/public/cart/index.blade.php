@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', 'Cart')
     <x-slot name="main">
         <!-- Breadcrumb -->
         <div class="bg-gray-50 border-b border-gray-200 py-4">

@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', $product->name)
     <x-slot name="main">
         <!-- Breadcrumb Navigation -->
         <div class="bg-gray-100 py-4">
