@@ -95,7 +95,7 @@
                 </div>
             </li>
 
-            <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.settings.index', 'admin.settings.general', 'admin.settings.privacy', 'admin.settings.notifications']) ? 'hs-accordion-active' : '' }}"
+            <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.settings.index', 'admin.carousels.index', 'admin.carousels.create', 'admin.carousels.edit']) ? 'hs-accordion-active' : '' }}"
                 id="settings-accordion">
                 <a class="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
                     href="javascript:;">
@@ -119,7 +119,7 @@
                     </svg>
                 </a>
                 <div id="settings-accordion-sub"
-                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 {{ in_array(Route::currentRouteName(), ['admin.settings', 'admin.settings.general', 'admin.settings.privacy', 'admin.settings.notifications']) ? 'block' : 'hidden' }}">
+                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 {{ in_array(Route::currentRouteName(), ['admin.settings', 'admin.carousels.index', 'admin.carousels.create', 'admin.carousels.edit']) ? 'block' : 'hidden' }}">
                     <ul class="pt-2 pl-2">
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
@@ -130,9 +130,9 @@
                         </li>
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
-                                    {{ in_array(Route::currentRouteName(), ['admin.settings.privacy']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
-                                href="{{ route('admin.settings.privacy') }}">
-                                Privacy
+                                    {{ in_array(Route::currentRouteName(), ['admin.carousels.index', 'admin.carousels.create', 'admin.carousels.edit']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                href="{{ route('admin.carousels.index') }}">
+                                Carousels
                             </a>
                         </li>
                         <li>

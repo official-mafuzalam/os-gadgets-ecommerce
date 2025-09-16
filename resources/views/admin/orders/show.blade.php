@@ -1,4 +1,5 @@
 <x-admin-layout>
+    @section('title', 'Order Details')
     <x-slot name="main">
         <!-- Header with Breadcrumb -->
         <div class="bg-white shadow-sm rounded-lg mb-6">

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\CarouselController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -120,6 +121,9 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
             Route::get('/', [SettingController::class, 'index'])->name('index');
             Route::put('/', [SettingController::class, 'update'])->name('update');
         });
+
+        Route::resource('carousels', CarouselController::class)->names('admin.carousels');
+        Route::post('carousels/reorder', [CarouselController::class, 'reorder'])->name('admin.carousels.reorder');
 
         Route::get('/settings/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('admin.settings.privacy');
         Route::get('/settings/notifications', [HomeController::class, 'notifications'])->name('admin.settings.notifications');

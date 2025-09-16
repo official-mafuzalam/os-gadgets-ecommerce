@@ -1,4 +1,5 @@
 <x-admin-layout>
+    @section('title', 'Orders Management')
     <x-slot name="main">
         {{-- <div class="bg-white shadow-sm rounded-lg mb-6">
             <div class="px-6 py-4 border-b border-gray-200">

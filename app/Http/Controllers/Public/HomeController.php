@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Carousel;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -12,23 +13,33 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $allProducts = Product::latest()
+        $carousels = Carousel::active()->ordered()->get();
+
+        $allProducts = Product::with(['category', 'brand', 'images'])
+            ->where('is_active', true)
+            ->latest()
+            ->take(8)
+            ->get();
+
+        $featuredProducts = Product::with(['category', 'brand', 'images'])
+            ->where('is_featured', true)
             ->where('is_active', true)
             ->take(8)
             ->get();
 
-        $featuredProducts = Product::where('is_featured', true)
+        // Get categories that have active products
+        $categories = Category::whereHas('products', function ($query) {
+            $query->where('is_active', true);
+        })
+            ->withCount([
+                'products' => function ($query) {
+                    $query->where('is_active', true);
+                }
+            ])
             ->where('is_active', true)
-            ->take(8)
             ->get();
 
-        // Get categories that have products
-        $categories = Category::whereHas('products')
-            ->withCount('products')
-            ->active()
-            ->get();
-
-        return view('public.index', compact('allProducts', 'featuredProducts', 'categories'));
+        return view('public.index', compact('carousels', 'allProducts', 'featuredProducts', 'categories'));
     }
 
     public function search(Request $request)

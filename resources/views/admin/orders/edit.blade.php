@@ -1,4 +1,5 @@
 <x-admin-layout>
+    @section('title', 'Order Edit')
     <x-slot name="main">
         <!-- Header with Breadcrumb -->
         <div class="bg-white shadow-sm rounded-lg mb-6">
@@ -55,10 +56,10 @@
                                             {{ $order->status == 'processing' ? 'selected' : '' }}>Processing</option>
                                         <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>
                                             Shipped</option>
-                                        <option value="delivered"
-                                            {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
-                                        <option value="cancelled"
-                                            {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                        <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>
+                                            Delivered</option>
+                                        <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>
+                                            Cancelled</option>
                                     </select>
                                 </div>
 
@@ -125,7 +126,8 @@
                                             </div>
                                             <div>
                                                 <label class="block text-xs font-medium text-gray-600 mb-1">Unit Price
-                                                    (TK)</label>
+                                                    (TK)
+                                                </label>
                                                 <input type="number" step="0.01"
                                                     name="items[{{ $item->id }}][unit_price]"
                                                     value="{{ old('items.' . $item->id . '.unit_price', $item->unit_price) }}"
