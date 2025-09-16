@@ -26,134 +26,46 @@
         </section>
 
         <!-- Featured Categories -->
-        <section class="py-16 bg-white">
-            <div class="container mx-auto px-4">
-                <h2 class="text-3xl font-bold text-center mb-12">Shop By Category</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div class="category-card bg-gray-100 rounded-lg p-6 text-center transition duration-300">
-                        <div class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-mobile-alt text-indigo-600 text-3xl"></i>
-                        </div>
-                        <h3 class="font-semibold text-lg mb-2">Smartphones</h3>
-                        <p class="text-gray-600 text-sm">Latest models & accessories</p>
-                    </div>
-
-                    <div class="category-card bg-gray-100 rounded-lg p-6 text-center transition duration-300">
-                        <div class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-laptop text-indigo-600 text-3xl"></i>
-                        </div>
-                        <h3 class="font-semibold text-lg mb-2">Laptops</h3>
-                        <p class="text-gray-600 text-sm">Powerful computing devices</p>
-                    </div>
-
-                    <div class="category-card bg-gray-100 rounded-lg p-6 text-center transition duration-300">
-                        <div class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-headphones text-indigo-600 text-3xl"></i>
-                        </div>
-                        <h3 class="font-semibold text-lg mb-2">Audio</h3>
-                        <p class="text-gray-600 text-sm">Headphones & speakers</p>
-                    </div>
-
-                    <div class="category-card bg-gray-100 rounded-lg p-6 text-center transition duration-300">
-                        <div class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-clock text-indigo-600 text-3xl"></i>
-                        </div>
-                        <h3 class="font-semibold text-lg mb-2">Wearables</h3>
-                        <p class="text-gray-600 text-sm">Smartwatches & trackers</p>
+        @if ($categories->isNotEmpty())
+            <section class="py-16 bg-white">
+                <div class="container mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-12">Shop By Category</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        @foreach ($categories as $item)
+                            <a href="{{ route('public.categories.show', $item->slug) }}"
+                                class="category-card bg-gray-100 rounded-lg p-6 text-center transition duration-300">
+                                <div
+                                    class="bg-indigo-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    @if ($item->image === null)
+                                        <i class="fas fa-th-large text-indigo-600 text-2xl"></i>
+                                    @else
+                                        <img src="{{ $item->image }}" alt="{{ $item->name }}"
+                                            class="w-10 h-10 object-contain">
+                                    @endif
+                                </div>
+                                <h3 class="font-semibold text-lg mb-2">{{ $item->name }}</h3>
+                                <p class="text-gray-600 text-sm">{{ $item->products_count }} Products</p>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        @endif
 
         <!-- Featured Products -->
         @if ($featuredProducts->isNotEmpty())
-
             <section class="py-16 bg-gray-50">
                 <div class="container mx-auto px-4">
                     <div class="flex justify-between items-center mb-12">
                         <h2 class="text-3xl font-bold">Featured Products</h2>
-                        <a href="{{ route('public.featured.products') }}" class="text-indigo-600 font-medium hover:text-indigo-800">View All <i
+                        <a href="{{ route('public.featured.products') }}"
+                            class="text-indigo-600 font-medium hover:text-indigo-800">View All <i
                                 class="fas fa-arrow-right ml-2"></i></a>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         @forelse ($featuredProducts as $product)
-                            <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
-                                <a href="{{ route('public.products.show', $product->slug) }}" class="block">
-                                    <div class="relative">
-                                        <img src="{{ $product->images->where('is_primary', true)->first() ? Storage::url($product->images->where('is_primary', true)->first()->image_path) : 'https://via.placeholder.com/40' }}"
-                                            alt="{{ $product->name }}" class="w-full h-56 object-cover">
-                                        @if ($product->created_at->gt(now()->subDays(30)))
-                                            <div
-                                                class="absolute top-0 right-0 bg-indigo-600 text-white text-xs font-bold px-2 py-1 m-2 rounded-full">
-                                                NEW
-                                            </div>
-                                        @endif
-                                        @if ($product->discount > 0)
-                                            <div
-                                                class="absolute top-0 left-0 bg-red-600 text-white text-xs font-bold px-2 py-1 m-2 rounded-full">
-                                                {{ number_format(($product->discount / $product->price) * 100) }}% OFF
-                                            </div>
-                                        @endif
-                                    </div>
-                                </a>
-                                <div class="p-4">
-                                    <a href="{{ route('public.products.show', $product->slug) }}" class="block mb-2">
-                                        <h3 class="font-semibold text-lg hover:text-indigo-600 transition-colors line-clamp-2"
-                                            title="{{ $product->name }}">
-                                            {{ $product->name }}
-                                        </h3>
-                                    </a>
-                                    <div class="flex items-center mb-2">
-                                        <div class="flex text-yellow-400">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                @if ($i <= floor($product->average_rating))
-                                                    <i class="fas fa-star"></i>
-                                                @elseif($i - 0.5 <= $product->average_rating)
-                                                    <i class="fas fa-star-half-alt"></i>
-                                                @else
-                                                    <i class="far fa-star"></i>
-                                                @endif
-                                            @endfor
-                                        </div>
-                                        <span
-                                            class="text-gray-600 text-sm ml-2">({{ number_format($product->average_rating, 1) }})</span>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        @if ($product->discount > 0)
-                                            <div class="flex items-center space-x-2">
-                                                <span
-                                                    class="text-2xl font-bold text-gray-900">{{ number_format($product->final_price) }}
-                                                    TK</span>
-                                                <span
-                                                    class="text-sm text-gray-500 line-through">{{ number_format($product->price) }}
-                                                    TK</span>
-                                            </div>
-                                        @else
-                                            <span
-                                                class="text-2xl font-bold text-gray-900">{{ number_format($product->price) }}
-                                                TK</span>
-                                        @endif
-                                    </div>
-
-                                    <!-- Buttons -->
-                                    <div class="flex space-x-2">
-                                        <form action="{{ route('cart.add', $product) }}" method="POST" class="flex-1">
-                                            @csrf
-                                            <input type="hidden" name="quantity" value="1">
-                                            <button type="submit"
-                                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-2 rounded transition duration-300 text-xs flex items-center justify-center">
-                                                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
-                                            </button>
-                                        </form>
-                                        <a href="{{ route('public.products.buy-now', $product) }}"
-                                            class="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded transition duration-300 text-xs flex items-center justify-center">
-                                            Buy Now
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            @include('public.products.partial.product-card', ['product' => $product])
                         @empty
                             <div class="col-span-4 text-center py-8">
                                 <i class="fas fa-box-open text-4xl text-gray-300 mb-4"></i>
@@ -165,95 +77,21 @@
                 </div>
             </section>
         @endif
+
         <!-- All Products -->
         @if ($allProducts->isNotEmpty())
-
             <section class="py-16 bg-gray-50">
                 <div class="container mx-auto px-4">
                     <div class="flex justify-between items-center mb-12">
                         <h2 class="text-3xl font-bold">All Products</h2>
-                        <a href="{{ route('public.products') }}" class="text-indigo-600 font-medium hover:text-indigo-800">View All <i
+                        <a href="{{ route('public.products') }}"
+                            class="text-indigo-600 font-medium hover:text-indigo-800">View All <i
                                 class="fas fa-arrow-right ml-2"></i></a>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        @forelse ($allProducts as $item)
-                            <div class="product-card bg-white rounded-lg overflow-hidden shadow-md">
-                                <a href="{{ route('public.products.show', $item->slug) }}" class="block">
-                                    <div class="relative">
-                                        <img src="{{ $item->images->where('is_primary', true)->first() ? Storage::url($item->images->where('is_primary', true)->first()->image_path) : 'https://via.placeholder.com/40' }}"
-                                            alt="{{ $item->name }}" class="w-full h-56 object-cover">
-                                        @if ($item->created_at->gt(now()->subDays(30)))
-                                            <div
-                                                class="absolute top-0 right-0 bg-indigo-600 text-white text-xs font-bold px-2 py-1 m-2 rounded-full">
-                                                NEW
-                                            </div>
-                                        @endif
-                                        @if ($item->discount > 0)
-                                            <div
-                                                class="absolute top-0 left-0 bg-red-600 text-white text-xs font-bold px-2 py-1 m-2 rounded-full">
-                                                {{ number_format(($item->discount / $item->price) * 100) }}% OFF
-                                            </div>
-                                        @endif
-                                    </div>
-                                </a>
-                                <div class="p-4">
-                                    <a href="{{ route('public.products.show', $item->slug) }}" class="block mb-2">
-                                        <h3 class="font-semibold text-lg hover:text-indigo-600 transition-colors line-clamp-2"
-                                            title="{{ $item->name }}">
-                                            {{ $item->name }}
-                                        </h3>
-                                    </a>
-                                    <div class="flex items-center mb-2">
-                                        <div class="flex text-yellow-400">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                @if ($i <= floor($item->average_rating))
-                                                    <i class="fas fa-star"></i>
-                                                @elseif($i - 0.5 <= $item->average_rating)
-                                                    <i class="fas fa-star-half-alt"></i>
-                                                @else
-                                                    <i class="far fa-star"></i>
-                                                @endif
-                                            @endfor
-                                        </div>
-                                        <span
-                                            class="text-gray-600 text-sm ml-2">({{ number_format($item->average_rating, 1) }})</span>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        @if ($item->discount > 0)
-                                            <div class="flex items-center space-x-2">
-                                                <span
-                                                    class="text-2xl font-bold text-gray-900">{{ number_format($item->final_price) }}
-                                                    TK</span>
-                                                <span
-                                                    class="text-sm text-gray-500 line-through">{{ number_format($item->price) }}
-                                                    TK</span>
-                                            </div>
-                                        @else
-                                            <span
-                                                class="text-2xl font-bold text-gray-900">{{ number_format($item->price) }}
-                                                TK</span>
-                                        @endif
-                                    </div>
-
-                                    <!-- Buttons -->
-                                    <div class="flex space-x-2">
-                                        <form action="{{ route('cart.add', $item) }}" method="POST" class="flex-1">
-                                            @csrf
-                                            <input type="hidden" name="quantity" value="1">
-                                            <button type="submit"
-                                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-2 rounded transition duration-300 text-xs flex items-center justify-center">
-                                                <i class="fas fa-shopping-cart mr-1"></i> Add to Cart
-                                            </button>
-                                        </form>
-                                        <a href="{{ route('public.products.buy-now', $item) }}"
-                                            class="bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded transition duration-300 text-xs flex items-center justify-center">
-                                            Buy Now
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                        @forelse ($allProducts as $product)
+                            @include('public.products.partial.product-card', ['product' => $product])
                         @empty
                             <div class="col-span-4 text-center py-8">
                                 <i class="fas fa-box-open text-4xl text-gray-300 mb-4"></i>

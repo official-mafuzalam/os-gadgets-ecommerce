@@ -159,7 +159,8 @@
                             </div>
 
                             <div class="flex space-x-4">
-                                <form action="{{ route('public.products.buy-now', $product) }}" method="GET" class="flex-1">
+                                <form action="{{ route('public.products.buy-now', $product) }}" method="GET"
+                                    class="flex-1">
                                     @csrf
                                     <input type="hidden" name="quantity" value="1">
                                     <button type="submit"
@@ -337,39 +338,11 @@
 
         <!-- Related Products -->
         @if ($relatedProducts->count() > 0)
-            <div class="mt-12">
+            <div class="mt-12 p-4 container mx-auto">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">You May Also Like</h2>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     @foreach ($relatedProducts as $relatedProduct)
-                        <div class="bg-white rounded-lg shadow-md overflow-hidden group">
-                            <a href="{{ route('public.products.show', $relatedProduct) }}">
-                                <div class="relative overflow-hidden">
-                                    <img src="{{ $relatedProduct->image ? Storage::url($relatedProduct->image) : 'https://via.placeholder.com/300' }}"
-                                        alt="{{ $relatedProduct->name }}"
-                                        class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
-                                </div>
-                            </a>
-                            <div class="p-4">
-                                <a href="{{ route('public.products.show', $relatedProduct) }}">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-1 hover:text-indigo-600">
-                                        {{ Str::limit($relatedProduct->name, 40) }}
-                                    </h3>
-                                </a>
-                                <div class="flex items-center justify-between mt-2">
-                                    <span
-                                        class="text-lg font-bold text-gray-900">{{ number_format($relatedProduct->price) }}
-                                        TK</span>
-                                    <form action="{{ route('cart.add', $relatedProduct) }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="quantity" value="1">
-                                        <button type="submit"
-                                            class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-full transition duration-300">
-                                            <i class="fas fa-shopping-cart"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        @include('public.products.partial.product-card', ['product' => $product])
                     @endforeach
                 </div>
             </div>

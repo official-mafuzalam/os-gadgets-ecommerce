@@ -22,7 +22,13 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        return view('public.index', compact('allProducts', 'featuredProducts'));
+        // Get categories that have products
+        $categories = Category::whereHas('products')
+            ->withCount('products')
+            ->active()
+            ->get();
+
+        return view('public.index', compact('allProducts', 'featuredProducts', 'categories'));
     }
 
     public function search(Request $request)
