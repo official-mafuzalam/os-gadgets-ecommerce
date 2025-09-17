@@ -362,11 +362,10 @@
                         <p class="text-gray-600">Date: {{ $order->created_at->format('F j, Y') }}</p>
                     </div>
                     <div class="text-right">
-                        <h2 class="text-xl font-semibold">Your Company Name</h2>
-                        <p class="text-gray-600">123 Business Street</p>
-                        <p class="text-gray-600">City, State 12345</p>
-                        <p class="text-gray-600">Phone: (123) 456-7890</p>
-                        <p class="text-gray-600">Email: info@yourcompany.com</p>
+                        <h2 class="text-xl font-semibold">{{ setting('site_name') }}</h2>
+                        <p class="text-gray-600">{{ setting('site_address') }}</p>
+                        <p class="text-gray-600">Phone: {{ setting('site_phone') }}</p>
+                        <p class="text-gray-600">Email: {{ setting('site_email') }}</p>
                     </div>
                 </div>
 
@@ -377,10 +376,17 @@
                         <p class="text-gray-900">{{ $order->customer_email }}</p>
                         <p class="text-gray-900">{{ $order->customer_phone }}</p>
                         @if ($order->shippingAddress)
-                            <p class="text-gray-900">{{ $order->shippingAddress->name }}</p>
-                            <p class="text-gray-900">{{ $order->shippingAddress->address }}</p>
-                            <p class="text-gray-900">{{ $order->shippingAddress->city }},
-                                {{ $order->shippingAddress->state }} {{ $order->shippingAddress->postal_code }}</p>
+                            <p class="text-gray-900">{{ $order->shippingAddress->full_name }}</p>
+                            <p class="text-gray-900">{{ $order->shippingAddress->full_address }}</p>
+                            <p class="text-gray-900">Delivery Area:
+                                @if ($order->shippingAddress->delivery_area === 'outside_dhaka')
+                                    Outside Dhaka
+                                @elseif ($order->shippingAddress->delivery_area === 'inside_dhaka')
+                                    Inside Dhaka
+                                @else
+                                    {{ ucfirst(str_replace('_', ' ', $order->shippingAddress->delivery_area)) }}
+                                @endif
+                            </p>
                         @endif
                     </div>
                     <div>
@@ -452,16 +458,16 @@
                 </div>
 
                 <!-- Payment Instructions -->
-                <div class="mt-12 p-4 bg-gray-50 rounded-lg">
+                {{-- <div class="mt-12 p-4 bg-gray-50 rounded-lg">
                     <h4 class="font-semibold mb-2">Payment Instructions:</h4>
                     <p class="text-sm text-gray-600">Please make payment within 15 days of receiving this invoice.</p>
                     <p class="text-sm text-gray-600">Bank Transfer: Account # 1234567890, Bank Name, Branch Name</p>
-                </div>
+                </div> --}}
 
                 <!-- Footer -->
                 <div class="mt-12 text-center text-gray-600 text-sm">
                     <p>Thank you for your business!</p>
-                    <p>Your Company Name • www.yourcompany.com • contact@yourcompany.com</p>
+                    <p>{{ setting('site_name') }} • www.yourcompany.com • {{ setting('site_email') }}</p>
                 </div>
             </div>
         </div>

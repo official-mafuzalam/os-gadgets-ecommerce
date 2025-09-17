@@ -36,6 +36,31 @@
                     Orders
                 </a>
             </li>
+            <li>
+                <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white
+                {{ in_array(Route::currentRouteName(), ['admin.reports.sales']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                    href="{{ route('admin.reports.sales') }}">
+                    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="M0 0h1v15h15v1H0V0zm13.5 3a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h11zM2 7h2v7H2V7zm3 3h2v4H5V10zm3-2h2v6H8V8zm3-4h2v10h-2V4z" />
+                    </svg>
+                    Sales Report
+                </a>
+            </li>
+
+            <li>
+                <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white
+                {{ in_array(Route::currentRouteName(), ['admin.reviews.index', 'admin.reviews.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                    href="{{ route('admin.reviews.index') }}">
+                    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="M8 0a8 8 0 1 0 16 0A8 8 0 0 0 8 0zm3.993 6.331l-4.39 4.39a.25.25 0 0 1-.354 0l-2.39-2.39a.25.25 0 1 1 .354-.354l2.163 2.163 4.163-4.163a.25.25 0 1 1 .354.354z" />
+                    </svg>
+                    Reviews
+                </a>
+            </li>
 
             <li class="hs-accordion {{ in_array(Route::currentRouteName(), [
                 'admin.products.index',

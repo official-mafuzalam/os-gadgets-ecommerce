@@ -12,7 +12,7 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        //
+        return back()->with('success', 'Reviews management is coming soon.');
     }
 
     /**

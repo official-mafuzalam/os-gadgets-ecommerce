@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
@@ -108,6 +109,8 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
             Route::get('/pdf', [OrderController::class, 'downloadInvoice'])->name('pdf');
             Route::get('/email', [OrderController::class, 'emailInvoice'])->name('email');
         });
+
+        Route::get('reports/sales', [ReportController::class, 'salesReport'])->name('admin.reports.sales');
 
         Route::resource('products', ProductController::class)->names('admin.products');
         Route::patch('products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('admin.products.toggle-status');

@@ -89,17 +89,15 @@
             <tr>
                 <td>
                     <strong>Billing To:</strong><br>
-                    {{ $order->shippingAddress->name ?? '' }}<br>
-                    {{ $order->shippingAddress->address ?? '' }}<br>
-                    {{ $order->shippingAddress->city ?? '' }}, {{ $order->shippingAddress->country ?? '' }}<br>
-                    Phone: {{ $order->shippingAddress->phone ?? '' }}
+                    {{ $order->shippingAddress->full_name }}<br>
+                    {{ $order->shippingAddress->full_address }}<br>
+                    Phone: {{ $order->customer_phone }}
                 </td>
                 <td class="company-details">
-                    <strong>Your Company Name</strong><br>
-                    Address Line 1<br>
-                    Address Line 2<br>
-                    Email: support@yourcompany.com<br>
-                    Phone: +8801XXXXXXXXX
+                    <strong>{{ setting('site_name') }}</strong><br>
+                    {{ setting('site_address') }}<br>
+                    Email: {{ setting('site_email') }}<br>
+                    Phone: {{ setting('site_phone') }}
                 </td>
             </tr>
         </table>
@@ -136,11 +134,11 @@
             </tr>
             <tr>
                 <td><strong>Delivery Charge:</strong></td>
-                <td>{{ number_format($order->delivery_charge, 2) }} TK</td>
+                <td>{{ number_format($order->shipping_cost, 2) }} TK</td>
             </tr>
             <tr>
                 <td><strong>Grand Total:</strong></td>
-                <td><strong>{{ number_format($order->total, 2) }} TK</strong></td>
+                <td><strong>{{ number_format($order->total_amount, 2) }} TK</strong></td>
             </tr>
         </table>
 
