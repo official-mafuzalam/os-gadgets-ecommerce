@@ -20,8 +20,7 @@ return new class extends Migration {
             $table->string('button_text')->default('Shop Now');
             $table->string('button_link');
             $table->string('image_url');
-            $table->string('background_from_color')->default('#4f46e5'); // indigo-600
-            $table->string('background_to_color')->default('#9333ea'); // purple-600
+            $table->string('background_color')->default('gradient-to-r from-indigo-900 to-purple-800');
             $table->boolean('is_active')->default(true);
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();

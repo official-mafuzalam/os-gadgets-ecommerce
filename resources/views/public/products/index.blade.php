@@ -1,7 +1,7 @@
 <x-app-layout>
     @section('title', 'Products')
     <x-slot name="main">
-        <!-- Breadcrumb -->
+        {{-- <!-- Breadcrumb -->
         <div class="bg-gray-100 py-4">
             <div class="container mx-auto px-4">
                 <nav class="flex" aria-label="Breadcrumb">
@@ -56,7 +56,7 @@
                     </ol>
                 </nav>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Page Header -->
         <div class="container mx-auto px-4 py-8">
@@ -152,10 +152,10 @@
                                 <div class="space-y-3">
                                     <div class="flex space-x-2">
                                         <input type="number" name="min_price" placeholder="Min"
-                                            value="{{ request('min_price') }}"
+                                            value="{{ request('min_price') }}" required
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                                         <input type="number" name="max_price" placeholder="Max"
-                                            value="{{ request('max_price') }}"
+                                            value="{{ request('max_price') }}" required
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                                     </div>
                                     <button type="submit"

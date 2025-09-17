@@ -2,7 +2,7 @@
     @section('title', 'Cart')
     <x-slot name="main">
         <!-- Breadcrumb -->
-        <div class="bg-gray-50 border-b border-gray-200 py-4">
+        {{-- <div class="bg-gray-50 border-b border-gray-200 py-4">
             <div class="container mx-auto px-4">
                 <nav class="flex" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
@@ -21,7 +21,7 @@
                     </ol>
                 </nav>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Cart Section -->
         <div class="container mx-auto px-4 py-8">

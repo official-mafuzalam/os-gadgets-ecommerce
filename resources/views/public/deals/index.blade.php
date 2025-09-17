@@ -11,7 +11,7 @@
                                 <div
                                     class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
                                     <div
-                                        class="bg-gradient-to-r from-[{{ $deal->background_from_color }}] to-[{{ $deal->background_to_color }}] p-6">
+                                        class="bg-gradient-to-r bg-{{ $deal->background_color }} p-6">
                                         <div class="text-center text-white">
                                             <h3 class="text-xl font-bold mb-2">{{ $deal->title }}</h3>
                                             <p class="text-white text-opacity-90 mb-4">{{ $deal->description }}</p>

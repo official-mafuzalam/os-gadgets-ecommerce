@@ -20,11 +20,10 @@
              <div>
                  <h3 class="text-lg font-semibold mb-4">Company</h3>
                  <ul class="space-y-2">
-                     <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
-                     <li><a href="#" class="text-gray-400 hover:text-white">Careers</a></li>
-                     <li><a href="#" class="text-gray-400 hover:text-white">Contact Us</a></li>
-                     <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
-                     <li><a href="#" class="text-gray-400 hover:text-white">Press</a></li>
+                     <li><a href="{{ route('public.about') }}" class="text-gray-400 hover:text-white">About Us</a>
+                     </li>
+                     <li><a href="{{ route('public.contact') }}" class="text-gray-400 hover:text-white">Contact Us</a>
+                     </li>
                  </ul>
              </div>
 

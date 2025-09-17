@@ -1,7 +1,7 @@
 <x-app-layout>
     @section('title', 'Checkout')
     <x-slot name="main">
-        <div class="bg-gray-50 py-6">
+        {{-- <div class="bg-gray-50 py-6">
             <div class="container mx-auto px-4">
                 <nav class="flex" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3">
@@ -26,24 +26,9 @@
                     </ol>
                 </nav>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="container mx-auto px-4 py-8">
-            @if (session('success'))
-                <div
-                    class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6 flex items-center">
-                    <i class="fas fa-check-circle mr-2"></i>
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if (session('error'))
-                <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    {{ session('error') }}
-                </div>
-            @endif
-
+        <div class="container mx-auto px-4 py-6">
             <div class="lg:grid lg:grid-cols-12 lg:gap-8">
                 {{-- Billing Form --}}
                 <div class="lg:col-span-7">

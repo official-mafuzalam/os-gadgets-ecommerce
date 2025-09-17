@@ -132,7 +132,7 @@
             <section class="py-10 bg-white">
                 <div class="container mx-auto px-4">
                     <div
-                        class="bg-gradient-to-r from-[{{ $deal->background_from_color }}] to-[{{ $deal->background_to_color }}] rounded-2xl overflow-hidden shadow-xl">
+                        class="bg-gradient-to-r bg-{{ $deal->background_color }} rounded-2xl overflow-hidden shadow-xl">
                         <div class="flex flex-col md:flex-row items-center">
                             <div class="md:w-1/2 p-8 md:p-12 text-white">
                                 <h2 class="text-2xl md:text-3xl font-bold mb-4">{{ $deal->title }}</h2>

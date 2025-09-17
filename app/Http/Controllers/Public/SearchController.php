@@ -35,7 +35,7 @@ class SearchController extends Controller
                 ->paginate(12);
         }
 
-        return view('public.search', compact('products', 'query'));
+        return to_route('public.products.show', ['products' => $products, 'q' => $query]);
     }
 
     public function liveSearch(Request $request): JsonResponse

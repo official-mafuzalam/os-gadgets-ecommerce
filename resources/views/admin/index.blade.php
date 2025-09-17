@@ -1,13 +1,13 @@
 <x-admin-layout>
     @section('title', 'Dashboard')
     <x-slot name="main">
-        <div class="py-6">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+        <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+            <div class="">
                 <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Dashboard</h1>
             </div>
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+            <div class="">
                 <!-- Stats grid -->
-                <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
                     <!-- Total Products -->
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
                         <div class="p-5">

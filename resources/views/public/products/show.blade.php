@@ -1,7 +1,7 @@
 <x-app-layout>
     @section('title', $product->name)
     <x-slot name="main">
-        <!-- Breadcrumb Navigation -->
+        {{-- <!-- Breadcrumb Navigation -->
         <div class="bg-gray-100 py-4">
             <div class="container mx-auto px-4">
                 <nav class="flex" aria-label="Breadcrumb">
@@ -33,7 +33,7 @@
                     </ol>
                 </nav>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Product Section -->
         <div class="container mx-auto px-4 py-8">
@@ -185,14 +185,20 @@
 
                         <!-- Product Details -->
                         <div class="border-t border-gray-200 pt-4">
-                            <div class="flex items-center text-sm text-gray-600 mb-2">
-                                <i class="fas fa-truck mr-2"></i>
-                                Delivery within 2-5 business days
-                            </div>
-                            <div class="flex items-center text-sm text-gray-600">
-                                <i class="fas fa-undo mr-2"></i>
-                                30-day money-back guarantee
-                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                                <i class="fas fa-shipping-fast mr-2 text-indigo-600"></i>
+                                Delivery Charges
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-center text-sm text-gray-700">
+                                    <span class="w-32 font-medium">Inside Dhaka:</span>
+                                    <span class="ml-2">{{ number_format(setting('inside_dhaka_shipping_cost')) }} TK</span>
+                                </li>
+                                <li class="flex items-center text-sm text-gray-700">
+                                    <span class="w-32 font-medium">Outside Dhaka:</span>
+                                    <span class="ml-2">{{ number_format(setting('outside_dhaka_shipping_cost')) }} TK</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -201,16 +207,16 @@
             <!-- Product Tabs -->
             <div class="mt-12 bg-white rounded-lg shadow-md">
                 <div class="border-b border-gray-200">
-                    <nav class="flex -mb-px">
+                    <nav class="flex flex-wrap -mb-px overflow-x-auto">
                         <button id="tab-description"
-                            class="py-4 px-6 text-sm font-medium border-b-2 border-indigo-500 text-indigo-600">Description</button>
+                            class="py-3 px-4 md:py-4 md:px-6 text-sm font-medium border-b-2 border-indigo-500 text-indigo-600 whitespace-nowrap">Description</button>
                         <button id="tab-specifications"
-                            class="py-4 px-6 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700">Specifications</button>
+                            class="py-3 px-4 md:py-4 md:px-6 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">Specifications</button>
                         <button id="tab-reviews"
-                            class="py-4 px-6 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700">Reviews
+                            class="py-3 px-4 md:py-4 md:px-6 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">Reviews
                             ({{ $product->reviews_count }})</button>
                         <button id="tab-shipping"
-                            class="py-4 px-6 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700">Shipping
+                            class="py-3 px-4 md:py-4 md:px-6 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 whitespace-nowrap">Shipping
                             & Returns</button>
                     </nav>
                 </div>

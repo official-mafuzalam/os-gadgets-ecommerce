@@ -51,7 +51,7 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
     </style>
-    
+
     @if (setting('google_analytics_code'))
         {!! setting('google_analytics_code') !!}
     @endif
@@ -133,10 +133,6 @@
                         class="text-gray-800 hover:text-indigo-600 font-medium">Brands</a>
                     <a href="{{ route('public.deals') }}"
                         class="text-gray-800 hover:text-indigo-600 font-medium">Deals</a>
-                    <a href="{{ route('public.about') }}"
-                        class="text-gray-800 hover:text-indigo-600 font-medium">About</a>
-                    <a href="{{ route('public.contact') }}"
-                        class="text-gray-800 hover:text-indigo-600 font-medium">Contact</a>
                 </div>
 
                 <div class="flex items-center space-x-4">
@@ -265,15 +261,16 @@
                                 if (data.length > 0) {
                                     let html = '<div class="space-y-2">';
                                     data.forEach(product => {
+                                        // Use route name for product link
                                         html += `
-                            <a href="/products/${product.slug}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg">
-                                <img src="${product.image_url}" alt="${product.name}" class="w-10 h-10 object-cover rounded">
-                                <div class="ml-3">
-                                    <div class="text-sm font-medium text-gray-900">${product.name}</div>
-                                    <div class="text-sm text-gray-600">${product.price_formatted}</div>
-                                </div>
-                            </a>
-                        `;
+                                            <a href="{{ route('public.products.show', '') }}/${product.slug}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg">
+                                                <img src="${product.images && product.images.length > 0 && product.images.find(img => img.is_primary) ? product.images.find(img => img.is_primary).image_url : 'https://via.placeholder.com/40'}" alt="${product.name}" class="w-10 h-10 object-cover rounded">
+                                                <div class="ml-3">
+                                                    <div class="text-sm font-medium text-gray-900">${product.name}</div>
+                                                    <div class="text-sm text-gray-600">${product.price_formatted}</div>
+                                                </div>
+                                            </a>
+                                        `;
                                     });
                                     html += '</div>';
                                     resultsContainer.innerHTML = html;

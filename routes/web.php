@@ -32,15 +32,14 @@ use Illuminate\Support\Facades\Artisan;
 */
 
 Route::get('/session', function () {
-    $apiKey = setting('MISTRAL_API_KEY');
     $session = session()->all();
-    dd($apiKey);
+    dd($session);
 });
 
 Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('optimize:clear');
     return to_route('public.welcome')->with('success', 'Cache cleared successfully! ' . $exitCode);
-});
+})->name('clear.cache');
 
 
 
@@ -51,7 +50,6 @@ Route::get('/clear-cache', function () {
 
 Route::get('/', [PublicHomeController::class, 'index'])->name('public.welcome');
 
-// web.php
 // Search routes
 Route::get('/search', [SearchController::class, 'index'])->name('public.search');
 Route::get('/search/live', [SearchController::class, 'liveSearch'])->name('public.search.live');
@@ -83,7 +81,6 @@ Route::get('/about', [PublicHomeController::class, 'about'])->name('public.about
 Route::get('/contact', [PublicHomeController::class, 'contact'])->name('public.contact');
 Route::post('/contact', [PublicHomeController::class, 'submitContact'])->name('public.contact.submit');
 
-
 Route::post('/generate-description', [ProductController::class, 'generateDescription']);
 
 
@@ -94,6 +91,7 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
     Route::prefix('admin')->group(function () {
 
         Route::get('/', [HomeController::class, 'index'])->name('admin.index');
+
         // Admin Order Routes
         Route::prefix('/orders')->name('admin.orders.')->group(function () {
             Route::get('/', [OrderController::class, 'index'])->name('index');
@@ -192,7 +190,5 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 
 
 });
-
-
 
 require __DIR__ . '/auth.php';
