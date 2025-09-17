@@ -65,6 +65,14 @@ class Product extends Model
     }
 
     // Relationships
+
+    public function deals()
+    {
+        return $this->belongsToMany(Deal::class, 'deal_product')
+            ->withPivot('order', 'is_featured')
+            ->withTimestamps();
+    }
+    
     public function category()
     {
         return $this->belongsTo(Category::class);

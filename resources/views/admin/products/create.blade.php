@@ -63,8 +63,17 @@
                                     <!-- Description -->
                                     <div>
                                         <label for="description"
-                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description
-                                            *</label>
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            Description *
+                                        </label>
+                                        <div class="flex items-center mb-1">
+                                            <span class="text-sm text-gray-500 dark:text-gray-400 mr-2">Auto-generate
+                                                from product name</span>
+                                            <button type="button" id="generate-description"
+                                                class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 py-1 px-2 rounded-md transition-colors">
+                                                Generate Description
+                                            </button>
+                                        </div>
                                         <textarea id="description" name="description" rows="4"
                                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white py-2 px-3"
                                             required>{{ old('description', $product->description) }}</textarea>
@@ -348,6 +357,52 @@
                 function updateJsonInput() {
                     jsonInput.value = JSON.stringify(specifications);
                 }
+            });
+        </script>
+
+        <script>
+            document.getElementById('generate-description').addEventListener('click', function() {
+                const productName = document.getElementById('name').value;
+                const descriptionField = document.getElementById('description');
+                const generateButton = this;
+
+                if (!productName) {
+                    alert('Please enter a product name first');
+                    return;
+                }
+
+                // Show loading state
+                generateButton.innerHTML = 'Generating...';
+                generateButton.disabled = true;
+
+                // Make API request to your Laravel backend
+                fetch('/generate-description', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            product_name: productName
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.description) {
+                            descriptionField.value = data.description;
+                        } else {
+                            alert('Failed to generate description');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while generating the description');
+                    })
+                    .finally(() => {
+                        // Reset button state
+                        generateButton.innerHTML = 'Generate Description';
+                        generateButton.disabled = false;
+                    });
             });
         </script>
     </x-slot>

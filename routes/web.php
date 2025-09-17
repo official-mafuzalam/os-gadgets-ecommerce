@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CarouselController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DealController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PermissionController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Public\CartController;
 use App\Http\Controllers\Public\CheckoutController;
 use App\Http\Controllers\Public\HomeController as PublicHomeController;
 use App\Http\Controllers\Public\SearchController;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +32,14 @@ use App\Http\Controllers\Public\SearchController;
 */
 
 Route::get('/session', function () {
-
+    $apiKey = setting('MISTRAL_API_KEY');
     $session = session()->all();
-    dd($session);
+    dd($apiKey);
+});
+
+Route::get('/clear-cache', function () {
+    $exitCode = Artisan::call('optimize:clear');
+    return to_route('public.welcome')->with('success', 'Cache cleared successfully! ' . $exitCode);
 });
 
 
@@ -56,10 +63,7 @@ Route::post('/cart/update/{itemId}', [CartController::class, 'update'])->name('c
 Route::post('/cart/remove/{itemId}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
-// Buy Now route
 Route::get('/buy-now/{product}', [CartController::class, 'buyNow'])->name('public.products.buy-now');
-
-// Checkout page
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('public.checkout');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('public.checkout.process');
 
@@ -73,12 +77,14 @@ Route::get('/categories/{category}', [PublicHomeController::class, 'categoryShow
 Route::get('/featured-products', [PublicHomeController::class, 'featuredProducts'])->name('public.featured.products');
 
 Route::get('/deals', [PublicHomeController::class, 'deals'])->name('public.deals');
+Route::get('/deals/{deal}', [PublicHomeController::class, 'dealShow'])->name('public.deals.show');
+
 Route::get('/about', [PublicHomeController::class, 'about'])->name('public.about');
 Route::get('/contact', [PublicHomeController::class, 'contact'])->name('public.contact');
 Route::post('/contact', [PublicHomeController::class, 'submitContact'])->name('public.contact.submit');
 
 
-
+Route::post('/generate-description', [ProductController::class, 'generateDescription']);
 
 
 
@@ -110,23 +116,28 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::patch('products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('admin.products.toggle-featured');
         Route::post('products/{product}/set-primary-image', [ProductController::class, 'setPrimaryImage'])->name('admin.products.set-primary-image');
 
+        Route::get('{product}/deals', [ProductController::class, 'editDeals'])->name('admin.products.deals.edit');
+        Route::post('{product}/deals/assign', [ProductController::class, 'assignDeals'])->name('admin.products.deals.assign');
+        Route::delete('{product}/deals/{deal}/remove', [ProductController::class, 'removeDeal'])->name('admin.products.deals.remove');
 
         Route::resource('categories', CategoryController::class)->names('admin.categories');
         Route::resource('brands', BrandController::class)->names('admin.brands');
         Route::resource('orders', OrderController::class)->names('admin.orders');
         Route::resource('reviews', ReviewController::class)->names('admin.reviews');
 
+        Route::resource('deals', DealController::class)->names('admin.deals');
+        Route::patch('deals/{deal}/toggle-status', [DealController::class, 'toggleStatus'])->name('admin.deals.toggle-status');
+        Route::get('deals/{deal}/products', [DealController::class, 'productsShow'])->name('admin.deals.products.show');
+        Route::patch('deals/{deal}/toggle-featured', [DealController::class, 'toggleFeatured'])->name('admin.deals.products.toggle-featured');
+        Route::post('deals/{deal}/products/assign', [DealController::class, 'assignProducts'])->name('admin.deals.products.assign');
+        Route::delete('deals/{deal}/products/{product}/remove', [DealController::class, 'removeProduct'])->name('admin.deals.products.remove');
+        Route::patch('deals/{deal}/products/{product}/toggle-featured', [DealController::class, 'toggleFeatured'])->name('admin.deals.products.toggle-featured');
 
-        Route::prefix('admin/settings')->name('admin.settings.')->group(function () {
-            Route::get('/', [SettingController::class, 'index'])->name('index');
-            Route::put('/', [SettingController::class, 'update'])->name('update');
-        });
+        Route::get('settings', [SettingController::class, 'index'])->name('admin.settings.index');
+        Route::put('settings', [SettingController::class, 'update'])->name('admin.settings.update');
 
         Route::resource('carousels', CarouselController::class)->names('admin.carousels');
         Route::post('carousels/reorder', [CarouselController::class, 'reorder'])->name('admin.carousels.reorder');
-
-        Route::get('/settings/privacy-policy', [HomeController::class, 'privacyPolicy'])->name('admin.settings.privacy');
-        Route::get('/settings/notifications', [HomeController::class, 'notifications'])->name('admin.settings.notifications');
 
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -37,7 +37,26 @@
                 </a>
             </li>
 
-            <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.products.index', 'admin.products.create', 'admin.products.edit', 'admin.products.show', 'admin.categories.index', 'admin.categories.create', 'admin.categories.edit', 'admin.categories.show', 'admin.brands.index', 'admin.brands.create', 'admin.brands.edit', 'admin.brands.show']) ? 'hs-accordion-active' : '' }}"
+            <li class="hs-accordion {{ in_array(Route::currentRouteName(), [
+                'admin.products.index',
+                'admin.products.create',
+                'admin.products.edit',
+                'admin.products.show',
+                'admin.categories.index',
+                'admin.categories.create',
+                'admin.categories.edit',
+                'admin.categories.show',
+                'admin.brands.index',
+                'admin.brands.create',
+                'admin.brands.edit',
+                'admin.brands.show',
+                'admin.deals.index',
+                'admin.deals.create',
+                'admin.deals.edit',
+                'admin.deals.products.show',
+            ])
+                ? 'hs-accordion-active'
+                : '' }}"
                 id="products-accordion">
                 <a class="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
                     href="javascript:;">
@@ -66,7 +85,26 @@
                 </a>
 
                 <div id="products-accordion-sub"
-                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 {{ in_array(Route::currentRouteName(), ['admin.products.index', 'admin.products.create', 'admin.products.edit', 'admin.products.show', 'admin.categories.index', 'admin.categories.create', 'admin.categories.edit', 'admin.categories.show', 'admin.brands.index', 'admin.brands.create', 'admin.brands.edit', 'admin.brands.show']) ? 'block' : 'hidden' }}">
+                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 {{ in_array(Route::currentRouteName(), [
+                        'admin.products.index',
+                        'admin.products.create',
+                        'admin.products.edit',
+                        'admin.products.show',
+                        'admin.categories.index',
+                        'admin.categories.create',
+                        'admin.categories.edit',
+                        'admin.categories.show',
+                        'admin.brands.index',
+                        'admin.brands.create',
+                        'admin.brands.edit',
+                        'admin.brands.show',
+                        'admin.deals.index',
+                        'admin.deals.create',
+                        'admin.deals.edit',
+                        'admin.deals.products.show',
+                    ])
+                        ? 'block'
+                        : 'hidden' }}">
                     <ul class="pt-2 pl-2">
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
@@ -87,6 +125,13 @@
                         {{ in_array(Route::currentRouteName(), ['admin.brands.index', 'admin.brands.create', 'admin.brands.edit', 'admin.brands.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
                                 href="{{ route('admin.brands.index') }}">
                                 Brands
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
+                                    {{ in_array(Route::currentRouteName(), ['admin.deals.index', 'admin.deals.create', 'admin.deals.edit', 'admin.deals.products.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                href="{{ route('admin.deals.index') }}">
+                                Deals
                             </a>
                         </li>
                     </ul>
@@ -133,17 +178,9 @@
                                 Carousels
                             </a>
                         </li>
-                        {{-- <li>
-                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
-                                    {{ in_array(Route::currentRouteName(), ['admin.settings.notifications']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
-                                href="{{ route('admin.settings.notifications') }}">
-                                Notifications
-                            </a>
-                        </li> --}}
                     </ul>
                 </div>
             </li>
-
 
             <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.role', 'admin.role.createPage', 'admin.role.edit', 'admin.permission', 'admin.permission.createPage', 'admin.permission.edit', 'admin.user', 'admin.user.createPage', 'admin.users.show']) ? 'hs-accordion-active' : '' }}"
                 id="account-accordion">

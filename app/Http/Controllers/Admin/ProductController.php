@@ -6,12 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Deal;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
+
 
 class ProductController extends Controller
 {
@@ -128,8 +131,9 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $allDeals = Deal::active()->ordered()->get();
         $product->load(['category', 'brand', 'images']);
-        return view('admin.products.show', compact('product'));
+        return view('admin.products.show', compact('product', 'allDeals'));
     }
 
     /**
@@ -316,4 +320,125 @@ class ProductController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Show form to assign deals to a product.
+     */
+    public function editDeals(Product $product)
+    {
+        $allDeals = Deal::orderBy('priority', 'desc')->get();
+
+        return view('admin.products.show', compact('product', 'allDeals'));
+    }
+
+    /**
+     * Assign deals to a product.
+     */
+    public function assignDeals(Request $request, Product $product)
+    {
+        $request->validate([
+            'deal_ids' => 'nullable|array',
+            'deal_ids.*' => 'exists:deals,id',
+        ]);
+
+        // Sync the deals (replace existing assignments)
+        $syncData = [];
+        if ($request->has('deal_ids')) {
+            foreach ($request->deal_ids as $dealId) {
+                $syncData[$dealId] = ['is_featured' => false]; // Default values
+            }
+        }
+
+        $product->deals()->sync($syncData);
+
+        return redirect()->back()
+            ->with('success', 'Deal assignments updated successfully.');
+    }
+
+    /**
+     * Remove a product from a deal.
+     */
+    public function removeDeal(Product $product, Deal $deal)
+    {
+        $product->deals()->detach($deal->id);
+
+        return redirect()->back()
+            ->with('success', 'Product removed from deal successfully.');
+    }
+
+
+    public function generateDescription(Request $request)
+    {
+        $request->validate([
+            'product_name' => 'required|string'
+        ]);
+
+        $productName = $request->product_name;
+        $prompt = "Write a professional product description for: " . $productName;
+
+        // -----------------------------
+        // Determine which API is enabled
+        // -----------------------------
+        if (setting('api_openai_enabled') === '1') {
+            $apiKey = setting('api_openai_key');
+            $model = setting('api_openai_model');
+            $url = 'https://api.openai.com/v1/chat/completions';
+            $apiName = 'openai';
+        } elseif (setting('api_mistral_enabled') === '1') {
+            $apiKey = setting('api_mistral_key');
+            $model = setting('api_mistral_model');
+            $url = 'https://api.mistral.ai/v1/chat/completions';
+            $apiName = 'mistral';
+        } elseif (setting('api_deepseek_enabled') === '1') {
+            $apiKey = setting('api_deepseek_key');
+            $model = setting('api_deepseek_model');
+            $url = 'https://api.deepseek.com/v1/chat/completions';
+            $apiName = 'deepseek';
+        } else {
+            return response()->json(['error' => 'No API is enabled'], 500);
+        }
+
+        try {
+            // -----------------------------
+            // Call the selected API
+            // -----------------------------
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Content-Type' => 'application/json'
+            ])->withOptions([
+                        'verify' => false, // Disable SSL verification
+                    ])->post($url, [
+                        'model' => $model,
+                        'messages' => [
+                            ['role' => 'user', 'content' => $prompt]
+                        ]
+                    ]);
+
+
+
+            $result = $response->json();
+
+            // -----------------------------
+            // Extract the description
+            // -----------------------------
+            $description = null;
+
+            if (isset($result['choices'][0]['message']['content'])) {
+                $description = trim($result['choices'][0]['message']['content']);
+            } elseif (isset($result['output_text'])) { // DeepSeek format
+                $description = trim($result['output_text']);
+            }
+
+            if ($description) {
+                return response()->json(['description' => $description]);
+            } else {
+                Log::error($apiName . ' API error: ', $result);
+                return response()->json(['error' => 'Failed to generate description'], 500);
+            }
+        } catch (\Exception $e) {
+            Log::error('API call failed: ' . $e->getMessage());
+            return response()->json(['error' => 'API call failed'], 500);
+        }
+    }
+
 }

@@ -61,7 +61,6 @@
             </section>
         @endif
 
-        <!-- Rest of your content remains the same -->
         <!-- Featured Categories -->
         @if ($categories->isNotEmpty())
             <section class="py-16 bg-white">
@@ -129,36 +128,40 @@
             </section>
         @endif
 
-        <!-- Promotional Banner -->
-        <section class="py-10 bg-white">
-            <div class="container mx-auto px-4">
-                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl overflow-hidden shadow-xl">
-                    <div class="flex flex-col md:flex-row items-center">
-                        <div class="md:w-1/2 p-8 md:p-12 text-white">
-                            <h2 class="text-2xl md:text-3xl font-bold mb-4">Summer Tech Festival</h2>
-                            <p class="text-indigo-100 mb-6">Massive discounts on premium gadgets. Limited time offer!
-                            </p>
-                            <div class="flex items-center mb-6">
-                                <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2 mr-4">
-                                    <span class="block text-2xl font-bold">30%</span>
-                                    <span class="text-xs uppercase">OFF</span>
+        @if ($deal)
+            <section class="py-10 bg-white">
+                <div class="container mx-auto px-4">
+                    <div
+                        class="bg-gradient-to-r from-[{{ $deal->background_from_color }}] to-[{{ $deal->background_to_color }}] rounded-2xl overflow-hidden shadow-xl">
+                        <div class="flex flex-col md:flex-row items-center">
+                            <div class="md:w-1/2 p-8 md:p-12 text-white">
+                                <h2 class="text-2xl md:text-3xl font-bold mb-4">{{ $deal->title }}</h2>
+                                <p class="text-indigo-100 mb-6">{{ $deal->description }}</p>
+                                <div class="flex items-center mb-6">
+                                    @if ($deal->discount_percentage)
+                                        <div class="bg-white bg-opacity-20 rounded-lg px-4 py-2 mr-4">
+                                            <span
+                                                class="block text-2xl font-bold">{{ $deal->discount_percentage }}%</span>
+                                            <span class="text-xs uppercase">OFF</span>
+                                        </div>
+                                    @endif
+                                    <p class="text-sm">{{ $deal->discount_details }}</p>
                                 </div>
-                                <p class="text-sm">On selected electronics and accessories</p>
+                                <a href="{{ $deal->button_link }}"
+                                    class="inline-flex items-center bg-white text-indigo-600 font-medium py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors">
+                                    {{ $deal->button_text }}
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
                             </div>
-                            <a href="{{ route('public.deals') }}"
-                                class="inline-flex items-center bg-white text-indigo-600 font-medium py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors">
-                                Shop Now
-                                <i class="fas fa-arrow-right ml-2"></i>
-                            </a>
-                        </div>
-                        <div class="md:w-1/2">
-                            <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80"
-                                alt="Summer Sale" class="w-full h-64 md:h-96 object-cover">
+                            <div class="md:w-1/2">
+                                <img src="{{ $deal->image_url }}" alt="{{ $deal->title }}"
+                                    class="w-full h-64 md:h-96 object-cover">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        @endif
 
         <!-- All Products -->
         @if ($allProducts->isNotEmpty())

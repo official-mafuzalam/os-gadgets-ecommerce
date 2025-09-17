@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Carousel;
 use App\Models\Category;
+use App\Models\Deal;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -14,6 +15,7 @@ class HomeController extends Controller
     public function index()
     {
         $carousels = Carousel::active()->ordered()->get();
+        $deal = Deal::getCurrentDeal();
 
         $allProducts = Product::with(['category', 'brand', 'images'])
             ->where('is_active', true)
@@ -39,7 +41,7 @@ class HomeController extends Controller
             ->where('is_active', true)
             ->get();
 
-        return view('public.index', compact('carousels', 'allProducts', 'featuredProducts', 'categories'));
+        return view('public.index', compact('carousels', 'deal', 'allProducts', 'featuredProducts', 'categories'));
     }
 
     public function search(Request $request)
@@ -257,14 +259,96 @@ class HomeController extends Controller
         $categories = Category::withCount('products')->active()->get();
         $brands = Brand::withCount('products')->active()->get();
 
-        // Pass a flag to indicate these are featured products
         return view('public.products.index', compact('products', 'categories', 'brands'))->with('is_featured', true);
     }
 
     public function deals()
     {
-        return view('public.deals.index');
+        // Get active deals
+        $activeDeals = Deal::active()
+            ->ordered()
+            ->get();
+
+        // Get featured products from all active deals
+        $featuredProducts = Product::whereHas('deals', function ($query) {
+            $query->where('is_active', true)
+                ->where(function ($q) {
+                    $q->whereNull('starts_at')
+                        ->orWhere('starts_at', '<=', now());
+                })
+                ->where(function ($q) {
+                    $q->whereNull('ends_at')
+                        ->orWhere('ends_at', '>=', now());
+                })
+                ->where('deal_product.is_featured', true);
+        })
+            ->with([
+                'deals' => function ($query) {
+                    $query->where('is_active', true);
+                }
+            ])
+            ->active()
+            ->inStock()
+            ->take(8)
+            ->get();
+
+        // Get all products from active deals (paginated)
+        $allDealProducts = Product::whereHas('deals', function ($query) {
+            $query->where('is_active', true)
+                ->where(function ($q) {
+                    $q->whereNull('starts_at')
+                        ->orWhere('starts_at', '<=', now());
+                })
+                ->where(function ($q) {
+                    $q->whereNull('ends_at')
+                        ->orWhere('ends_at', '>=', now());
+                });
+        })
+            ->with([
+                'deals' => function ($query) {
+                    $query->where('is_active', true);
+                }
+            ])
+            ->active()
+            ->orderBy('name')
+            ->paginate(10);
+
+        return view('public.deals.index', compact('activeDeals', 'featuredProducts', 'allDealProducts'));
     }
+
+    public function dealShow(Deal $deal, Request $request)
+    {
+        $query = $deal->products()->with(['category', 'brand', 'reviews'])
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating')
+            ->active();
+
+        // Sorting
+        switch ($request->get('sort', 'newest')) {
+            case 'price_low_high':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high_low':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'name_asc':
+                $query->orderBy('name', 'asc');
+                break;
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
+            default:
+                $query->latest();
+                break;
+        }
+        $products = $query->paginate(12);
+
+        $categories = Category::withCount('products')->active()->get();
+        $brands = Brand::withCount('products')->active()->get();
+
+        return view('public.products.index', compact('products', 'categories', 'brands'))->with('deal', $deal);
+    }
+
 
     public function about()
     {

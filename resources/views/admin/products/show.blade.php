@@ -13,6 +13,10 @@
                         </p>
                     </div>
                     <div class="flex space-x-2">
+                        <button type="button" onclick="openDealAssignmentModal()"
+                            class="px-3 py-2 text-sm font-medium rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors">
+                            Assign to Deals
+                        </button>
                         <a href="{{ route('admin.products.edit', $product->id) }}"
                             class="px-3 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors">
                             Edit Product
@@ -129,106 +133,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <script>
-                            function changeMainImage(src) {
-                                const mainImage = document.getElementById('mainProductImage');
-
-                                // Add fade transition
-                                mainImage.style.opacity = '0';
-
-                                setTimeout(() => {
-                                    mainImage.src = src;
-                                    mainImage.style.opacity = '1';
-                                }, 200);
-
-                                // Update active thumbnail styling
-                                document.querySelectorAll('.border-2').forEach(el => {
-                                    el.classList.remove('border-2', 'border-indigo-500');
-                                    el.classList.add('border', 'border-gray-200', 'dark:border-gray-600');
-                                });
-
-                                // Find the clicked thumbnail and update its styling
-                                const clickedElement = event.currentTarget;
-                                clickedElement.classList.remove('border', 'border-gray-200', 'dark:border-gray-600');
-                                clickedElement.classList.add('border-2', 'border-indigo-500');
-                            }
-
-                            // Initialize with smooth transition
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const mainImage = document.getElementById('mainProductImage');
-                                mainImage.style.transition = 'opacity 0.2s ease-in-out';
-                            });
-
-                            // Set Primary Image Functions
-                            function openSetPrimaryModal() {
-                                document.getElementById('setPrimaryModal').classList.remove('hidden');
-                                document.body.style.overflow = 'hidden';
-                            }
-
-                            function closeSetPrimaryModal() {
-                                document.getElementById('setPrimaryModal').classList.add('hidden');
-                                document.body.style.overflow = 'auto';
-                            }
-
-                            function setAsPrimary(imageId) {
-                                // Show loading state
-                                const buttons = document.querySelectorAll(`button[onclick="setAsPrimary(${imageId})"]`);
-                                buttons.forEach(button => {
-                                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                                    button.disabled = true;
-                                });
-
-                                // Send AJAX request
-                                fetch('{{ route('admin.products.set-primary-image', $product->id) }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                        },
-                                        body: JSON.stringify({
-                                            image_id: imageId
-                                        })
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            // Reload the page to see changes
-                                            window.location.reload();
-                                        } else {
-                                            alert('Error: ' + (data.message || 'Failed to set primary image'));
-                                            // Reset buttons
-                                            buttons.forEach(button => {
-                                                button.innerHTML = 'Set Primary';
-                                                button.disabled = false;
-                                            });
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Error:', error);
-                                        alert('An error occurred while setting the primary image');
-                                        // Reset buttons
-                                        buttons.forEach(button => {
-                                            button.innerHTML = 'Set Primary';
-                                            button.disabled = false;
-                                        });
-                                    });
-                            }
-
-                            // Close modal when clicking outside
-                            document.getElementById('setPrimaryModal').addEventListener('click', function(e) {
-                                if (e.target.id === 'setPrimaryModal') {
-                                    closeSetPrimaryModal();
-                                }
-                            });
-
-                            // Close modal with Escape key
-                            document.addEventListener('keydown', function(e) {
-                                if (e.key === 'Escape' && !document.getElementById('setPrimaryModal').classList.contains('hidden')) {
-                                    closeSetPrimaryModal();
-                                }
-                            });
-                        </script>
 
                         <!-- Right Column - Details -->
                         <div class="md:col-span-2">
@@ -397,5 +301,251 @@
                 </div>
             </div>
         </div>
+
+        <!-- Current Deals Section -->
+        <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
+            <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">Assigned Deals</h3>
+
+            @if ($product->deals->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @foreach ($product->deals as $deal)
+                        <div
+                            class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow-sm">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-gray-900 dark:text-white">{{ $deal->title }}</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                        Priority: {{ $deal->priority }}
+                                    </p>
+                                    <div class="mt-2 flex items-center">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                            {{ $deal->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                            {{ $deal->is_active ? 'Active' : 'Inactive' }}
+                                        </span>
+                                        @if ($deal->pivot->is_featured)
+                                            <span
+                                                class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                Featured
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <form action="{{ route('admin.products.deals.remove', [$product->id, $deal->id]) }}"
+                                    method="POST" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        onclick="return confirm('Are you sure you want to remove this product from the deal?')"
+                                        class="text-red-600 hover:text-red-900">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="mt-3 text-xs text-gray-500">
+                                @if ($deal->starts_at && $deal->ends_at)
+                                    {{ $deal->starts_at->format('M d, Y') }} - {{ $deal->ends_at->format('M d, Y') }}
+                                @elseif($deal->starts_at)
+                                    Starts: {{ $deal->starts_at->format('M d, Y') }}
+                                @elseif($deal->ends_at)
+                                    Ends: {{ $deal->ends_at->format('M d, Y') }}
+                                @else
+                                    No date restrictions
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div
+                    class="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-6 text-center">
+                    <i class="fas fa-tag text-gray-400 text-3xl mb-2"></i>
+                    <p class="text-gray-600 dark:text-gray-300">This product is not assigned to any deals yet.</p>
+                    <button type="button" onclick="openDealAssignmentModal()"
+                        class="mt-3 px-4 py-2 text-sm font-medium rounded-md bg-purple-600 text-white hover:bg-purple-700 transition-colors">
+                        Assign to Deals
+                    </button>
+                </div>
+            @endif
+        </div>
+
+        <!-- Deal Assignment Modal -->
+        <div id="dealAssignmentModal"
+            class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div
+                class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white dark:bg-gray-800">
+                <div class="mt-3">
+                    <div class="flex justify-between items-center pb-3 border-b">
+                        <h3 class="text-xl font-medium text-gray-900 dark:text-white">Assign Product to Deals</h3>
+                        <button onclick="closeDealAssignmentModal()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <form id="dealAssignmentForm" action="{{ route('admin.products.deals.assign', $product->id) }}"
+                        method="POST" class="mt-4">
+                        @csrf
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Select Deals to Assign This Product To:
+                            </label>
+                            <div class="max-h-60 overflow-y-auto border border-gray-300 rounded-md p-2">
+                                @foreach ($allDeals as $deal)
+                                    <div class="flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded">
+                                        <input type="checkbox" name="deal_ids[]" value="{{ $deal->id }}"
+                                            {{ $product->deals->contains($deal->id) ? 'checked' : '' }}
+                                            class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                        <label class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                                            {{ $deal->title }}
+                                            <span class="text-xs text-gray-500">(Priority:
+                                                {{ $deal->priority }})</span>
+                                            @if ($deal->is_active)
+                                                <span
+                                                    class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    Active
+                                                </span>
+                                            @endif
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                            @error('deal_ids')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="flex items-center justify-end space-x-3 pt-4 border-t">
+                            <button type="button" onclick="closeDealAssignmentModal()"
+                                class="px-4 py-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                Save Assignments
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function changeMainImage(src) {
+                const mainImage = document.getElementById('mainProductImage');
+
+                // Add fade transition
+                mainImage.style.opacity = '0';
+
+                setTimeout(() => {
+                    mainImage.src = src;
+                    mainImage.style.opacity = '1';
+                }, 200);
+
+                // Update active thumbnail styling
+                document.querySelectorAll('.border-2').forEach(el => {
+                    el.classList.remove('border-2', 'border-indigo-500');
+                    el.classList.add('border', 'border-gray-200', 'dark:border-gray-600');
+                });
+
+                // Find the clicked thumbnail and update its styling
+                const clickedElement = event.currentTarget;
+                clickedElement.classList.remove('border', 'border-gray-200', 'dark:border-gray-600');
+                clickedElement.classList.add('border-2', 'border-indigo-500');
+            }
+
+            // Initialize with smooth transition
+            document.addEventListener('DOMContentLoaded', function() {
+                const mainImage = document.getElementById('mainProductImage');
+                mainImage.style.transition = 'opacity 0.2s ease-in-out';
+            });
+
+            // Set Primary Image Functions
+            function openSetPrimaryModal() {
+                document.getElementById('setPrimaryModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSetPrimaryModal() {
+                document.getElementById('setPrimaryModal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+
+            function setAsPrimary(imageId) {
+                // Show loading state
+                const buttons = document.querySelectorAll(`button[onclick="setAsPrimary(${imageId})"]`);
+                buttons.forEach(button => {
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    button.disabled = true;
+                });
+
+                // Send AJAX request
+                fetch('{{ route('admin.products.set-primary-image', $product->id) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            image_id: imageId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Reload the page to see changes
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + (data.message || 'Failed to set primary image'));
+                            // Reset buttons
+                            buttons.forEach(button => {
+                                button.innerHTML = 'Set Primary';
+                                button.disabled = false;
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while setting the primary image');
+                        // Reset buttons
+                        buttons.forEach(button => {
+                            button.innerHTML = 'Set Primary';
+                            button.disabled = false;
+                        });
+                    });
+            }
+
+            // Close modal when clicking outside
+            document.getElementById('setPrimaryModal').addEventListener('click', function(e) {
+                if (e.target.id === 'setPrimaryModal') {
+                    closeSetPrimaryModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !document.getElementById('setPrimaryModal').classList.contains('hidden')) {
+                    closeSetPrimaryModal();
+                }
+            });
+        </script>
+
+        <script>
+            function openDealAssignmentModal() {
+                document.getElementById('dealAssignmentModal').classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+
+            function closeDealAssignmentModal() {
+                document.getElementById('dealAssignmentModal').classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+
+            // Close modal when clicking outside
+            document.getElementById('dealAssignmentModal').addEventListener('click', function(e) {
+                if (e.target.id === 'dealAssignmentModal') {
+                    closeDealAssignmentModal();
+                }
+            });
+        </script>
     </x-slot>
 </x-admin-layout>

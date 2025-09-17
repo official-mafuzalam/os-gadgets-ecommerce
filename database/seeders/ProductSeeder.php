@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
@@ -102,15 +102,40 @@ class ProductSeeder extends Seeder
             ]
         );
 
+        $google = Brand::firstOrCreate(
+            ['name' => 'Google'],
+            ['slug' => 'google']
+        );
+
+        $oneplus = Brand::firstOrCreate(
+            ['name' => 'OnePlus'],
+            ['slug' => 'oneplus']
+        );
+
+        $microsoft = Brand::firstOrCreate(
+            ['name' => 'Microsoft'],
+            ['slug' => 'microsoft']
+        );
+
+        $asus = Brand::firstOrCreate(
+            ['name' => 'ASUS'],
+            ['slug' => 'asus']
+        );
+
+        $garmin = Brand::firstOrCreate(
+            ['name' => 'Garmin'],
+            ['slug' => 'garmin']
+        );
+
         $products = [
             // Smartphones
             [
                 'name' => 'iPhone 15 Pro Max',
                 'description' => 'The most powerful iPhone with advanced camera system and A17 Pro chip.',
                 'price' => 1199.99,
+                'discount' => 0.00,
                 'stock_quantity' => 50,
                 'sku' => 'APP-IP15PM-256',
-                'image' => 'products/iphone15.jpg',
                 'category_id' => $smartphoneCategory->id,
                 'brand_id' => $apple->id,
                 'specifications' => [
@@ -125,9 +150,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Samsung Galaxy S23 Ultra',
                 'description' => 'Premium Android smartphone with S Pen and advanced camera capabilities.',
                 'price' => 1099.99,
+                'discount' => 50.00,
                 'stock_quantity' => 45,
                 'sku' => 'SAM-GS23U-256',
-                'image' => 'products/s23ultra.jpg',
                 'category_id' => $smartphoneCategory->id,
                 'brand_id' => $samsung->id,
                 'specifications' => [
@@ -142,11 +167,11 @@ class ProductSeeder extends Seeder
                 'name' => 'Google Pixel 8 Pro',
                 'description' => 'Google\'s flagship phone with advanced AI features and camera software.',
                 'price' => 899.99,
+                'discount' => 25.00,
                 'stock_quantity' => 30,
                 'sku' => 'GOO-PX8P-128',
-                'image' => 'products/pixel8pro.jpg',
                 'category_id' => $smartphoneCategory->id,
-                'brand_id' => Brand::firstOrCreate(['name' => 'Google', 'slug' => 'google'])->id,
+                'brand_id' => $google->id,
                 'specifications' => [
                     'Display' => '6.7-inch LTPO OLED',
                     'Chip' => 'Google Tensor G3',
@@ -159,11 +184,11 @@ class ProductSeeder extends Seeder
                 'name' => 'OnePlus 11',
                 'description' => 'Flagship killer with Hasselblad camera and fast charging.',
                 'price' => 699.99,
+                'discount' => 30.00,
                 'stock_quantity' => 25,
                 'sku' => 'OPL-OP11-256',
-                'image' => 'products/oneplus11.jpg',
                 'category_id' => $smartphoneCategory->id,
-                'brand_id' => Brand::firstOrCreate(['name' => 'OnePlus', 'slug' => 'oneplus'])->id,
+                'brand_id' => $oneplus->id,
                 'specifications' => [
                     'Display' => '6.7-inch Fluid AMOLED',
                     'Chip' => 'Snapdragon 8 Gen 2',
@@ -178,9 +203,9 @@ class ProductSeeder extends Seeder
                 'name' => 'MacBook Pro 16-inch',
                 'description' => 'Professional laptop with M2 Pro chip for extreme performance.',
                 'price' => 2499.99,
+                'discount' => 100.00,
                 'stock_quantity' => 20,
                 'sku' => 'APP-MBP16-1TB',
-                'image' => 'products/macbookpro16.jpg',
                 'category_id' => $laptopCategory->id,
                 'brand_id' => $apple->id,
                 'specifications' => [
@@ -195,9 +220,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Dell XPS 15',
                 'description' => 'Premium Windows laptop with stunning display and powerful performance.',
                 'price' => 1699.99,
+                'discount' => 75.00,
                 'stock_quantity' => 18,
                 'sku' => 'DEL-XPS15-512',
-                'image' => 'products/dellxps15.jpg',
                 'category_id' => $laptopCategory->id,
                 'brand_id' => $dell->id,
                 'specifications' => [
@@ -212,11 +237,11 @@ class ProductSeeder extends Seeder
                 'name' => 'Microsoft Surface Laptop 5',
                 'description' => 'Elegant Windows laptop with premium build quality and performance.',
                 'price' => 1299.99,
+                'discount' => 50.00,
                 'stock_quantity' => 15,
                 'sku' => 'MS-SL5-512',
-                'image' => 'products/surfacelaptop5.jpg',
                 'category_id' => $laptopCategory->id,
-                'brand_id' => Brand::firstOrCreate(['name' => 'Microsoft', 'slug' => 'microsoft'])->id,
+                'brand_id' => $microsoft->id,
                 'specifications' => [
                     'Display' => '13.5-inch PixelSense Touch',
                     'Processor' => 'Intel Core i5-1235U',
@@ -229,11 +254,11 @@ class ProductSeeder extends Seeder
                 'name' => 'ASUS ROG Zephyrus G14',
                 'description' => 'Powerful gaming laptop with AMD Ryzen and NVIDIA graphics.',
                 'price' => 1499.99,
+                'discount' => 80.00,
                 'stock_quantity' => 12,
                 'sku' => 'ASU-ROG14-1TB',
-                'image' => 'products/zephyrusg14.jpg',
                 'category_id' => $laptopCategory->id,
-                'brand_id' => Brand::firstOrCreate(['name' => 'ASUS', 'slug' => 'asus'])->id,
+                'brand_id' => $asus->id,
                 'specifications' => [
                     'Display' => '14-inch QHD 165Hz',
                     'Processor' => 'AMD Ryzen 9 7940HS',
@@ -248,9 +273,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Sony WH-1000XM5',
                 'description' => 'Industry-leading noise canceling headphones with exceptional sound quality.',
                 'price' => 349.99,
+                'discount' => 20.00,
                 'stock_quantity' => 40,
                 'sku' => 'SON-WH1000XM5',
-                'image' => 'products/sonyxm5.jpg',
                 'category_id' => $headphonesCategory->id,
                 'brand_id' => $sony->id,
                 'specifications' => [
@@ -265,9 +290,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Bose QuietComfort Ultra',
                 'description' => 'Premium noise canceling headphones with immersive audio.',
                 'price' => 429.99,
+                'discount' => 25.00,
                 'stock_quantity' => 35,
                 'sku' => 'BOS-QCULTRA',
-                'image' => 'products/boseqcultra.jpg',
                 'category_id' => $headphonesCategory->id,
                 'brand_id' => $bose->id,
                 'specifications' => [
@@ -282,9 +307,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Apple AirPods Pro (2nd Gen)',
                 'description' => 'Wireless earbuds with active noise cancellation and transparency mode.',
                 'price' => 249.99,
+                'discount' => 15.00,
                 'stock_quantity' => 60,
                 'sku' => 'APP-APP2',
-                'image' => 'products/airpodspro2.jpg',
                 'category_id' => $headphonesCategory->id,
                 'brand_id' => $apple->id,
                 'specifications' => [
@@ -299,9 +324,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Samsung Galaxy Buds2 Pro',
                 'description' => 'Premium wireless earbuds with intelligent ANC and 360 Audio.',
                 'price' => 199.99,
+                'discount' => 10.00,
                 'stock_quantity' => 45,
                 'sku' => 'SAM-GBUDS2P',
-                'image' => 'products/galaxybuds2pro.jpg',
                 'category_id' => $headphonesCategory->id,
                 'brand_id' => $samsung->id,
                 'specifications' => [
@@ -318,9 +343,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Apple Watch Series 9',
                 'description' => 'Advanced smartwatch with health features and powerful apps.',
                 'price' => 399.99,
+                'discount' => 30.00,
                 'stock_quantity' => 30,
                 'sku' => 'APP-AW9-45',
-                'image' => 'products/applewatch9.jpg',
                 'category_id' => $smartwatchCategory->id,
                 'brand_id' => $apple->id,
                 'specifications' => [
@@ -335,9 +360,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Samsung Galaxy Watch 6 Classic',
                 'description' => 'Premium smartwatch with rotating bezel and comprehensive health tracking.',
                 'price' => 369.99,
+                'discount' => 25.00,
                 'stock_quantity' => 25,
                 'sku' => 'SAM-GW6C-47',
-                'image' => 'products/galaxywatch6.jpg',
                 'category_id' => $smartwatchCategory->id,
                 'brand_id' => $samsung->id,
                 'specifications' => [
@@ -352,9 +377,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Fitbit Sense 2',
                 'description' => 'Advanced health smartwatch with stress management tools.',
                 'price' => 299.99,
+                'discount' => 20.00,
                 'stock_quantity' => 20,
                 'sku' => 'FIT-SENSE2',
-                'image' => 'products/fitbitsense2.jpg',
                 'category_id' => $smartwatchCategory->id,
                 'brand_id' => $fitbit->id,
                 'specifications' => [
@@ -369,11 +394,11 @@ class ProductSeeder extends Seeder
                 'name' => 'Garmin Forerunner 965',
                 'description' => 'Premium GPS running smartwatch with advanced training metrics.',
                 'price' => 599.99,
+                'discount' => 40.00,
                 'stock_quantity' => 15,
                 'sku' => 'GAR-FR965',
-                'image' => 'products/garmin965.jpg',
                 'category_id' => $smartwatchCategory->id,
-                'brand_id' => Brand::firstOrCreate(['name' => 'Garmin', 'slug' => 'garmin'])->id,
+                'brand_id' => $garmin->id,
                 'specifications' => [
                     'Display' => '1.4-inch AMOLED',
                     'Battery Life' => 'Up to 23 days (smartwatch mode)',
@@ -387,9 +412,9 @@ class ProductSeeder extends Seeder
                 'name' => 'iPad Pro 12.9-inch',
                 'description' => 'Professional tablet with M2 chip and Liquid Retina XDR display.',
                 'price' => 1099.99,
+                'discount' => 50.00,
                 'stock_quantity' => 22,
                 'sku' => 'APP-IPADP129-256',
-                'image' => 'products/ipadpro129.jpg',
                 'category_id' => $tabletCategory->id,
                 'brand_id' => $apple->id,
                 'specifications' => [
@@ -404,9 +429,9 @@ class ProductSeeder extends Seeder
                 'name' => 'Samsung Galaxy Tab S9 Ultra',
                 'description' => 'Premium Android tablet with massive screen and S Pen included.',
                 'price' => 1199.99,
+                'discount' => 60.00,
                 'stock_quantity' => 18,
                 'sku' => 'SAM-GTS9U-512',
-                'image' => 'products/tabs9ultra.jpg',
                 'category_id' => $tabletCategory->id,
                 'brand_id' => $samsung->id,
                 'specifications' => [
@@ -421,11 +446,11 @@ class ProductSeeder extends Seeder
                 'name' => 'Microsoft Surface Pro 9',
                 'description' => 'Versatile 2-in-1 tablet that replaces your laptop.',
                 'price' => 1299.99,
+                'discount' => 70.00,
                 'stock_quantity' => 16,
                 'sku' => 'MS-SP9-I7',
-                'image' => 'products/surfacepro9.jpg',
                 'category_id' => $tabletCategory->id,
-                'brand_id' => Brand::firstOrCreate(['name' => 'Microsoft', 'slug' => 'microsoft'])->id,
+                'brand_id' => $microsoft->id,
                 'specifications' => [
                     'Display' => '13-inch PixelSense Flow',
                     'Processor' => 'Intel Core i7-1255U',
@@ -438,11 +463,11 @@ class ProductSeeder extends Seeder
                 'name' => 'Google Pixel Tablet',
                 'description' => 'Smart tablet with charging speaker dock that transforms into a smart display.',
                 'price' => 499.99,
+                'discount' => 25.00,
                 'stock_quantity' => 28,
                 'sku' => 'GOO-PT-128',
-                'image' => 'products/pixeltablet.jpg',
                 'category_id' => $tabletCategory->id,
-                'brand_id' => Brand::firstOrCreate(['name' => 'Google', 'slug' => 'google'])->id,
+                'brand_id' => $google->id,
                 'specifications' => [
                     'Display' => '11-inch LCD',
                     'Processor' => 'Google Tensor G2',
@@ -454,9 +479,12 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $productData) {
+            // Generate slug from name
+            $productData['slug'] = Str::slug($productData['name']);
+
             // Set default values
             $productData['is_active'] = true;
-            $productData['image_gallery'] = [$productData['image']];
+            $productData['is_featured'] = rand(0, 1); // Randomly set some as featured
 
             // Create the product
             Product::create($productData);

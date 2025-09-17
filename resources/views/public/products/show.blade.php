@@ -342,7 +342,7 @@
             <div class="mt-12 p-4 container mx-auto">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">You May Also Like</h2>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    @foreach ($relatedProducts as $relatedProduct)
+                    @foreach ($relatedProducts as $product)
                         @include('public.products.partial.product-card', ['product' => $product])
                     @endforeach
                 </div>

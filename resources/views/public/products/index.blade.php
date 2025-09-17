@@ -45,6 +45,14 @@
                                 </div>
                             </li>
                         @endif
+                        @if (isset($deal))
+                            <li>
+                                <div class="flex items-center">
+                                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                                    <span class="ml-3 text-sm font-medium text-gray-500">{{ $deal->title }}</span>
+                                </div>
+                            </li>
+                        @endif
                     </ol>
                 </nav>
             </div>
@@ -62,6 +70,8 @@
                                 {{ $brand->name }} Products
                             @elseif(isset($is_featured) && $is_featured)
                                 Featured Products
+                            @elseif(isset($deal))
+                                {{ $deal->title }} Products
                             @else
                                 All Products
                             @endif
@@ -73,6 +83,8 @@
                                 Discover premium products from {{ $brand->name }}
                             @elseif(isset($is_featured) && $is_featured)
                                 Discover our handpicked collection of featured products
+                            @elseif(isset($deal))
+                                {{ $deal->description ?? 'Explore products under the ' . $deal->title . ' deal' }}
                             @else
                                 Discover our complete collection of premium products
                             @endif
