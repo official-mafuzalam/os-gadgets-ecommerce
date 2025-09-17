@@ -135,6 +135,11 @@ class Product extends Model
         return $query->where('is_active', true);
     }
 
+    public function scopeInactive($query)
+    {
+        return $query->where('is_active', false);
+    }
+
     public function scopeFeatured($query)
     {
         return $query->where('is_featured', true);

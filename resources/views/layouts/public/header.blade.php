@@ -9,13 +9,14 @@
 
     @if (setting('site_favicon'))
         <link rel="icon" href="{{ Storage::url(setting('site_favicon')) }}" type="image/x-icon">
+    @else
+        <link rel="icon" href="{{ asset('assets/logo/icon.png') }}" type="image/x-icon">
     @endif
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -23,6 +24,7 @@
     <link rel="stylesheet" href="{{ asset('build/assets/app-e64e5c60.css') }}" />
     <link rel="modulepreload" href="{{ asset('build/assets/app-37a11075.js') }}" />
     <script type="module" src="{{ asset('build/assets/app-37a11075.js') }}"></script> --}}
+
     <!-- Custom Styles -->
     <style>
         body {
@@ -49,12 +51,11 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
     </style>
-    <!-- Google Analytics -->
+    
     @if (setting('google_analytics_code'))
         {!! setting('google_analytics_code') !!}
     @endif
 
-    <!-- Facebook Pixel -->
     @if (setting('facebook_pixel_code'))
         {!! setting('facebook_pixel_code') !!}
     @endif

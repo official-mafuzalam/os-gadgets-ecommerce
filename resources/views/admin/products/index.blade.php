@@ -2,58 +2,93 @@
     @section('title', 'Products Management')
     <x-slot name="main">
         <div class="w-full px-4 py-6 sm:px-6 lg:px-8">
-            <!-- Main Card -->
-            <div class="bg-white rounded-xl shadow-lg dark:bg-gray-800 overflow-hidden">
-                <!-- Card Header -->
-                <div
-                    class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <!-- Header with breadcrumbs -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-gray-900">Products Management</h1>
+
                     <div>
-                        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Products Management</h2>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                            Manage your product inventory
-                        </p>
-                    </div>
 
-                    <!-- Search and Action Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                        <!-- Search Form -->
-                        <form action="{{ route('admin.products.index') }}" class="w-full sm:w-64">
-                            <div class="relative rounded-md shadow-sm">
-                                <input type="text" name="search" placeholder="Search products..."
-                                    class="block w-full rounded-md border-gray-300 pl-4 pr-10 py-2 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
-                                <button type="submit"
-                                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-500">
-                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </form>
 
-                        <!-- Action Buttons -->
-                        <div class="flex gap-2">
-                            <a href="{{ route('admin.categories.index') }}"
-                                class="px-3 py-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors">
-                                Categories
-                            </a>
-
-                            <a href="{{ route('admin.brands.index') }}"
-                                class="px-3 py-2 text-sm font-medium rounded-md border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors">
-                                Brands
-                            </a>
-
-                            <a href="{{ route('admin.products.create') }}"
-                                class="px-3 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-colors flex items-center gap-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4"></path>
-                                </svg>
-                                New Product
-                            </a>
-                        </div>
+                        <a href="{{ route('admin.products.create') }}"
+                            class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add New Product
+                        </a>
                     </div>
                 </div>
+            </div>
+
+            <!-- Main Card -->
+            <div class="bg-white rounded-xl shadow-lg dark:bg-gray-800 overflow-hidden">
+                <!-- Filters and Search -->
+                <div class="bg-white p-4 rounded-lg shadow-sm">
+                    <form method="GET" action="{{ route('admin.products.index') }}">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div>
+                                <label for="search"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                                <input type="text" name="search" id="search" placeholder="Product name or SKU"
+                                    value="{{ request('search') }}"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                                <select name="brand" id="brand"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Brands</option>
+                                    @foreach ($brands as $brand)
+                                        <option value="{{ $brand->id }}"
+                                            {{ request('brand') == $brand->id ? 'selected' : '' }}>
+                                            {{ $brand->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="category"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <select name="category" id="category"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Categories</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}"
+                                            {{ request('category') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="status"
+                                    class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <select name="status" id="status"
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">All Statuses</option>
+                                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active
+                                    </option>
+                                    <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>
+                                        Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <a href="{{ route('admin.products.index') }}"
+                                class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 mr-2">
+                                Reset
+                            </a>
+                            <button type="submit"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                Apply Filters
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
 
                 <!-- Table Container -->
                 <div class="overflow-x-auto">

@@ -7,8 +7,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Login | {{ setting('site_name') }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/logo/icon.png') }}">
-
+    @if (setting('site_favicon'))
+        <link rel="icon" href="{{ Storage::url(setting('site_favicon')) }}" type="image/x-icon">
+    @else
+        <link rel="icon" href="{{ asset('assets/logo/icon.png') }}" type="image/x-icon">
+    @endif
+    
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />

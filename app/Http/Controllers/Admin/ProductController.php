@@ -21,10 +21,36 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['category', 'brand'])->latest()->paginate(10);
-        return view('admin.products.index', compact('products'));
+        $brands = Brand::where('is_active', true)->get();
+        $categories = Category::where('is_active', true)->get();
+
+        $products = Product::with(['category', 'brand'])
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('sku', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->brand, function ($query, $brand) {
+                $query->where('brand_id', $brand);
+            })
+            ->when($request->category, function ($query, $category) {
+                $query->where('category_id', $category);
+            })
+            ->when($request->status, function ($query, $status) {
+                if ($status === 'active') {
+                    $query->where('is_active', true);
+                } elseif ($status === 'inactive') {
+                    $query->where('is_active', false);
+                }
+            })
+            ->latest()
+            ->paginate(10)
+            ->appends($request->all());
+
+        return view('admin.products.index', compact('products', 'brands', 'categories'));
     }
 
     /**
@@ -374,71 +400,162 @@ class ProductController extends Controller
         ]);
 
         $productName = $request->product_name;
-        $prompt = "Write a professional product description for: " . $productName;
+        $prompt = "Write a professional product description for the following product, highlighting its key features and benefits: " . $productName;
 
-        // -----------------------------
-        // Determine which API is enabled
-        // -----------------------------
+        $apiKey = null;
+        $model = null;
+        $url = null;
+        $apiName = null;
+        $postData = [];
+
         if (setting('api_openai_enabled') === '1') {
             $apiKey = setting('api_openai_key');
             $model = setting('api_openai_model');
             $url = 'https://api.openai.com/v1/chat/completions';
             $apiName = 'openai';
+            $postData = [
+                'model' => $model,
+                'messages' => [['role' => 'user', 'content' => $prompt]],
+                'max_tokens' => 250, // Added for OpenAI compatibility
+                'temperature' => 0.7,
+            ];
         } elseif (setting('api_mistral_enabled') === '1') {
             $apiKey = setting('api_mistral_key');
             $model = setting('api_mistral_model');
             $url = 'https://api.mistral.ai/v1/chat/completions';
             $apiName = 'mistral';
+            $postData = [
+                'model' => $model,
+                'messages' => [['role' => 'user', 'content' => $prompt]],
+                'max_tokens' => 250, // Added for Mistral compatibility
+                'temperature' => 0.7,
+            ];
         } elseif (setting('api_deepseek_enabled') === '1') {
             $apiKey = setting('api_deepseek_key');
             $model = setting('api_deepseek_model');
             $url = 'https://api.deepseek.com/v1/chat/completions';
             $apiName = 'deepseek';
+            $postData = [
+                'model' => $model,
+                'messages' => [['role' => 'user', 'content' => $prompt]],
+                'max_tokens' => 250, // Added for DeepSeek compatibility
+                'temperature' => 0.7,
+            ];
+        } elseif (setting('api_gemini_enabled') === '1') {
+            $apiKey = setting('api_gemini_key');
+            $model = setting('api_gemini_model', 'gemini-1.5-flash');
+            // Use the correct endpoint for Gemini with API key in URL
+            $url = 'https://generativelanguage.googleapis.com/v1beta/models/' . $model . ':generateContent?key=' . $apiKey;
+            $apiName = 'gemini';
+            $postData = [
+                'contents' => [
+                    [
+                        'parts' => [
+                            ['text' => $prompt]
+                        ]
+                    ]
+                ],
+                'generationConfig' => [
+                    'maxOutputTokens' => 500, // Increased token limit
+                    'temperature' => 0.8,     // Slightly higher temperature for more varied output
+                    'topP' => 0.95,           // Add topP for more control
+                ],
+                // **Crucial: Explicitly set safety settings to BLOCK_NONE for testing if needed**
+                // WARNING: Adjust these based on your application's actual safety requirements.
+                // Setting to BLOCK_NONE will allow potentially unsafe content.
+                'safetySettings' => [
+                    ['category' => 'HARM_CATEGORY_HATE_SPEECH', 'threshold' => 'BLOCK_NONE'],
+                    ['category' => 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold' => 'BLOCK_NONE'],
+                    ['category' => 'HARM_CATEGORY_HARASSMENT', 'threshold' => 'BLOCK_NONE'],
+                    ['category' => 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold' => 'BLOCK_NONE'],
+                ]
+            ];
+            $apiKey = null; // Unset it for the header if using URL param
         } else {
-            return response()->json(['error' => 'No API is enabled'], 500);
+            return response()->json(['error' => 'No API is enabled in settings'], 500);
+        }
+
+        if (!$apiKey && $apiName !== 'gemini') {
+            return response()->json(['error' => ucfirst($apiName) . ' API key is not configured.'], 500);
+        }
+        if ($apiName === 'gemini' && !setting('api_gemini_key')) {
+            return response()->json(['error' => 'Gemini API key is not configured.'], 500);
         }
 
         try {
-            // -----------------------------
-            // Call the selected API
-            // -----------------------------
-            $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $apiKey,
-                'Content-Type' => 'application/json'
-            ])->withOptions([
-                        'verify' => false, // Disable SSL verification
-                    ])->post($url, [
-                        'model' => $model,
-                        'messages' => [
-                            ['role' => 'user', 'content' => $prompt]
-                        ]
-                    ]);
+            $headers = ['Content-Type' => 'application/json'];
+            if ($apiKey) {
+                $headers['Authorization'] = 'Bearer ' . $apiKey;
+            }
 
+            $response = Http::withHeaders($headers)
+                ->withOptions([
+                    'verify' => !app()->environment('local'),
+                ])
+                ->post($url, $postData);
 
+            Log::info("{$apiName} API Raw Response Status: " . $response->status());
+            Log::info("{$apiName} API Raw Response Body: " . $response->body());
+
+            if ($response->failed()) {
+                Log::error("{$apiName} API HTTP error: " . $response->status(), ['response' => $response->json()]);
+                return response()->json([
+                    'error' => 'API call failed with HTTP status ' . $response->status(),
+                    'api_response' => $response->json()
+                ], $response->status());
+            }
 
             $result = $response->json();
-
-            // -----------------------------
-            // Extract the description
-            // -----------------------------
             $description = null;
 
-            if (isset($result['choices'][0]['message']['content'])) {
+            if ($apiName === 'gemini') {
+                if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
+                    $description = trim($result['candidates'][0]['content']['parts'][0]['text']);
+                } elseif (isset($result['promptFeedback']['blockReason'])) {
+                    // Check if content was blocked by safety settings
+                    Log::warning("Gemini API: Prompt or response blocked by safety settings.", [
+                        'blockReason' => $result['promptFeedback']['blockReason'],
+                        'safetyRatings' => $result['promptFeedback']['safetyRatings'],
+                        'prompt' => $prompt
+                    ]);
+                    return response()->json([
+                        'error' => 'Gemini API blocked content due to safety settings.',
+                        'block_reason' => $result['promptFeedback']['blockReason']
+                    ], 400); // 400 Bad Request is appropriate for content policy violation
+                } else {
+                    Log::error($apiName . ' API: No text or explicit block reason found in Gemini response.', ['response' => $result]);
+                    return response()->json(['error' => 'Failed to extract description from Gemini API response or no content generated.'], 500);
+                }
+            } elseif (isset($result['choices'][0]['message']['content'])) {
                 $description = trim($result['choices'][0]['message']['content']);
-            } elseif (isset($result['output_text'])) { // DeepSeek format
-                $description = trim($result['output_text']);
             }
 
             if ($description) {
                 return response()->json(['description' => $description]);
             } else {
-                Log::error($apiName . ' API error: ', $result);
-                return response()->json(['error' => 'Failed to generate description'], 500);
+                Log::error($apiName . ' API: Failed to extract description (final check).', ['response' => $result]);
+                return response()->json(['error' => 'Failed to generate description from ' . ucfirst($apiName) . ' API.'], 500);
             }
         } catch (\Exception $e) {
-            Log::error('API call failed: ' . $e->getMessage());
-            return response()->json(['error' => 'API call failed'], 500);
+            Log::error('API call failed: ' . $e->getMessage(), ['exception' => $e, 'apiName' => $apiName]);
+            return response()->json(['error' => 'API call failed due to an exception: ' . $e->getMessage()], 500);
         }
+    }
+
+    private function setting(string $key, $default = null): ?string
+    {
+        // YOUR ACTUAL IMPLEMENTATION HERE
+        // Example using Laravel's config helper:
+        if (str_starts_with($key, 'api_openai'))
+            return config('services.openai.' . str_replace('api_openai_', '', $key), $default);
+        if (str_starts_with($key, 'api_mistral'))
+            return config('services.mistral.' . str_replace('api_mistral_', '', $key), $default);
+        if (str_starts_with($key, 'api_deepseek'))
+            return config('services.deepseek.' . str_replace('api_deepseek_', '', $key), $default);
+        if (str_starts_with($key, 'api_gemini'))
+            return config('services.gemini.' . str_replace('api_gemini_', '', $key), $default);
+
+        return $default;
     }
 
 }

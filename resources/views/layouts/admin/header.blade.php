@@ -7,8 +7,12 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title', setting('site_name', 'Octosync Software Ltd'))</title>
-    <link rel="icon" type="image/png" href="{{ asset('assets/logo/icon.png') }}">
-
+    @if (setting('site_favicon'))
+        <link rel="icon" href="{{ Storage::url(setting('site_favicon')) }}" type="image/x-icon">
+    @else
+        <link rel="icon" href="{{ asset('assets/logo/icon.png') }}" type="image/x-icon">
+    @endif
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 

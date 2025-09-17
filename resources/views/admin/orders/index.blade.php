@@ -49,7 +49,7 @@
             <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                 <div class="flex items-center">
                     <div class="rounded-full bg-green-100 p-3 mr-4">
-                        <i class="fas fa-truck text-green-600 text-xl"></i>
+                        <i class="fas fa-sync-alt text-green-600 text-xl"></i>
                     </div>
                     <div>
                         <p class="text-sm font-medium text-gray-600">Processing</p>

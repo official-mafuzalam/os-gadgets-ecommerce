@@ -28,6 +28,11 @@ class SettingsTableSeeder extends Seeder
                 'enabled' => false,
                 'model' => 'deepseek-chat',
             ],
+            'gemini' => [
+                'key' => env('GOOGLE_API_KEY', null),
+                'enabled' => false,
+                'model' => 'gemini-1.5-pro',
+            ],
         ];
 
         foreach ($apis as $apiName => $config) {
