@@ -65,12 +65,20 @@ class SettingsTableSeeder extends Seeder
                 'order' => 1,
             ],
             [
+                'key' => 'site_url',
+                'value' => 'https://www.octosyncsoftware.com',
+                'type' => 'text',
+                'group' => 'general',
+                'label' => 'Site URL',
+                'order' => 2,
+            ],
+            [
                 'key' => 'site_email',
                 'value' => 'info@octosyncsoftware.com',
                 'type' => 'email',
                 'group' => 'general',
                 'label' => 'Site Email',
-                'order' => 2,
+                'order' => 3,
             ],
             [
                 'key' => 'site_phone',
@@ -78,7 +86,7 @@ class SettingsTableSeeder extends Seeder
                 'type' => 'text',
                 'group' => 'general',
                 'label' => 'Phone Number',
-                'order' => 3,
+                'order' => 4,
             ],
             [
                 'key' => 'site_address',
@@ -86,7 +94,7 @@ class SettingsTableSeeder extends Seeder
                 'type' => 'textarea',
                 'group' => 'general',
                 'label' => 'Address',
-                'order' => 4,
+                'order' => 5,
             ],
         ];
 
@@ -150,8 +158,8 @@ class SettingsTableSeeder extends Seeder
         // Analytics
         // --------------------
         $analyticsSettings = [
-            ['key' => 'google_analytics_code', 'value' => null, 'type' => 'textarea', 'group' => 'analytics', 'label' => 'Google Analytics Code', 'order' => 1],
-            ['key' => 'facebook_pixel_code', 'value' => null, 'type' => 'textarea', 'group' => 'analytics', 'label' => 'Facebook Pixel Code', 'order' => 2],
+            ['key' => 'google_tag_manager_id', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Google Tag Manager ID', 'order' => 1],
+            ['key' => 'facebook_pixel_id', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Facebook Pixel ID', 'order' => 2],
         ];
 
         foreach ($analyticsSettings as $setting) {

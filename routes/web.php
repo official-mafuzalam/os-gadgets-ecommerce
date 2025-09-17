@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SubscriberController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Public\CartController;
 use App\Http\Controllers\Public\CheckoutController;
@@ -65,6 +66,8 @@ Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear')
 Route::get('/buy-now/{product}', [CartController::class, 'buyNow'])->name('public.products.buy-now');
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('public.checkout');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('public.checkout.process');
+Route::get('/order-complete', [CheckoutController::class, 'orderComplete'])->name('public.order.complete');
+Route::get('/order-tracking', [PublicHomeController::class, 'orderTrackingForm'])->name('order.tracking.form');
 
 
 Route::get('/products', [PublicHomeController::class, 'products'])->name('public.products');
@@ -81,10 +84,11 @@ Route::get('/deals/{deal}', [PublicHomeController::class, 'dealShow'])->name('pu
 Route::get('/about', [PublicHomeController::class, 'about'])->name('public.about');
 Route::get('/contact', [PublicHomeController::class, 'contact'])->name('public.contact');
 Route::post('/contact', [PublicHomeController::class, 'submitContact'])->name('public.contact.submit');
+Route::post('/subscribe', [PublicHomeController::class, 'subscribe'])->name('public.subscribe');
 
+
+// AI Product Description Generator
 Route::post('/generate-description', [ProductController::class, 'generateDescription']);
-
-
 
 // For all auth user
 Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
@@ -139,6 +143,9 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
 
         Route::resource('carousels', CarouselController::class)->names('admin.carousels');
         Route::post('carousels/reorder', [CarouselController::class, 'reorder'])->name('admin.carousels.reorder');
+
+        // Subscribers
+        Route::resource('subscribers', SubscriberController::class)->names('admin.subscribers');
 
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

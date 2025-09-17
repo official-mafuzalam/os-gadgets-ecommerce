@@ -43,7 +43,8 @@
              <div>
                  <h3 class="text-lg font-semibold mb-4">Newsletter</h3>
                  <p class="text-gray-400 mb-4">Subscribe to our newsletter for the latest updates and offers.</p>
-                 <form action="#" method="POST" class="flex">
+                 <form action="{{ route('public.subscribe') }}" method="POST" class="flex">
+                     @csrf
                      <input type="email" name="email" placeholder="Your email address"
                          class="w-full px-4 py-2 rounded-l bg-gray-700 text-white focus:outline-none" required>
                      <button type="submit"

@@ -207,6 +207,44 @@
                 </div>
             </li>
 
+            <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.subscribers.index', 'admin.subscribers.create', 'admin.subscribers.edit']) ? 'hs-accordion-active' : '' }}"
+                id="marketing-accordion">
+                <a class="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
+                    href="javascript:;">
+                    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm14.5-.5a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5v.637l6.646 3.973a.5.5 0 0 0 .708 0L14.5 4.637V3.5zM14.5 5.803l-4.646 2.773L14.5 11V5.803zM1.5 11l4.646-2.424L1.5 5v6zM13.793 12H2.207l4.646-3.232L8 9.982l1.146-.714L13.793 12z" />
+                    </svg>
+                    Marketing
+
+                    <svg class="hs-accordion-active:block ml-auto hidden w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
+                        width="16" height="16" viewBox="0 0 16 16" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 11L8.16086 5.31305C8.35239 5.13625 8.64761 5.13625 8.83914 5.31305L15 11"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    </svg>
+                    <svg class="hs-accordion-active:hidden ml-auto block w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
+                        width="16" height="16" viewBox="0 0 16 16" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    </svg>
+                </a>
+                <div id="marketing-accordion-sub"
+                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 {{ in_array(Route::currentRouteName(), ['admin.subscribers.index', 'admin.subscribers.create', 'admin.subscribers.edit']) ? 'block' : 'hidden' }}">
+                    <ul class="pt-2 pl-2">
+                        <li>
+                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
+                                    {{ in_array(Route::currentRouteName(), ['admin.subscribers.index', 'admin.subscribers.create', 'admin.subscribers.edit']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                href="{{ route('admin.subscribers.index') }}">
+                                Subscribers
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
             <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.role', 'admin.role.createPage', 'admin.role.edit', 'admin.permission', 'admin.permission.createPage', 'admin.permission.edit', 'admin.user', 'admin.user.createPage', 'admin.users.show']) ? 'hs-accordion-active' : '' }}"
                 id="account-accordion">
                 <a class="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"

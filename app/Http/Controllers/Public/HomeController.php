@@ -8,6 +8,7 @@ use App\Models\Carousel;
 use App\Models\Category;
 use App\Models\Deal;
 use App\Models\Product;
+use App\Models\Subscriber;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -372,6 +373,19 @@ class HomeController extends Controller
         // like sending an email or storing the message in the database.
 
         return redirect()->route('public.contact')->with('success', 'Your message has been sent successfully!');
+    }
+
+    public function subscribe(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|unique:subscribers,email',
+        ]);
+
+        Subscriber::create([
+            'email' => $request->email,
+        ]);
+
+        return redirect()->back()->with('success', 'Thank you for subscribing to our newsletter!');
     }
 
 }

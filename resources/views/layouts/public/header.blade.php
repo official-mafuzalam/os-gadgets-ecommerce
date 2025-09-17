@@ -52,16 +52,69 @@
         }
     </style>
 
-    @if (setting('google_analytics_code'))
-        {!! setting('google_analytics_code') !!}
+    @if (setting('google_tag_manager_id'))
+        <!-- Google Tag Manager -->
+        <script>
+            (function(w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({
+                    'gtm.start': new Date().getTime(),
+                    event: 'gtm.js'
+                });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer' ? '&l=' + l : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', '{{ setting('google_tag_manager_id') }}');
+        </script>
+        <!-- End Google Tag Manager -->
     @endif
 
-    @if (setting('facebook_pixel_code'))
-        {!! setting('facebook_pixel_code') !!}
+    @if (setting('facebook_pixel_id'))
+        <!-- Meta Pixel Code -->
+        <script>
+            ! function(f, b, e, v, n, t, s) {
+                if (f.fbq) return;
+                n = f.fbq = function() {
+                    n.callMethod ?
+                        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                };
+                if (!f._fbq) f._fbq = n;
+                n.push = n;
+                n.loaded = !0;
+                n.version = '2.0';
+                n.queue = [];
+                t = b.createElement(e);
+                t.async = !0;
+                t.src = v;
+                s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s)
+            }(window, document, 'script',
+                'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '{{ setting('facebook_pixel_id') }}');
+            fbq('track', 'PageView');
+        </script>
+        <noscript>
+            <img height="1" width="1" style="display:none"
+                src="https://www.facebook.com/tr?id={{ setting('facebook_pixel_id') }}&ev=PageView&noscript=1" />
+        </noscript>
+        <!-- End Meta Pixel Code -->
     @endif
+
 </head>
 
 <body class="bg-gray-50">
+    @if (setting('google_tag_manager_id'))
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe src="https://www.googletagmanager.com/ns.html?id={{ setting('google_tag_manager_id') }}"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
+    @endif
+
     <!-- Navigation -->
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4">
@@ -189,7 +242,8 @@
                 </div>
 
                 <!-- Mobile Search Bar -->
-                <div id="mobileSearch" class="md:hidden fixed top-0 left-0 right-0 bg-white p-4 shadow-md z-50 hidden">
+                <div id="mobileSearch"
+                    class="md:hidden fixed top-0 left-0 right-0 bg-white p-4 shadow-md z-50 hidden">
                     <div class="flex items-center">
                         <input type="text" id="mobileSearchInput" placeholder="Search products..."
                             class="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:ring-indigo-500 focus:border-indigo-500"

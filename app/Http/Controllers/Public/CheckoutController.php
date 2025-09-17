@@ -38,22 +38,6 @@ class CheckoutController extends Controller
         ]);
     }
 
-    // Show checkout page for single product (Buy Now)
-    public function singleProductCheckout(Product $product)
-    {
-        if (!$product->isInStock()) {
-            return redirect()->back()->with('error', 'Product is out of stock.');
-        }
-
-        return view('public.checkout.single', [
-            'product' => $product,
-            'quantity' => 1,
-            'subtotal' => $product->final_price,
-            'tax' => 0,
-            'total' => $product->final_price,
-        ]);
-    }
-
     // Process checkout (cart or single product)
     public function process(Request $request)
     {
@@ -154,12 +138,25 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            return redirect()->route('public.products')
-                ->with('success', 'Order placed successfully! Total: ' . number_format($order->total_amount, 2) . ' TK');
+            return redirect()->route('public.order.complete', ['order_id' => $order->id]);
 
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Failed to place order: ' . $e->getMessage());
         }
     }
+
+    // Show order completion page
+    public function orderComplete(Request $request)
+    {
+        $orderId = $request->query('order_id');
+        $order = Order::with('items.product', 'shippingAddress')->find($orderId);
+        if (!$order) {
+            return redirect()->route('public.products')->with('error', 'Order not found.');
+        }
+        return view('public.order-complete', compact('order'));
+    }
+
+
+
 }

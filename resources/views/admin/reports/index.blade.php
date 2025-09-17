@@ -299,8 +299,10 @@
                         <p class="text-gray-600">Generated on: {{ now()->format('F j, Y h:i A') }}</p>
                     </div>
                     <div class="text-right">
-                        <h2 class="text-xl font-semibold">{{ config('app.name') }}</h2>
-                        <p class="text-gray-600">Sales Analysis Report</p>
+                        <h2 class="text-xl font-semibold">{{ setting('site_name') }}</h2>
+                        <p class="text-gray-600">{{ setting('site_email') }}</p>
+                        <p class="text-gray-600">{{ setting('site_phone') }}</p>
+                        <p class="text-gray-600">{{ setting('site_address') }}</p>
                     </div>
                 </div>
 
@@ -366,7 +368,6 @@
 
                 <!-- Summary Analysis -->
                 <div class="mt-12 p-6 bg-gray-50 rounded-lg">
-                    <h3 class="font-semibold text-lg mb-4">Summary Analysis</h3>
                     <div class="grid grid-cols-2 gap-6">
                         <div>
                             <h4 class="font-medium mb-2">Performance Metrics</h4>
@@ -386,16 +387,9 @@
                                 <li>Report Generated: <span
                                         class="font-semibold">{{ now()->format('F j, Y h:i A') }}</span></li>
                                 <li>Records Shown: <span class="font-semibold">{{ $orders->total() }}</span></li>
-                                <li>Page: <span class="font-semibold">1 of 1</span></li>
                             </ul>
                         </div>
                     </div>
-                </div>
-
-                <!-- Footer -->
-                <div class="mt-12 text-center text-gray-600 text-sm">
-                    <p>Confidential - For internal use only</p>
-                    <p>{{ config('app.name') }} • {{ config('app.url') }}</p>
                 </div>
             </div>
         </div>
