@@ -245,7 +245,19 @@
                 </div>
             </li>
 
-            <li class="hs-accordion {{ in_array(Route::currentRouteName(), ['admin.role', 'admin.role.createPage', 'admin.role.edit', 'admin.permission', 'admin.permission.createPage', 'admin.permission.edit', 'admin.user', 'admin.user.createPage', 'admin.users.show']) ? 'hs-accordion-active' : '' }}"
+            <li class="hs-accordion {{ in_array(Route::currentRouteName(), [
+                'admin.role',
+                'admin.role.createPage',
+                'admin.role.edit',
+                'admin.permission',
+                'admin.permission.createPage',
+                'admin.permission.edit',
+                'admin.user',
+                'admin.users.create',
+                'admin.users.show',
+            ])
+                ? 'hs-accordion-active'
+                : '' }}"
                 id="account-accordion">
                 <a class="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
                     href="javascript:;">
@@ -273,7 +285,7 @@
                 </a>
 
                 <div id="account-accordion-sub"
-                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 {{ in_array(Route::currentRouteName(), ['admin.role', 'admin.role.createPage', 'admin.role.edit', 'admin.permission', 'admin.permission.createPage', 'admin.permission.edit', 'admin.user', 'admin.user.createPage', 'admin.users.show']) ? 'block' : 'hidden' }}">
+                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 {{ in_array(Route::currentRouteName(), ['admin.role', 'admin.role.createPage', 'admin.role.edit', 'admin.permission', 'admin.permission.createPage', 'admin.permission.edit', 'admin.user', 'admin.users.create', 'admin.users.show']) ? 'block' : 'hidden' }}">
                     <ul class="pt-2 pl-2">
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
@@ -291,7 +303,7 @@
                         </li>
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
-                                    {{ in_array(Route::currentRouteName(), ['admin.user', 'admin.user.createPage', 'admin.users.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                    {{ in_array(Route::currentRouteName(), ['admin.user', 'admin.users.create', 'admin.users.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
                                 href="{{ route('admin.user') }}">
                                 Users
                             </a>

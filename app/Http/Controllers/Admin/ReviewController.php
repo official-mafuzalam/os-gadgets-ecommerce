@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -12,7 +13,8 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        return back()->with('success', 'Reviews management is coming soon.');
+        $reviews = Review::with('product', 'user')->paginate(10);
+        return view('admin.reviews.index', compact('reviews'));
     }
 
     /**
@@ -62,4 +64,17 @@ class ReviewController extends Controller
     {
         //
     }
+
+    /**
+     * Approve a review.
+     */
+    public function approve(Review $review)
+    {
+        $isApproved = !$review->is_approved;
+        $review->is_approved = $isApproved;
+        $review->save();
+        return redirect()->route('admin.reviews.index')->with('success', $isApproved ? 'Review approved successfully.' : 'Review unapproved successfully.');
+    }
+
+
 }

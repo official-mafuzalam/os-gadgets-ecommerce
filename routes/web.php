@@ -53,7 +53,6 @@ Route::get('/buy-now/{product}', [CartController::class, 'buyNow'])->name('publi
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('public.checkout');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('public.checkout.process');
 Route::get('/order-complete', [CheckoutController::class, 'orderComplete'])->name('public.order.complete');
-
 Route::get('/track-parcel', [CheckoutController::class, 'orderTrack'])->name('public.parcel.tracking');
 Route::post('/track-parcel', [CheckoutController::class, 'track'])->name('public.parcel.tracking.submit');
 
@@ -67,6 +66,8 @@ Route::get('/featured-products', [PublicHomeController::class, 'featuredProducts
 
 Route::get('/deals', [PublicHomeController::class, 'deals'])->name('public.deals');
 Route::get('/deals/{deal}', [PublicHomeController::class, 'dealShow'])->name('public.deals.show');
+
+Route::post('/products/{product}/review', [PublicHomeController::class, 'submitReview'])->name('public.products.review.submit');
 
 // Static Pages
 Route::get('/about', [PublicHomeController::class, 'about'])->name('public.about');
@@ -120,6 +121,7 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::resource('brands', BrandController::class)->names('admin.brands');
         Route::resource('orders', OrderController::class)->names('admin.orders');
         Route::resource('reviews', ReviewController::class)->names('admin.reviews');
+        Route::patch('reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');
 
         Route::resource('deals', DealController::class)->names('admin.deals');
         Route::patch('deals/{deal}/toggle-status', [DealController::class, 'toggleStatus'])->name('admin.deals.toggle-status');
@@ -175,6 +177,8 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
 
         // Users
         Route::get('/users', [UserController::class, 'user'])->name('admin.user');
+        Route::get('/users/create', [UserController::class, 'create'])->name('admin.users.create');
+        Route::post('/users', [UserController::class, 'store'])->name('admin.users.store');
         Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
         Route::post('/users/{user}/roles', [UserController::class, 'assignRole'])->name('admin.users.roles');

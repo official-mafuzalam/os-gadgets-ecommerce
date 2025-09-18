@@ -274,7 +274,7 @@
 
                         <!-- Review List -->
                         <div class="space-y-6">
-                            @forelse($product->reviews as $review)
+                            @forelse($product->reviews->where('is_approved', true) as $review)
                                 <div class="border-b border-gray-200 pb-6">
                                     <div class="flex items-center mb-2">
                                         <div class="flex text-yellow-400 mr-2">
@@ -300,7 +300,8 @@
                         <!-- Review Form -->
                         <div class="mt-8">
                             <h4 class="text-lg font-medium text-gray-900 mb-4">Write a Review</h4>
-                            <form>
+                            <form action="{{ route('public.products.review.submit', $product) }}" method="POST">
+                                @csrf
                                 <div class="mb-4">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
                                     <div class="flex items-center">
@@ -311,15 +312,32 @@
                                                     onclick="setRating({{ $i }})"></i>
                                             @endfor
                                         </div>
+                                        @error('order_number')
+                                            <p class="text-red-500 text-sm mt-1 ml-4">{{ $message }}</p>
+                                        @enderror
                                         <input type="hidden" name="rating" id="rating-value" value="0">
                                     </div>
                                 </div>
+
+                                <div class="mb-4">
+                                    <label for="order_number"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Order ID *</label>
+                                    <input type="text" id="order_number" name="order_number"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                @error('order_number')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+
                                 <div class="mb-4">
                                     <label for="review-body"
-                                        class="block text-sm font-medium text-gray-700 mb-2">Review</label>
-                                    <textarea id="review-body" name="body" rows="4"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Review *</label>
+                                    <textarea id="review-body" name="comment" rows="4"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
                                 </div>
+                                @error('comment')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                                 <button type="submit"
                                     class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-md transition-colors">Submit
                                     Review</button>

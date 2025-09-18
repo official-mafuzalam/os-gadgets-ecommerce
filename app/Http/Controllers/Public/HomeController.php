@@ -8,6 +8,7 @@ use App\Models\Carousel;
 use App\Models\Category;
 use App\Models\Deal;
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\Subscriber;
 use Illuminate\Http\Request;
 
@@ -364,6 +365,42 @@ class HomeController extends Controller
 
         return view('public.products.index', compact('products', 'categories', 'brands'))->with('deal', $deal);
     }
+
+    public function submitReview(Request $request, $productId)
+    {
+        try {
+            $request->validate([
+                'order_number' => 'required|exists:orders,order_number',
+                'rating' => 'required|integer|min:1|max:5',
+                'comment' => 'required|string|max:1000',
+            ]);
+
+            $product = Product::findOrFail($productId);
+
+            $review = new Review();
+            $review->product_id = $product->id;
+            $review->rating = $request->rating;
+            $review->comment = $request->comment;
+
+            if (auth()->check()) {
+                // Logged-in user review
+                $review->user_id = auth()->id();
+            } else {
+                // Guest review
+                $review->guest_name = $request->guest_name ?? 'Anonymous';
+                $review->guest_email = $request->guest_email;
+            }
+
+            // Default: require approval before showing
+            $review->is_approved = false;
+            $review->save();
+
+            return redirect()->back()->with('success', 'Your review has been submitted and is pending approval.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to submit review: ' . $e->getMessage());
+        }
+    }
+
 
     public function about()
     {

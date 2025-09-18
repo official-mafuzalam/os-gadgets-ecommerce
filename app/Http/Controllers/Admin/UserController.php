@@ -22,6 +22,30 @@ class UserController extends Controller
         return view('admin.user.index', compact('users'));
     }
 
+    public function create()
+    {
+        return view('admin.user.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        event(new Registered($user));
+
+        return to_route('admin.user')->with('success', 'User created successfully.');
+    }
+
     public function show(User $user)
     {
         $roles = Role::all();
