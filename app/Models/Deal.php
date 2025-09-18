@@ -27,6 +27,7 @@ class Deal extends Model
         'image_url',
         'background_color',
         'is_active',
+        'is_featured',
         'starts_at',
         'ends_at',
         'priority',
@@ -41,6 +42,7 @@ class Deal extends Model
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
         'is_active' => 'boolean',
+        'is_featured' => 'boolean',
     ];
 
     /**
@@ -82,6 +84,14 @@ class Deal extends Model
                 $q->whereNull('ends_at')
                     ->orWhere('ends_at', '>=', $now);
             });
+    }
+
+    /**
+     * Scope a query to only include featured deals.
+     */
+    public function scopeFeatured(Builder $query): void
+    {
+        $query->where('is_featured', true);
     }
 
     /**

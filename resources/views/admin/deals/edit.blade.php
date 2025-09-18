@@ -116,30 +116,27 @@
                         <div class="p-6">
                             <h3 class="text-lg font-medium text-gray-800 mb-4">Design Settings</h3>
 
-                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <div>
-                                    <label for="background_from_color" class="block text-sm font-medium mb-2">Gradient
-                                        Start Color *</label>
-                                    <div class="relative">
-                                        <input type="color" id="background_from_color" name="background_from_color"
-                                            value="{{ old('background_from_color', $deal->background_from_color) }}"
-                                            class="py-1 px-1 block w-full h-10 border border-gray-200 rounded-lg text-sm">
-                                    </div>
-                                    @error('background_from_color')
-                                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <div>
-                                    <label for="background_to_color" class="block text-sm font-medium mb-2">Gradient End
-                                        Color *</label>
-                                    <div class="relative">
-                                        <input type="color" id="background_to_color" name="background_to_color"
-                                            value="{{ old('background_to_color', $deal->background_to_color) }}"
-                                            class="py-1 px-1 block w-full h-10 border border-gray-200 rounded-lg text-sm">
-                                    </div>
-                                    @error('background_to_color')
-                                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                                    <label for="background_color"
+                                        class="block text-sm font-medium text-gray-700 mb-1">Background Color</label>
+                                    <select name="background_color" id="background_color"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="gradient-to-r from-indigo-900 to-purple-800"
+                                            {{ old('background_color', $deal->background_color ?? '') == 'gradient-to-r from-indigo-900 to-purple-800' ? 'selected' : '' }}>
+                                            Indigo to Purple</option>
+                                        <option value="gradient-to-r from-blue-900 to-indigo-800"
+                                            {{ old('background_color', $deal->background_color ?? '') == 'gradient-to-r from-blue-900 to-indigo-800' ? 'selected' : '' }}>
+                                            Blue to Indigo</option>
+                                        <option value="gradient-to-r from-purple-900 to-pink-800"
+                                            {{ old('background_color', $deal->background_color ?? '') == 'gradient-to-r from-purple-900 to-pink-800' ? 'selected' : '' }}>
+                                            Purple to Pink</option>
+                                        <option value="gradient-to-r from-green-900 to-teal-800"
+                                            {{ old('background_color', $deal->background_color ?? '') == 'gradient-to-r from-green-900 to-teal-800' ? 'selected' : '' }}>
+                                            Green to Teal</option>
+                                    </select>
+                                    @error('background_color')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
 

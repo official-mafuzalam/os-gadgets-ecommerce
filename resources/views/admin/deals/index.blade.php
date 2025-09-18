@@ -107,6 +107,28 @@
                                                             </span>
                                                         </button>
                                                     </form>
+                                                    <form action="{{ route('admin.deals.toggle-featured', $deal) }}"
+                                                        method="POST" class="inline">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="focus:outline-none">
+                                                            <span @class([
+                                                                'inline-flex px-2 py-1 rounded-md text-xs font-medium cursor-pointer transition-colors',
+                                                                'bg-green-500/20 text-green-700 dark:text-green-300 hover:bg-green-500/30' =>
+                                                                    $deal->is_featured,
+                                                                'bg-red-500/20 text-red-700 dark:text-red-300 hover:bg-red-500/30' => !$deal->is_featured,
+                                                            ])>
+                                                                {{ $deal->is_featured ? 'Featured' : 'Not Featured' }}
+                                                                <svg class="w-3 h-3 ml-1 inline" fill="none"
+                                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4">
+                                                                    </path>
+                                                                </svg>
+                                                            </span>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     <div class="flex justify-end items-center space-x-2">

@@ -86,7 +86,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Total Sales</p>
-                            <p class="text-lg font-semibold text-gray-900">${{ number_format($totalSales, 2) }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ number_format($totalSales, 2) }} TK</p>
                         </div>
                     </div>
                 </div>
@@ -110,7 +110,7 @@
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-600">Avg Order Value</p>
-                            <p class="text-lg font-semibold text-gray-900">${{ number_format($avgOrderValue, 2) }}</p>
+                            <p class="text-lg font-semibold text-gray-900">{{ number_format($avgOrderValue, 2) }} TK</p>
                         </div>
                     </div>
                 </div>
@@ -196,19 +196,19 @@
                                     </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        ${{ number_format($order->subtotal, 2) }}
+                                        {{ number_format($order->subtotal, 2) }} TK
                                     </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        ${{ number_format($order->shipping_cost, 2) }}
+                                        {{ number_format($order->shipping_cost, 2) }} TK
                                     </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        ${{ number_format($order->discount_amount, 2) }}
+                                        {{ number_format($order->discount_amount, 2) }} TK
                                     </td>
 
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        ${{ number_format($order->total_amount, 2) }}
+                                        {{ number_format($order->total_amount, 2) }} TK
                                     </td>
                                 </tr>
                             @empty
@@ -229,16 +229,16 @@
                                         {{ $orders->sum(fn($order) => $order->items->count()) }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        ${{ number_format($orders->sum('subtotal'), 2) }}
+                                        {{ number_format($orders->sum('subtotal'), 2) }} TK
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        ${{ number_format($orders->sum('shipping_cost'), 2) }}
+                                        {{ number_format($orders->sum('shipping_cost'), 2) }} TK
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        ${{ number_format($orders->sum('discount_amount'), 2) }}
+                                        {{ number_format($orders->sum('discount_amount'), 2) }} TK
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        ${{ number_format($orders->sum('total_amount'), 2) }}
+                                        {{ number_format($orders->sum('total_amount'), 2) }} TK
                                     </td>
                                 </tr>
                             @endif
@@ -309,7 +309,7 @@
                 <!-- Summary Section -->
                 <div class="grid grid-cols-4 gap-4 mb-8">
                     <div class="p-4 border border-gray-200 rounded-lg text-center">
-                        <p class="text-2xl font-bold text-blue-700">${{ number_format($totalSales, 2) }}</p>
+                        <p class="text-2xl font-bold text-blue-700">{{ number_format($totalSales, 2) }}</p>
                         <p class="text-sm text-gray-600">Total Sales</p>
                     </div>
                     <div class="p-4 border border-gray-200 rounded-lg text-center">
@@ -317,7 +317,7 @@
                         <p class="text-sm text-gray-600">Total Orders</p>
                     </div>
                     <div class="p-4 border border-gray-200 rounded-lg text-center">
-                        <p class="text-2xl font-bold text-purple-700">${{ number_format($avgOrderValue, 2) }}</p>
+                        <p class="text-2xl font-bold text-purple-700">{{ number_format($avgOrderValue, 2) }}</p>
                         <p class="text-sm text-gray-600">Avg Order Value</p>
                     </div>
                     <div class="p-4 border border-gray-200 rounded-lg text-center">
@@ -347,10 +347,10 @@
                                 <td class="py-3">{{ $order->created_at->format('M d, Y') }}</td>
                                 <td class="py-3">{{ $order->customer_email }}</td>
                                 <td class="text-right py-3">{{ $order->items->count() }}</td>
-                                <td class="text-right py-3">${{ number_format($order->subtotal, 2) }}</td>
-                                <td class="text-right py-3">${{ number_format($order->shipping_cost, 2) }}</td>
-                                <td class="text-right py-3">${{ number_format($order->discount_amount, 2) }}</td>
-                                <td class="text-right py-3">${{ number_format($order->total_amount, 2) }}</td>
+                                <td class="text-right py-3">{{ number_format($order->subtotal, 2) }} TK</td>
+                                <td class="text-right py-3">{{ number_format($order->shipping_cost, 2) }} TK</td>
+                                <td class="text-right py-3">{{ number_format($order->discount_amount, 2) }} TK</td>
+                                <td class="text-right py-3">{{ number_format($order->total_amount, 2) }} TK</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -358,10 +358,10 @@
                         <tr class="border-t-2 border-gray-300 font-semibold">
                             <td colspan="3" class="py-3 text-right">TOTALS:</td>
                             <td class="text-right py-3">{{ $orders->sum(fn($order) => $order->items->count()) }}</td>
-                            <td class="text-right py-3">${{ number_format($orders->sum('subtotal'), 2) }}</td>
-                            <td class="text-right py-3">${{ number_format($orders->sum('shipping_cost'), 2) }}</td>
-                            <td class="text-right py-3">${{ number_format($orders->sum('discount_amount'), 2) }}</td>
-                            <td class="text-right py-3">${{ number_format($orders->sum('total_amount'), 2) }}</td>
+                            <td class="text-right py-3">{{ number_format($orders->sum('subtotal'), 2) }} TK</td>
+                            <td class="text-right py-3">{{ number_format($orders->sum('shipping_cost'), 2) }} TK</td>
+                            <td class="text-right py-3">{{ number_format($orders->sum('discount_amount'), 2) }} TK</td>
+                            <td class="text-right py-3">{{ number_format($orders->sum('total_amount'), 2) }} TK</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -373,10 +373,10 @@
                             <h4 class="font-medium mb-2">Performance Metrics</h4>
                             <ul class="text-sm text-gray-700 space-y-1">
                                 <li>Total Sales: <span
-                                        class="font-semibold">${{ number_format($totalSales, 2) }}</span></li>
+                                        class="font-semibold">{{ number_format($totalSales, 2) }} TK</span></li>
                                 <li>Number of Orders: <span class="font-semibold">{{ $totalOrders }}</span></li>
                                 <li>Average Order Value: <span
-                                        class="font-semibold">${{ number_format($avgOrderValue, 2) }}</span></li>
+                                        class="font-semibold">{{ number_format($avgOrderValue, 2) }} TK</span></li>
                                 <li>Date Range: <span class="font-semibold">{{ $startDate }} to
                                         {{ $endDate }}</span></li>
                             </ul>

@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('image_url');
             $table->string('background_color')->default('gradient-to-r from-indigo-900 to-purple-800');
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->integer('priority')->default(0);

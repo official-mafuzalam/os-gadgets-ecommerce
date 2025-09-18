@@ -15,21 +15,7 @@
                 </div>
             </div>
         </div>
-
-        @if ($errors->any())
-            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-                <div class="flex items-center">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    <strong>Whoops!</strong> There were some problems with your input.
-                </div>
-                <ul class="mt-2 list-disc list-inside text-sm">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
+        
         <form action="{{ route('admin.orders.update', $order->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -90,8 +76,15 @@
                             </div>
 
                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Full Address</label>
+                                <textarea name="full_address" rows="2"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    placeholder="Add any notes about this order">{{ old('full_address', $order->shippingAddress->full_address) }}</textarea>
+                            </div>
+
+                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Order Notes</label>
-                                <textarea name="notes" rows="3"
+                                <textarea name="notes" rows="1"
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                     placeholder="Add any notes about this order">{{ old('notes', $order->notes) }}</textarea>
                             </div>
@@ -150,6 +143,35 @@
 
                 <!-- Right Column -->
                 <div class="space-y-6">
+                    <!-- Customer Information -->
+                    <div class="bg-white shadow-sm rounded-lg">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h2 class="text-lg font-medium text-gray-900">Customer Information</h2>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <input type="text" name="full_name"
+                                    value="{{ old('full_name', $order->shippingAddress->full_name) }}"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                <input type="text" name="customer_phone"
+                                    value="{{ old('customer_phone', $order->customer_phone) }}"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                            </div>
+                            @if ($order->customer_email)
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Registered
+                                        Email</label>
+                                    <input type="email" value="{{ $order->customer_email }}" disabled
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-100 cursor-not-allowed">
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
                     <!-- Order Summary -->
                     <div class="bg-white shadow-sm rounded-lg">
                         <div class="px-6 py-4 border-b border-gray-200">
@@ -188,28 +210,6 @@
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-gray-50"
                                         readonly>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Customer Information -->
-                    <div class="bg-white shadow-sm rounded-lg">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <h2 class="text-lg font-medium text-gray-900">Customer Information</h2>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                <input type="email" name="customer_email"
-                                    value="{{ old('customer_email', $order->customer_email) }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                                <input type="text" name="customer_phone"
-                                    value="{{ old('customer_phone', $order->customer_phone) }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                             </div>
                         </div>
                     </div>

@@ -188,6 +188,18 @@ class DealController extends Controller
     }
 
     /**
+     * Toggle the featured status of a deal.
+     */
+    public function toggleDealFeatured(Deal $deal)
+    {
+        $deal->is_featured = !$deal->is_featured;
+        $deal->save();
+
+        return redirect()->back()
+            ->with('success', 'Deal featured status updated successfully.');
+    }
+
+    /**
      * Display products associated with a specific deal.
      */
     public function productsShow(Deal $deal)

@@ -21,28 +21,43 @@ class HomeController extends Controller
         $allProducts = Product::with(['category', 'brand', 'images'])
             ->where('is_active', true)
             ->latest()
-            ->take(8)
+            ->take(24)
             ->get();
 
         $featuredProducts = Product::with(['category', 'brand', 'images'])
             ->where('is_featured', true)
             ->where('is_active', true)
-            ->take(8)
+            ->take(12)
             ->get();
 
         // Get categories that have active products
         $categories = Category::whereHas('products', function ($query) {
             $query->where('is_active', true);
-        })
-            ->withCount([
-                'products' => function ($query) {
-                    $query->where('is_active', true);
-                }
-            ])
+        })->withCount([
+                    'products' => function ($query) {
+                        $query->where('is_active', true);
+                    }
+                ])
             ->where('is_active', true)
+            ->take(9)
             ->get();
 
-        return view('public.index', compact('carousels', 'deal', 'allProducts', 'featuredProducts', 'categories'));
+        $allDeals = Deal::featured()->latest()->take(10)->get();
+
+        $leftDeals = $allDeals->slice(0, 2);     // first 2 deals for left sidebar
+        $rightDeals = $allDeals->slice(2, 2);    // next 2 deals for right sidebar
+        $bottomDeals = $allDeals->slice(4, 6);   // next 6 deals for bottom grid
+
+        return view('public.index', compact(
+            'carousels',
+            'deal',
+            'allProducts',
+            'featuredProducts',
+            'categories',
+            'leftDeals',
+            'rightDeals',
+            'bottomDeals'
+        ));
     }
 
     public function search(Request $request)

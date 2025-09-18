@@ -19,8 +19,7 @@
                 <div class="bg-white shadow rounded-lg overflow-hidden">
                     <!-- Banner Preview -->
                     <div class="relative">
-                        <div
-                            class="bg-gradient-to-r from-[{{ $deal->background_from_color }}] to-[{{ $deal->background_to_color }}] p-8">
+                        <div class="bg-gradient-to-r bg-{{ $deal->background_color }} p-8">
                             <div class="flex flex-col md:flex-row items-center">
                                 <div class="md:w-1/2 text-white">
                                     <h2 class="text-2xl md:text-3xl font-bold mb-4">{{ $deal->title }}</h2>

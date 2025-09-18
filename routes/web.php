@@ -132,8 +132,8 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
 
         Route::resource('deals', DealController::class)->names('admin.deals');
         Route::patch('deals/{deal}/toggle-status', [DealController::class, 'toggleStatus'])->name('admin.deals.toggle-status');
+        Route::patch('deals/{deal}/toggle-featured', [DealController::class, 'toggleDealFeatured'])->name('admin.deals.toggle-featured');
         Route::get('deals/{deal}/products', [DealController::class, 'productsShow'])->name('admin.deals.products.show');
-        Route::patch('deals/{deal}/toggle-featured', [DealController::class, 'toggleFeatured'])->name('admin.deals.products.toggle-featured');
         Route::post('deals/{deal}/products/assign', [DealController::class, 'assignProducts'])->name('admin.deals.products.assign');
         Route::delete('deals/{deal}/products/{product}/remove', [DealController::class, 'removeProduct'])->name('admin.deals.products.remove');
         Route::patch('deals/{deal}/products/{product}/toggle-featured', [DealController::class, 'toggleFeatured'])->name('admin.deals.products.toggle-featured');

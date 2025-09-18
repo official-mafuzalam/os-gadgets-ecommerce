@@ -83,7 +83,7 @@ class OrderController extends Controller
         $totalAmount = $orders->sum('total_amount');
         $totalCompletedAmount = $orders->where('status', 'delivered')->sum('total_amount');
         $totalCancelledAmount = $orders->where('status', 'cancelled')->sum('total_amount');
-        
+
         // Get counts for stats
         $totalOrders = Order::count();
         $pendingOrders = Order::where('status', 'pending')->count();
@@ -186,8 +186,10 @@ class OrderController extends Controller
             'status' => 'required|in:pending,confirmed,processing,shipped,delivered,cancelled',
             'payment_status' => 'required|in:pending,paid,failed,refunded',
             'tracking_number' => 'nullable|string|max:255',
+            'full_address' => 'nullable|string',
             'notes' => 'nullable|string',
-            'customer_email' => 'required|email',
+            'full_name' => 'required|string|max:255',
+            'customer_email' => 'nullable|email',
             'customer_phone' => 'required|string',
             'subtotal' => 'required|numeric|min:0',
             'shipping_cost' => 'required|numeric|min:0',
@@ -199,6 +201,15 @@ class OrderController extends Controller
 
         // Update order
         $order->update($validated);
+
+        if ($request->has('full_name') || $request->has('customer_email') || $request->has('customer_phone') || $request->has('full_address')) {
+            $order->shippingAddress->update([
+                'full_name' => $request->full_name,
+                'phone' => $request->customer_phone,
+                'email' => $request->customer_email,
+                'full_address' => $request->full_address
+            ]);
+        }
 
         // Update order items if provided
         if ($request->has('items')) {

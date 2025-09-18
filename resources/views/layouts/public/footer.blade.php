@@ -69,7 +69,7 @@
 
  @if (setting('whatsapp_enabled', true))
      <!-- Animated Floating WhatsApp Button -->
-     <div class="fixed bottom-6 right-6 z-50">
+     <div class="fixed bottom-6 left-6 z-50">
          <div class="relative">
              <!-- Pulsing ring effect -->
              <div class="absolute inset-0 animate-ping bg-green-400 rounded-full opacity-75"
@@ -93,7 +93,7 @@
      </div>
  </div>
 
- <script>
+ {{-- <script>
      // Simple JavaScript for interactive elements
      document.addEventListener('DOMContentLoaded', function() {
          // Product card hover effect
@@ -125,7 +125,7 @@
              });
          });
      });
- </script>
+ </script> --}}
  <script>
      document.addEventListener('DOMContentLoaded', function() {
          const notifications = document.querySelectorAll('#notification-success, #notification-error');
@@ -136,6 +136,7 @@
          });
      });
  </script>
+ @stack('scripts')
  </body>
 
  </html>

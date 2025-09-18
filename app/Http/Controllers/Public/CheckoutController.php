@@ -138,7 +138,7 @@ class CheckoutController extends Controller
 
             DB::commit();
 
-            return redirect()->route('public.order.complete', ['order_id' => $order->id]);
+            return redirect()->route('public.order.complete', ['order_number' => $order->order_number]);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -149,8 +149,8 @@ class CheckoutController extends Controller
     // Show order completion page
     public function orderComplete(Request $request)
     {
-        $orderId = $request->query('order_id');
-        $order = Order::with('items.product', 'shippingAddress')->find($orderId);
+        $orderNumber = $request->query('order_number');
+        $order = Order::with('items.product', 'shippingAddress')->where('order_number', $orderNumber)->first();
         if (!$order) {
             return redirect()->route('public.products')->with('error', 'Order not found.');
         }

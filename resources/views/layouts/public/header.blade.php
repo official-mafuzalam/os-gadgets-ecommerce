@@ -20,8 +20,8 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- <link rel="preload" as="style" href="{{ asset('build/assets/app-e64e5c60.css') }}" />
-    <link rel="stylesheet" href="{{ asset('build/assets/app-e64e5c60.css') }}" />
+    {{-- <link rel="preload" as="style" href="{{ asset('build/assets/app-7c5c9473.css') }}" />
+    <link rel="stylesheet" href="{{ asset('build/assets/app-7c5c9473.css') }}" />
     <link rel="modulepreload" href="{{ asset('build/assets/app-37a11075.js') }}" />
     <script type="module" src="{{ asset('build/assets/app-37a11075.js') }}"></script> --}}
 
@@ -51,6 +51,7 @@
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
     </style>
+    @stack('styles')
 
     @if (setting('google_tag_manager_id'))
         <!-- Google Tag Manager -->
@@ -315,10 +316,19 @@
                                 if (data.length > 0) {
                                     let html = '<div class="space-y-2">';
                                     data.forEach(product => {
-                                        // Use route name for product link
+                                        // Get primary image or use placeholder
+                                        const primaryImage = product.images && product.images.length > 0 ?
+                                            product.images.find(img => img.is_primary) : null;
+
+                                        const imageUrl = primaryImage ? primaryImage.image_url :
+                                            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAxM00yNi4wMjUxIDE2Ljk3NDlDMjcuMjU4MSAxOC4yMDc4IDI3LjI1ODEgMjAuMTkyMiAyNi4wMjUxIDIxLjQyNTFDMjQuNzkyMiAyMi42NTgxIDIyLjgwNzggMjIuNjU4MSAyMS41NzQ5IDIxLjQyNTFDMjAuMzQxOSAyMC4xOTIyIDIwLjM0MTkgMTguMjA3OCAyMS41NzQ5IDE2Ljk3NDlDMjIuODA3OCAxNS43NDE5IDI0Ljc5MjIgMTUuNzQxOSAyNi4wMjUxIDE2Ljk3NDkiIHN0cm9rZT0iIzlDQTBBQyIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTMuNSA2LjVDMTMuNSA1LjM5NTQzIDE0LjM5NTQgNC41IDE1LjUgNC41SDI0LjVDMjUuNjA0NiA0LjUgMjYuNSA1LjM5NTQzIDI2LjUgNi41VjEzLjUiIHN0cm9rZT0iIzlDQTBBQyIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTMuNSA0LjVWMTMuNUgyNC41VjQuNSIgc3Ryb2tlPSIjOUNBMEFDIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=';
+
                                         html += `
                                             <a href="{{ route('public.products.show', '') }}/${product.slug}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg">
-                                                <img src="${product.images && product.images.length > 0 && product.images.find(img => img.is_primary) ? product.images.find(img => img.is_primary).image_url : 'https://via.placeholder.com/40'}" alt="${product.name}" class="w-10 h-10 object-cover rounded">
+                                                <img src="${imageUrl}" 
+                                                    alt="${product.name}" 
+                                                    class="w-10 h-10 object-cover rounded"
+                                                    onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAxM00yNi4wMjUxIDE2Ljk3NDlDMjcuMjU4MSAxOC4yMDc4IDI3LjI1ODEgMjAuMTkyMiAyNi4wMjUxIDIxLjQyNTFDMjQuNzkyMiAyMi42NTgxIDIyLjgwNzggMjIuNjU4MSAyMS41NzQ5IDIxLjQyNTFDMjAuMzQxOSAyMC4xOTIyIDIwLjM0MTkgMTguMjA3OCAyMS41NzQ5IDE2Ljk3NDlDMjIuODA3OCAxNS43NDE5IDI0Ljc5MjIgMTUuNzQxOSAyNi4wMjUxIDE2Ljk3NDkiIHN0cm9rZT0iIzlDQTBBQyIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTMuNSA2LjVDMTMuNSA1LjM5NTQzIDE0LjM5NTQgNC41IDE1LjUgNC41SDI0LjVDMjUuNjA0NiA0LjUgMjYuNSA1LjM5NTQzIDI2LjUgNi41VjEzLjUiIHN0cm9rZT0iIzlDQTBBQyIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTMuNSA0LjVWMTMuNUgyNC41VjQuNSIgc3Ryb2tlPSIjOUNBMEFDIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=';">
                                                 <div class="ml-3">
                                                     <div class="text-sm font-medium text-gray-900">${product.name}</div>
                                                     <div class="text-sm text-gray-600">${product.price_formatted}</div>
@@ -337,6 +347,9 @@
                             })
                             .catch(error => {
                                 console.error('Search error:', error);
+                                resultsContainer.innerHTML =
+                                    '<div class="p-4 text-center text-gray-500">Search failed. Please try again.</div>';
+                                resultsContainer.classList.remove('hidden');
                             });
                     }
 

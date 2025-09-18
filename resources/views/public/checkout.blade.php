@@ -28,6 +28,10 @@
             </div>
         </div> --}}
 
+        @php
+            $lang = setting('order_form_language'); // 'en' or 'bn'
+        @endphp
+
         <div class="container mx-auto px-4 py-6">
             <div class="lg:grid lg:grid-cols-12 lg:gap-8">
                 {{-- Billing Form --}}
@@ -37,51 +41,92 @@
                             <div class="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center mr-3">
                                 <i class="fas fa-user text-blue-600"></i>
                             </div>
-                            <h2 class="text-xl font-semibold text-gray-900">Billing Details</h2>
+                            <h2 class="text-xl font-semibold text-gray-900">
+                                Billing Details
+                            </h2>
                         </div>
 
                         <form action="{{ route('public.checkout.process') }}" method="POST" id="checkout-form">
                             @csrf
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        @if ($lang === 'bn')
+                                            আপনার সম্পূর্ণ নাম *
+                                        @else
+                                            Full Name *
+                                        @endif
+                                    </label>
                                     <input type="text" name="full_name" required
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                        placeholder="Enter your full name">
+                                        placeholder="@if ($lang === 'bn') আপনার সম্পূর্ণ নাম লিখুন @else Enter your full name @endif">
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        @if ($lang === 'bn')
+                                            আপনার ফোন নম্বর *
+                                        @else
+                                            Phone Number *
+                                        @endif
+                                    </label>
                                     <input type="text" name="phone" required
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                        placeholder="Your phone number">
+                                        placeholder="@if ($lang === 'bn') আপনার ফোন নম্বর লিখুন @else Your phone number @endif">
                                 </div>
                             </div>
 
-                            <div class="mb-4">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                <input type="email" name="email"
-                                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                    placeholder="your.email@example.com">
-                            </div>
+                            @if (setting('order_email_need'))
+                                <div class="mb-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        @if ($lang === 'bn')
+                                            ইমেইল ঠিকানা দিন (যদি থাকে)
+                                        @else
+                                            Email Address
+                                        @endif
+                                    </label>
+                                    <input type="email" name="email"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
+                                        placeholder="@if ($lang === 'bn') your.email@example.com @else your.email@example.com @endif">
+                                </div>
+                            @endif
 
                             <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Full Address
-                                    *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    @if ($lang === 'bn')
+                                        সম্পূর্ণ ঠিকানা *
+                                    @else
+                                        Delivery Full Address *
+                                    @endif
+                                </label>
                                 <textarea name="full_address" required rows="3"
                                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                    placeholder="Enter your complete delivery address"></textarea>
+                                    placeholder="@if ($lang === 'bn') আপনার সম্পূর্ণ ঠিকানা লিখুন @else Enter your complete delivery address @endif"></textarea>
                             </div>
 
-                            <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
-                                <textarea name="notes" rows="3"
-                                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                    placeholder="Enter any additional notes or instructions"></textarea>
-                            </div>
+                            @if (setting('order_notes_need'))
+                                <div class="mb-6">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        @if ($lang === 'bn')
+                                            নোট (যদি থাকে)
+                                        @else
+                                            Notes (If Any)
+                                        @endif
+                                    </label>
+                                    <textarea name="notes" rows="3"
+                                        class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
+                                        placeholder="@if ($lang === 'bn') অতিরিক্ত নোট বা নির্দেশনা লিখুন @else Enter any additional notes or instructions @endif"></textarea>
+                                </div>
+                            @endif
 
                             <div class="mb-6">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Delivery Option *</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    @if ($lang === 'bn')
+                                        ডেলিভারির এলাকা *
+                                    @else
+                                        Delivery Area *
+                                    @endif
+                                </label>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div class="relative">
                                         <input class="sr-only peer" type="radio" name="delivery_area"
@@ -90,11 +135,21 @@
                                             class="flex p-4 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:ring-1 peer-checked:ring-blue-600 transition-colors"
                                             for="inside_dhaka">
                                             <div class="ml-3">
-                                                <span class="mt-1 font-semibold text-gray-900">Inside Dhaka</span>
+                                                <span class="mt-1 font-semibold text-gray-900">
+                                                    @if ($lang === 'bn')
+                                                        ঢাকার ভিতরে
+                                                    @else
+                                                        Inside Dhaka
+                                                    @endif
+                                                </span>
                                                 <p class="mt-1 text-sm text-gray-500">
                                                     <span
                                                         id="inside_dhaka_price">{{ setting('inside_dhaka_shipping_cost') }}</span>
-                                                    TK - 1-2 business days
+                                                    TK - @if ($lang === 'bn')
+                                                        ১-২ ব্যবসায়িক দিন
+                                                    @else
+                                                        1-2 business days
+                                                    @endif
                                                 </p>
                                             </div>
                                         </label>
@@ -107,11 +162,21 @@
                                             class="flex p-4 bg-white border border-gray-300 rounded-lg cursor-pointer focus:outline-none hover:bg-gray-50 peer-checked:border-blue-600 peer-checked:ring-1 peer-checked:ring-blue-600 transition-colors"
                                             for="outside_dhaka">
                                             <div class="ml-3">
-                                                <span class="mt-1 font-semibold text-gray-900">Outside Dhaka</span>
+                                                <span class="mt-1 font-semibold text-gray-900">
+                                                    @if ($lang === 'bn')
+                                                        ঢাকার বাইরে
+                                                    @else
+                                                        Outside Dhaka
+                                                    @endif
+                                                </span>
                                                 <p class="mt-1 text-sm text-gray-500">
                                                     <span
                                                         id="outside_dhaka_price">{{ setting('outside_dhaka_shipping_cost') }}</span>
-                                                    TK - 3-5 business days
+                                                    TK - @if ($lang === 'bn')
+                                                        ৩-৫ ব্যবসায়িক দিন
+                                                    @else
+                                                        3-5 business days
+                                                    @endif
                                                 </p>
                                             </div>
                                         </label>
@@ -120,20 +185,30 @@
                             </div>
 
                             <button type="submit" id="place-order-btn"
-                                class="w-full bg-blue-600 text-white py-3.5 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center">
-                                <i class="fas fa-lock mr-2"></i> Place Order Securely
+                                class="w-full bg-blue-600 text-white py-3.5 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center">
+                                <i class="fas fa-lock mr-2"></i>
+                                @if ($lang === 'bn')
+                                    নিরাপদভাবে অর্ডার করুন
+                                @else
+                                    Place Order Securely
+                                @endif
                             </button>
                         </form>
                     </div>
 
+                    {{-- Secure Checkout Info --}}
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                         <div class="flex items-center mb-4">
                             <div class="bg-blue-100 w-8 h-8 rounded-full flex items-center justify-center mr-3">
                                 <i class="fas fa-shield-alt text-blue-600 text-sm"></i>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900">Secure Checkout</h3>
+                            <h3 class="text-lg font-medium text-gray-900">
+                                Secure Checkout
+                            </h3>
                         </div>
-                        <p class="text-sm text-gray-600">Your information is protected by 256-bit SSL encryption</p>
+                        <p class="text-sm text-gray-600">
+                            Your information is protected by 256-bit SSL encryption
+                        </p>
                     </div>
                 </div>
 
@@ -144,7 +219,9 @@
                             <div class="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center mr-3">
                                 <i class="fas fa-receipt text-blue-600"></i>
                             </div>
-                            <h2 class="text-xl font-semibold text-gray-900">Order Summary</h2>
+                            <h2 class="text-xl font-semibold text-gray-900">
+                                Order Summary
+                            </h2>
                         </div>
 
                         <div class="divide-y divide-gray-200 mb-4">
@@ -159,7 +236,13 @@
                                         <div class="ml-4">
                                             <h3 class="text-sm font-medium text-gray-900">{{ $item->product->name }}
                                             </h3>
-                                            <p class="text-xs text-gray-500 mt-1">Qty: {{ $item->quantity }}</p>
+                                            <p class="text-xs text-gray-500 mt-1">
+                                                @if ($lang === 'bn')
+                                                    পরিমাণ:
+                                                @else
+                                                    Qty:
+                                                @endif {{ $item->quantity }}
+                                            </p>
                                         </div>
                                     </div>
                                     <span
@@ -171,17 +254,35 @@
 
                         <div class="space-y-3 border-t border-gray-200 pt-4">
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Subtotal</span>
+                                <span class="text-gray-600">
+                                    @if ($lang === 'bn')
+                                        উপমোট
+                                    @else
+                                        Subtotal
+                                    @endif
+                                </span>
                                 <span class="text-gray-900">{{ number_format($subtotal, 2) }} TK</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Delivery charge</span>
+                                <span class="text-gray-600">
+                                    @if ($lang === 'bn')
+                                        ডেলিভারি চার্জ
+                                    @else
+                                        Delivery charge
+                                    @endif
+                                </span>
                                 <span id="delivery_charge" class="text-gray-900">
                                     {{ number_format(setting('inside_dhaka_shipping_cost'), 2) }} TK
                                 </span>
                             </div>
                             <div class="flex justify-between text-lg font-semibold pt-3 border-t border-gray-200">
-                                <span class="text-gray-900">Total</span>
+                                <span class="text-gray-900">
+                                    @if ($lang === 'bn')
+                                        মোট
+                                    @else
+                                        Total
+                                    @endif
+                                </span>
                                 <span id="total_amount" class="text-gray-900">
                                     {{ number_format($subtotal + setting('inside_dhaka_shipping_cost'), 2) }} TK
                                 </span>
@@ -191,6 +292,7 @@
                 </div>
             </div>
         </div>
+
 
         <script>
             function updateDelivery() {

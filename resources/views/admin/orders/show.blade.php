@@ -52,27 +52,27 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
             <!-- Order Summary -->
             <div class="lg:col-span-2">
-
                 <div class="bg-white shadow rounded-lg p-6 mb-6">
                     <h2 class="text-lg font-semibold text-gray-800 mb-4">
                         Customer Order History
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="p-4 bg-green-50 rounded-lg border border-green-200 text-center">
+                        <div class="p-2 bg-green-50 rounded-lg border border-green-200 text-center">
                             <p class="text-2xl font-bold text-green-700">{{ $completedOrders }}</p>
                             <p class="text-sm text-green-600">Completed Orders</p>
                             <p class="text-xs text-green-500">{{ $completedPercent }}%</p>
                         </div>
 
-                        <div class="p-4 bg-red-50 rounded-lg border border-red-200 text-center">
+                        <div class="p-2 bg-red-50 rounded-lg border border-red-200 text-center">
                             <p class="text-2xl font-bold text-red-700">{{ $cancelledOrders }}</p>
                             <p class="text-sm text-red-600">Cancelled Orders</p>
                             <p class="text-xs text-red-500">{{ $cancelledPercent }}%</p>
                         </div>
 
-                        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200 text-center">
+                        <div class="p-2 bg-blue-50 rounded-lg border border-blue-200 text-center">
                             <p class="text-2xl font-bold text-blue-700">{{ $totalOrders }}</p>
                             <p class="text-sm text-blue-600">Total Orders</p>
                         </div>
@@ -122,13 +122,13 @@
                                             class="border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                                             <option value="">Update Status</option>
                                             <option value="confirmed"
-                                                {{ $order->status == 'pending' ? '' : 'disabled' }}>Confirm</option>
+                                                {{ $order->status == 'confirmed' ? 'selected' : '' }}>Confirm</option>
                                             <option value="processing"
-                                                {{ $order->status == 'confirmed' ? '' : 'disabled' }}>Process</option>
+                                                {{ $order->status == 'processing' ? 'selected' : '' }}>Process</option>
                                             <option value="shipped"
-                                                {{ $order->status == 'processing' ? '' : 'disabled' }}>Ship</option>
+                                                {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped</option>
                                             <option value="delivered"
-                                                {{ $order->status == 'shipped' ? '' : 'disabled' }}>Mark as Delivered
+                                                {{ $order->status == 'delivered' ? 'selected' : '' }}>Mark as Delivered
                                             </option>
                                             <option value="cancelled">Cancel Order</option>
                                         </select>
