@@ -169,21 +169,6 @@ class SettingsTableSeeder extends Seeder
             );
         }
 
-        // --------------------
-        // SEO
-        // --------------------
-        $seoSettings = [
-            ['key' => 'meta_description', 'value' => 'Your premier destination for tech gadgets and electronics', 'type' => 'textarea', 'group' => 'seo', 'label' => 'Meta Description', 'order' => 1],
-            ['key' => 'meta_keywords', 'value' => 'tech, gadgets, electronics, store', 'type' => 'textarea', 'group' => 'seo', 'label' => 'Meta Keywords', 'order' => 2],
-        ];
-
-        foreach ($seoSettings as $setting) {
-            Setting::updateOrCreate(
-                ['key' => $setting['key'], 'group' => $setting['group']],
-                $setting
-            );
-        }
-
         // -------------------
         // Order Settings
         // -------------------
@@ -210,6 +195,60 @@ class SettingsTableSeeder extends Seeder
         ];
 
         foreach ($deliverySettings as $setting) {
+            Setting::updateOrCreate(
+                ['key' => $setting['key'], 'group' => $setting['group']],
+                $setting
+            );
+        }
+
+
+        // --------------------
+        // SEO & Meta Tags
+        // --------------------
+        $seoSettings = [
+            ['key' => 'meta_description', 'value' => null, 'type' => 'textarea', 'group' => 'seo', 'label' => 'Meta Description', 'order' => 1],
+            ['key' => 'meta_keywords', 'value' => null, 'type' => 'textarea', 'group' => 'seo', 'label' => 'Meta Keywords', 'order' => 2],
+            ['key' => 'meta_author', 'value' => null, 'type' => 'text', 'group' => 'seo', 'label' => 'Meta Author', 'order' => 3],
+            ['key' => 'meta_language', 'value' => 'English', 'type' => 'text', 'group' => 'seo', 'label' => 'Meta Language', 'order' => 4],
+        ];
+
+        foreach ($seoSettings as $setting) {
+            Setting::updateOrCreate(
+                ['key' => $setting['key'], 'group' => $setting['group']],
+                $setting
+            );
+        }
+
+        // --------------------
+        // Open Graph (OG Tags)
+        // --------------------
+        $ogSettings = [
+            ['key' => 'og_title', 'value' => null, 'type' => 'text', 'group' => 'opengraph', 'label' => 'OG Title', 'order' => 1],
+            ['key' => 'og_description', 'value' => null, 'type' => 'textarea', 'group' => 'opengraph', 'label' => 'OG Description', 'order' => 2],
+            ['key' => 'og_image', 'value' => null, 'type' => 'image', 'group' => 'opengraph', 'label' => 'OG Image', 'order' => 3],
+            ['key' => 'og_url', 'value' => null, 'type' => 'text', 'group' => 'opengraph', 'label' => 'OG URL', 'order' => 4],
+            ['key' => 'og_type', 'value' => 'website', 'type' => 'text', 'group' => 'opengraph', 'label' => 'OG Type', 'order' => 5],
+            ['key' => 'fb_app_id', 'value' => null, 'type' => 'text', 'group' => 'opengraph', 'label' => 'Facebook App ID', 'order' => 6],
+        ];
+
+        foreach ($ogSettings as $setting) {
+            Setting::updateOrCreate(
+                ['key' => $setting['key'], 'group' => $setting['group']],
+                $setting
+            );
+        }
+
+        // --------------------
+        // Twitter Card
+        // --------------------
+        $twitterSettings = [
+            ['key' => 'twitter_card', 'value' => 'summary_large_image', 'type' => 'text', 'group' => 'twitter', 'label' => 'Twitter Card Type', 'order' => 1],
+            ['key' => 'twitter_title', 'value' => null, 'type' => 'text', 'group' => 'twitter', 'label' => 'Twitter Title', 'order' => 2],
+            ['key' => 'twitter_description', 'value' => null, 'type' => 'textarea', 'group' => 'twitter', 'label' => 'Twitter Description', 'order' => 3],
+            ['key' => 'twitter_image', 'value' => null, 'type' => 'image', 'group' => 'twitter', 'label' => 'Twitter Image', 'order' => 4],
+        ];
+
+        foreach ($twitterSettings as $setting) {
             Setting::updateOrCreate(
                 ['key' => $setting['key'], 'group' => $setting['group']],
                 $setting

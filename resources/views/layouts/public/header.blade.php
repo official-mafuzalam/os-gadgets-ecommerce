@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="description" content="@yield('meta_description', setting('meta_description', 'Best E-commerce website'))">
-    <meta name="keywords" content="@yield('meta_keywords', setting('meta_keywords', 'software, solutions, it'))">
-    <meta name="author" content="{{ setting('site_name', 'Octosync Software Ltd') }}">
+
+    <x-meta />
 
     <title>@yield('title', setting('site_name', 'Octosync Software Ltd'))</title>
-
     @if (setting('site_favicon'))
         <link rel="icon" href="{{ Storage::url(setting('site_favicon')) }}" type="image/x-icon">
     @else
@@ -92,6 +90,26 @@
                 src="https://www.facebook.com/tr?id={{ setting('facebook_pixel_id') }}&ev=PageView&noscript=1" />
         </noscript>
     @endif
+
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "url": {{ setting('og_url', url()->current()) }},
+          "name": {{ setting('og_title', setting('site_name', 'Octosync Software Ltd')) }},
+          "logo": {{ setting('og_image') }},
+          "description": {{ setting('meta_description', 'Best E-commerce website') }},
+          "sameAs": [
+            {{ setting('facebook_url') }}
+          ],
+          "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": {{ setting('site_phone') }},
+            "contactType": "Customer Service"
+          }
+        }
+    </script>
+
 </head>
 
 <body class="bg-gray-50">

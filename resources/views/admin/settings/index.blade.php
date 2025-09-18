@@ -12,7 +12,7 @@
                 <div class="bg-white rounded-lg shadow overflow-hidden">
                     <!-- Tabs Navigation -->
                     <div class="border-b border-gray-200">
-                        <nav class="flex -mb-px">
+                        <nav class="flex ml-6" aria-label="Tabs">
                             @php $firstTab = true; @endphp
                             @foreach ($groups as $groupName => $groupSettings)
                                 @php
