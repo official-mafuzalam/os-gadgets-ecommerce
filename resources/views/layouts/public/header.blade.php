@@ -9,8 +9,8 @@
     <meta name="keywords" content="@yield('meta_keywords', setting('meta_keywords', 'software, solutions, it'))">
     <meta name="author" content="{{ setting('site_name', 'Octosync Software Ltd') }}">
 
-
     <title>@yield('title', setting('site_name', 'Octosync Software Ltd'))</title>
+
     @if (setting('site_favicon'))
         <link rel="icon" href="{{ Storage::url(setting('site_favicon')) }}" type="image/x-icon">
     @else
@@ -24,12 +24,6 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    {{-- <link rel="preload" as="style" href="{{ asset('build/assets/app-7c5c9473.css') }}" />
-    <link rel="stylesheet" href="{{ asset('build/assets/app-7c5c9473.css') }}" />
-    <link rel="modulepreload" href="{{ asset('build/assets/app-37a11075.js') }}" />
-    <script type="module" src="{{ asset('build/assets/app-37a11075.js') }}"></script> --}}
-
-    <!-- Custom Styles -->
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -46,11 +40,13 @@
 
         .product-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
     </style>
     @stack('styles')
 
+    <!-- Google Tag Manager -->
     @if (setting('google_tag_manager_id'))
         <script>
             (function(w, d, s, l, i) {
@@ -69,13 +65,13 @@
         </script>
     @endif
 
+    <!-- Facebook Pixel -->
     @if (setting('facebook_pixel_id'))
         <script>
             ! function(f, b, e, v, n, t, s) {
                 if (f.fbq) return;
                 n = f.fbq = function() {
-                    n.callMethod ?
-                        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                    n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
                 };
                 if (!f._fbq) f._fbq = n;
                 n.push = n;
@@ -86,9 +82,8 @@
                 t.async = !0;
                 t.src = v;
                 s = b.getElementsByTagName(e)[0];
-                s.parentNode.insertBefore(t, s)
-            }(window, document, 'script',
-                'https://connect.facebook.net/en_US/fbevents.js');
+                s.parentNode.insertBefore(t, s);
+            }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '{{ setting('facebook_pixel_id') }}');
             fbq('track', 'PageView');
         </script>
@@ -97,7 +92,6 @@
                 src="https://www.facebook.com/tr?id={{ setting('facebook_pixel_id') }}&ev=PageView&noscript=1" />
         </noscript>
     @endif
-
 </head>
 
 <body class="bg-gray-50">
@@ -112,11 +106,12 @@
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
-                <div class="flex items-center">
-                    <a href="{{ route('public.welcome') }}"
-                        class="text-2xl font-bold text-indigo-600">{{ setting('site_name', 'Octosync Software Ltd') }}</a>
-                </div>
+                <!-- Logo -->
+                <a href="{{ route('public.welcome') }}" class="text-2xl font-bold text-indigo-600">
+                    {{ setting('site_name', 'Octosync Software Ltd') }}
+                </a>
 
+                <!-- Desktop Menu -->
                 <div class="hidden md:flex space-x-8">
                     <a href="{{ route('public.welcome') }}"
                         class="text-gray-800 hover:text-indigo-600 font-medium">Home</a>
@@ -179,26 +174,27 @@
                         class="text-gray-800 hover:text-indigo-600 font-medium">Brands</a>
                     <a href="{{ route('public.deals') }}"
                         class="text-gray-800 hover:text-indigo-600 font-medium">Deals</a>
+                    <a href="{{ route('public.parcel.tracking') }}"
+                        class="text-red-500 hover:text-indigo-600 font-medium">Track
+                        Your Order</a>
                 </div>
 
+                <!-- Right Icons -->
                 <div class="flex items-center space-x-4">
-                    <!-- Search Button (Mobile) -->
+                    <!-- Search -->
                     <button class="md:hidden text-gray-800 hover:text-indigo-600" onclick="toggleMobileSearch()">
                         <i class="fas fa-search text-lg"></i>
                     </button>
-
-                    <!-- Search Button (Desktop) -->
                     <button class="hidden md:block text-gray-800 hover:text-indigo-600" onclick="toggleSearch()">
                         <i class="fas fa-search text-lg"></i>
                     </button>
 
-                    <!-- Cart Icon -->
+                    <!-- Cart -->
                     @php
                         $sessionCart = App\Models\ShoppingCart::where('session_id', session()->getId())->first();
                         $cartCount = $sessionCart ? $sessionCart->items()->sum('quantity') : 0;
                     @endphp
-
-                    <a href="{{ route('public.cart') }}" class="text-gray-800 hover:text-indigo-600 relative">
+                    <a href="{{ route('public.cart') }}" class="relative text-gray-800 hover:text-indigo-600">
                         <i class="fas fa-shopping-cart text-lg"></i>
                         @if ($cartCount > 0)
                             <span
@@ -213,153 +209,170 @@
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
-
-                <!-- Desktop Search Modal -->
-                <div id="searchModal"
-                    class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
-                    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
-                        <div class="p-4">
-                            <div class="flex items-center">
-                                <input type="text" id="searchInput" placeholder="Search products..."
-                                    class="flex-1 px-4 py-3 border-0 focus:ring-0 focus:outline-none text-lg"
-                                    onkeyup="performSearch(event)">
-                                <button onclick="closeSearch()" class="ml-2 text-gray-500 hover:text-gray-700">
-                                    <i class="fas fa-times text-xl"></i>
-                                </button>
-                            </div>
-                            <div id="searchResults" class="mt-4 max-h-60 overflow-y-auto hidden">
-                                <!-- Search results will be populated here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mobile Search Bar -->
-                <div id="mobileSearch"
-                    class="md:hidden fixed top-0 left-0 right-0 bg-white p-4 shadow-md z-50 hidden">
-                    <div class="flex items-center">
-                        <input type="text" id="mobileSearchInput" placeholder="Search products..."
-                            class="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:ring-indigo-500 focus:border-indigo-500"
-                            onkeyup="performMobileSearch(event)">
-                        <button onclick="closeMobileSearch()"
-                            class="bg-gray-100 px-4 py-2 rounded-r-md text-gray-600 hover:text-gray-800">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div id="mobileSearchResults" class="mt-2 max-h-48 overflow-y-auto hidden">
-                        <!-- Mobile search results will be populated here -->
-                    </div>
-                </div>
-
-                <script>
-                    // Search functionality
-                    function toggleSearch() {
-                        document.getElementById('searchModal').classList.toggle('hidden');
-                        document.getElementById('searchInput').focus();
-                    }
-
-                    function closeSearch() {
-                        document.getElementById('searchModal').classList.add('hidden');
-                    }
-
-                    function toggleMobileSearch() {
-                        document.getElementById('mobileSearch').classList.toggle('hidden');
-                        document.getElementById('mobileSearchInput').focus();
-                    }
-
-                    function closeMobileSearch() {
-                        document.getElementById('mobileSearch').classList.add('hidden');
-                    }
-
-                    function performSearch(event) {
-                        if (event.key === 'Enter') {
-                            const query = document.getElementById('searchInput').value.trim();
-                            if (query) {
-                                window.location.href = `{{ route('public.search') }}?q=${encodeURIComponent(query)}`;
-                            }
-                        } else {
-                            liveSearch('searchInput', 'searchResults');
-                        }
-                    }
-
-                    function performMobileSearch(event) {
-                        if (event.key === 'Enter') {
-                            const query = document.getElementById('mobileSearchInput').value.trim();
-                            if (query) {
-                                window.location.href = `{{ route('public.search') }}?q=${encodeURIComponent(query)}`;
-                            }
-                        } else {
-                            liveSearch('mobileSearchInput', 'mobileSearchResults');
-                        }
-                    }
-
-                    function liveSearch(inputId, resultsId) {
-                        const query = document.getElementById(inputId).value.trim();
-                        const resultsContainer = document.getElementById(resultsId);
-
-                        if (query.length < 2) {
-                            resultsContainer.classList.add('hidden');
-                            return;
-                        }
-
-                        fetch(`{{ route('public.search.live') }}?q=${encodeURIComponent(query)}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.length > 0) {
-                                    let html = '<div class="space-y-2">';
-                                    data.forEach(product => {
-                                        // Get primary image or use placeholder
-                                        const primaryImage = product.images && product.images.length > 0 ?
-                                            product.images.find(img => img.is_primary) : null;
-
-                                        const imageUrl = primaryImage ? primaryImage.image_url :
-                                            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAxM00yNi4wMjUxIDE2Ljk3NDlDMjcuMjU4MSAxOC4yMDc4IDI3LjI1ODEgMjAuMTkyMiAyNi4wMjUxIDIxLjQyNTFDMjQuNzkyMiAyMi42NTgxIDIyLjgwNzggMjIuNjU4MSAyMS41NzQ5IDIxLjQyNTFDMjAuMzQxOSAyMC4xOTIyIDIwLjM0MTkgMTguMjA3OCAyMS41NzQ5IDE2Ljk3NDlDMjIuODA3OCAxNS43NDE5IDI0Ljc5MjIgMTUuNzQxOSAyNi4wMjUxIDE2Ljk3NDkiIHN0cm9rZT0iIzlDQTBBQyIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTMuNSA2LjVDMTMuNSA1LjM5NTQzIDE0LjM5NTQgNC41IDE1LjUgNC41SDI0LjVDMjUuNjA0NiA0LjUgMjYuNSA1LjM5NTQzIDI2LjUgNi41VjEzLjUiIHN0cm9rZT0iIzlDQTBBQyIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTMuNSA0LjVWMTMuNUgyNC41VjQuNSIgc3Ryb2tlPSIjOUNBMEFDIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=';
-
-                                        html += `
-                                            <a href="{{ route('public.products.show', '') }}/${product.slug}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg">
-                                                <img src="${imageUrl}" 
-                                                    alt="${product.name}" 
-                                                    class="w-10 h-10 object-cover rounded"
-                                                    onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAxM00yNi4wMjUxIDE2Ljk3NDlDMjcuMjU4MSAxOC4yMDc4IDI3LjI1ODEgMjAuMTkyMiAyNi4wMjUxIDIxLjQyNTFDMjQuNzkyMiAyMi42NTgxIDIyLjgwNzggMjIuNjU4MSAyMS41NzQ5IDIxLjQyNTFDMjAuMzQxOSAyMC4xOTIyIDIwLjM0MTkgMTguMjA3OCAyMS41NzQ5IDE2Ljk3NDlDMjIuODA3OCAxNS43NDE5IDI0Ljc5MjIgMTUuNzQxOSAyNi4wMjUxIDE2Ljk3NDkiIHN0cm9rZT0iIzlDQTBBQyIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTMuNSA2LjVDMTMuNSA1LjM5NTQzIDE0LjM5NTQgNC41IDE1LjUgNC41SDI0LjVDMjUuNjA0NiA0LjUgMjYuNSA1LjM5NTQzIDI2LjUgNi41VjEzLjUiIHN0cm9rZT0iIzlDQTBBQyIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8cGF0aCBkPSJNMTMuNSA0LjVWMTMuNUgyNC41VjQuNSIgc3Ryb2tlPSIjOUNBMEFDIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=';">
-                                                <div class="ml-3">
-                                                    <div class="text-sm font-medium text-gray-900">${product.name}</div>
-                                                    <div class="text-sm text-gray-600">${product.price_formatted}</div>
-                                                </div>
-                                            </a>
-                                        `;
-                                    });
-                                    html += '</div>';
-                                    resultsContainer.innerHTML = html;
-                                    resultsContainer.classList.remove('hidden');
-                                } else {
-                                    resultsContainer.innerHTML =
-                                        '<div class="p-4 text-center text-gray-500">No products found</div>';
-                                    resultsContainer.classList.remove('hidden');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Search error:', error);
-                                resultsContainer.innerHTML =
-                                    '<div class="p-4 text-center text-gray-500">Search failed. Please try again.</div>';
-                                resultsContainer.classList.remove('hidden');
-                            });
-                    }
-
-                    // Close search when clicking outside
-                    document.getElementById('searchModal').addEventListener('click', function(e) {
-                        if (e.target.id === 'searchModal') {
-                            closeSearch();
-                        }
-                    });
-
-                    // Close search with Escape key
-                    document.addEventListener('keydown', function(e) {
-                        if (e.key === 'Escape') {
-                            closeSearch();
-                            closeMobileSearch();
-                        }
-                    });
-                </script>
             </div>
         </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden bg-white shadow-md hidden">
+            <a href="{{ route('public.welcome') }}" class="block px-4 py-2 border-b hover:bg-gray-50">Home</a>
+            <a href="{{ route('public.products') }}" class="block px-4 py-2 border-b hover:bg-gray-50">Products</a>
+
+            <div class="border-b">
+                <button class="w-full text-left px-4 py-2 flex justify-between items-center hover:bg-gray-50"
+                    onclick="toggleMobileDropdown('mobileCategories')">
+                    Categories <i class="fas fa-chevron-down text-xs"></i>
+                </button>
+                <div id="mobileCategories" class="hidden flex-col">
+                    @foreach ($categories as $category)
+                        <a href="{{ route('public.categories.show', $category->slug) }}"
+                            class="block px-6 py-2 hover:bg-gray-100">
+                            {{ $category->name }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+
+            <a href="{{ route('public.brands') }}" class="block px-4 py-2 border-b hover:bg-gray-50">Brands</a>
+            <a href="{{ route('public.deals') }}" class="block px-4 py-2 border-b hover:bg-gray-50">Deals</a>
+            <a href="{{ route('public.parcel.tracking') }}"
+                class="block px-4 py-2 border-b hover:bg-gray-50 text-red-500">Track Your Order</a>
+        </div>
+
+        <!-- Desktop Search Modal -->
+        <div id="searchModal"
+            class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
+                <div class="p-4">
+                    <div class="flex items-center">
+                        <input type="text" id="searchInput" placeholder="Search products..."
+                            class="flex-1 px-4 py-3 border-0 focus:ring-0 focus:outline-none text-lg"
+                            onkeyup="performSearch(event)">
+                        <button onclick="closeSearch()" class="ml-2 text-gray-500 hover:text-gray-700">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    <div id="searchResults" class="mt-4 max-h-60 overflow-y-auto hidden"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Search -->
+        <div id="mobileSearch" class="md:hidden fixed top-0 left-0 right-0 bg-white p-4 shadow-md z-50 hidden">
+            <div class="flex items-center">
+                <input type="text" id="mobileSearchInput" placeholder="Search products..."
+                    class="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:ring-indigo-500 focus:border-indigo-500"
+                    onkeyup="performMobileSearch(event)">
+                <button onclick="closeMobileSearch()"
+                    class="bg-gray-100 px-4 py-2 rounded-r-md text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="mobileSearchResults" class="mt-2 max-h-48 overflow-y-auto hidden"></div>
+        </div>
     </nav>
+
+    <!-- Scripts -->
+    <script>
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function toggleMobileDropdown(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        function toggleSearch() {
+            const modal = document.getElementById('searchModal');
+            modal.classList.toggle('hidden');
+            document.getElementById('searchInput').focus();
+        }
+
+        function closeSearch() {
+            document.getElementById('searchModal').classList.add('hidden');
+        }
+
+        function toggleMobileSearch() {
+            const modal = document.getElementById('mobileSearch');
+            modal.classList.toggle('hidden');
+            document.getElementById('mobileSearchInput').focus();
+        }
+
+        function closeMobileSearch() {
+            document.getElementById('mobileSearch').classList.add('hidden');
+        }
+
+        // Close on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSearch();
+                closeMobileSearch();
+            }
+        });
+
+        // Close desktop search on click outside
+        document.getElementById('searchModal').addEventListener('click', function(e) {
+            if (e.target.id === 'searchModal') closeSearch();
+        });
+
+        // Live search
+        function performSearch(event) {
+            if (event.key === 'Enter') {
+                const query = document.getElementById('searchInput').value.trim();
+                if (query) window.location.href = `{{ route('public.search') }}?q=${encodeURIComponent(query)}`;
+            } else {
+                liveSearch('searchInput', 'searchResults');
+            }
+        }
+
+        function performMobileSearch(event) {
+            if (event.key === 'Enter') {
+                const query = document.getElementById('mobileSearchInput').value.trim();
+                if (query) window.location.href = `{{ route('public.search') }}?q=${encodeURIComponent(query)}`;
+            } else {
+                liveSearch('mobileSearchInput', 'mobileSearchResults');
+            }
+        }
+
+        function liveSearch(inputId, resultsId) {
+            const query = document.getElementById(inputId).value.trim();
+            const resultsContainer = document.getElementById(resultsId);
+            if (query.length < 2) {
+                resultsContainer.classList.add('hidden');
+                return;
+            }
+
+            fetch(`{{ route('public.search.live') }}?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data || data.length === 0) {
+                        resultsContainer.innerHTML =
+                            '<div class="p-4 text-center text-gray-500">No products found</div>';
+                        resultsContainer.classList.remove('hidden');
+                        return;
+                    }
+
+                    let html = '<div class="space-y-2">';
+                    data.forEach(product => {
+                        const primaryImage = product.images?.find(img => img.is_primary);
+                        const imageUrl = primaryImage?.image_url || 'data:image/svg+xml;base64,...';
+
+                        html += `
+                        <a href="{{ route('public.products.show', '') }}/${product.slug}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg">
+                            <img src="${imageUrl}" alt="${product.name}" class="w-10 h-10 object-cover rounded">
+                            <div class="ml-3">
+                                <div class="text-sm font-medium text-gray-900">${product.name}</div>
+                                <div class="text-sm text-gray-600">${product.price_formatted}</div>
+                            </div>
+                        </a>`;
+                    });
+                    html += '</div>';
+                    resultsContainer.innerHTML = html;
+                    resultsContainer.classList.remove('hidden');
+                })
+                .catch(err => {
+                    console.error(err);
+                    resultsContainer.innerHTML = '<div class="p-4 text-center text-gray-500">Search failed</div>';
+                    resultsContainer.classList.remove('hidden');
+                });
+        }
+    </script>

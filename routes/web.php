@@ -22,16 +22,6 @@ use App\Http\Controllers\Public\HomeController as PublicHomeController;
 use App\Http\Controllers\Public\SearchController;
 use Illuminate\Support\Facades\Artisan;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 Route::get('/session', function () {
     $session = session()->all();
@@ -42,10 +32,6 @@ Route::get('/clear-cache', function () {
     $exitCode = Artisan::call('optimize:clear');
     return to_route('public.welcome')->with('success', 'Cache cleared successfully! ' . $exitCode);
 })->name('clear.cache');
-
-
-
-
 
 
 // For all public pages -->
@@ -67,8 +53,9 @@ Route::get('/buy-now/{product}', [CartController::class, 'buyNow'])->name('publi
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('public.checkout');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('public.checkout.process');
 Route::get('/order-complete', [CheckoutController::class, 'orderComplete'])->name('public.order.complete');
-Route::get('/order-tracking', [PublicHomeController::class, 'orderTrackingForm'])->name('order.tracking.form');
 
+Route::get('/track-parcel', [CheckoutController::class, 'orderTrack'])->name('public.parcel.tracking');
+Route::post('/track-parcel', [CheckoutController::class, 'track'])->name('public.parcel.tracking.submit');
 
 Route::get('/products', [PublicHomeController::class, 'products'])->name('public.products');
 Route::get('/product/{product}', [PublicHomeController::class, 'productShow'])->name('public.products.show');
@@ -81,10 +68,14 @@ Route::get('/featured-products', [PublicHomeController::class, 'featuredProducts
 Route::get('/deals', [PublicHomeController::class, 'deals'])->name('public.deals');
 Route::get('/deals/{deal}', [PublicHomeController::class, 'dealShow'])->name('public.deals.show');
 
+// Static Pages
 Route::get('/about', [PublicHomeController::class, 'about'])->name('public.about');
 Route::get('/contact', [PublicHomeController::class, 'contact'])->name('public.contact');
 Route::post('/contact', [PublicHomeController::class, 'submitContact'])->name('public.contact.submit');
 Route::post('/subscribe', [PublicHomeController::class, 'subscribe'])->name('public.subscribe');
+Route::get('/privacy-policy', [PublicHomeController::class, 'privacyPolicy'])->name('public.privacy-policy');
+Route::get('/terms-of-service', [PublicHomeController::class, 'termsOfService'])->name('public.terms-of-service');
+Route::get('/return-policy', [PublicHomeController::class, 'returnPolicy'])->name('public.return-policy');
 
 
 // AI Product Description Generator

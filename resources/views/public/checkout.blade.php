@@ -29,7 +29,7 @@
         </div> --}}
 
         @php
-            $lang = setting('order_form_language'); // 'en' or 'bn'
+            $lang = setting('order_form_bangla') ? '1' : '0';
         @endphp
 
         <div class="container mx-auto px-4 py-6">
@@ -51,7 +51,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        @if ($lang === 'bn')
+                                        @if ($lang === '1')
                                             আপনার সম্পূর্ণ নাম *
                                         @else
                                             Full Name *
@@ -59,12 +59,12 @@
                                     </label>
                                     <input type="text" name="full_name" required
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                        placeholder="@if ($lang === 'bn') আপনার সম্পূর্ণ নাম লিখুন @else Enter your full name @endif">
+                                        placeholder="@if ($lang === '1') আপনার সম্পূর্ণ নাম লিখুন @else Enter your full name @endif">
                                 </div>
 
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        @if ($lang === 'bn')
+                                        @if ($lang === '1')
                                             আপনার ফোন নম্বর *
                                         @else
                                             Phone Number *
@@ -72,14 +72,14 @@
                                     </label>
                                     <input type="text" name="phone" required
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                        placeholder="@if ($lang === 'bn') আপনার ফোন নম্বর লিখুন @else Your phone number @endif">
+                                        placeholder="@if ($lang === '1') আপনার ফোন নম্বর লিখুন @else Your phone number @endif">
                                 </div>
                             </div>
 
                             @if (setting('order_email_need'))
                                 <div class="mb-4">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        @if ($lang === 'bn')
+                                        @if ($lang === '1')
                                             ইমেইল ঠিকানা দিন (যদি থাকে)
                                         @else
                                             Email Address
@@ -87,13 +87,13 @@
                                     </label>
                                     <input type="email" name="email"
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                        placeholder="@if ($lang === 'bn') your.email@example.com @else your.email@example.com @endif">
+                                        placeholder="@if ($lang === '1') your.email@example.com @else your.email@example.com @endif">
                                 </div>
                             @endif
 
                             <div class="mb-6">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    @if ($lang === 'bn')
+                                    @if ($lang === '1')
                                         সম্পূর্ণ ঠিকানা *
                                     @else
                                         Delivery Full Address *
@@ -101,13 +101,13 @@
                                 </label>
                                 <textarea name="full_address" required rows="3"
                                     class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                    placeholder="@if ($lang === 'bn') আপনার সম্পূর্ণ ঠিকানা লিখুন @else Enter your complete delivery address @endif"></textarea>
+                                    placeholder="@if ($lang === '1') আপনার সম্পূর্ণ ঠিকানা লিখুন @else Enter your complete delivery address @endif"></textarea>
                             </div>
 
                             @if (setting('order_notes_need'))
                                 <div class="mb-6">
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        @if ($lang === 'bn')
+                                        @if ($lang === '1')
                                             নোট (যদি থাকে)
                                         @else
                                             Notes (If Any)
@@ -115,13 +115,13 @@
                                     </label>
                                     <textarea name="notes" rows="3"
                                         class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors"
-                                        placeholder="@if ($lang === 'bn') অতিরিক্ত নোট বা নির্দেশনা লিখুন @else Enter any additional notes or instructions @endif"></textarea>
+                                        placeholder="@if ($lang === '1') অতিরিক্ত নোট বা নির্দেশনা লিখুন @else Enter any additional notes or instructions @endif"></textarea>
                                 </div>
                             @endif
 
                             <div class="mb-6">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">
-                                    @if ($lang === 'bn')
+                                    @if ($lang === '1')
                                         ডেলিভারির এলাকা *
                                     @else
                                         Delivery Area *
@@ -136,7 +136,7 @@
                                             for="inside_dhaka">
                                             <div class="ml-3">
                                                 <span class="mt-1 font-semibold text-gray-900">
-                                                    @if ($lang === 'bn')
+                                                    @if ($lang === '1')
                                                         ঢাকার ভিতরে
                                                     @else
                                                         Inside Dhaka
@@ -145,7 +145,7 @@
                                                 <p class="mt-1 text-sm text-gray-500">
                                                     <span
                                                         id="inside_dhaka_price">{{ setting('inside_dhaka_shipping_cost') }}</span>
-                                                    TK - @if ($lang === 'bn')
+                                                    TK - @if ($lang === '1')
                                                         ১-২ ব্যবসায়িক দিন
                                                     @else
                                                         1-2 business days
@@ -163,7 +163,7 @@
                                             for="outside_dhaka">
                                             <div class="ml-3">
                                                 <span class="mt-1 font-semibold text-gray-900">
-                                                    @if ($lang === 'bn')
+                                                    @if ($lang === '1')
                                                         ঢাকার বাইরে
                                                     @else
                                                         Outside Dhaka
@@ -172,7 +172,7 @@
                                                 <p class="mt-1 text-sm text-gray-500">
                                                     <span
                                                         id="outside_dhaka_price">{{ setting('outside_dhaka_shipping_cost') }}</span>
-                                                    TK - @if ($lang === 'bn')
+                                                    TK - @if ($lang === '1')
                                                         ৩-৫ ব্যবসায়িক দিন
                                                     @else
                                                         3-5 business days

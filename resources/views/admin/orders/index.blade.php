@@ -226,10 +226,8 @@
                                     <div
                                         class="absolute top-1/2 left-full ml-3 -translate-y-1/2 hidden group-hover:flex flex-col items-start bg-gray-900 text-white text-xs rounded-lg px-3 py-2
                                         shadow-lg whitespace-normal w-56 z-20 transition-all duration-200 ease-out opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-2">
-
                                         <span class="font-semibold text-gray-200">Address:</span>
                                         <span class="text-gray-300">{{ $order->shippingAddress->full_address }}</span>
-
                                         <span class="mt-1 font-semibold text-gray-200">Delivery Area:</span>
                                         <span class="text-gray-300">
                                             @if ($order->shippingAddress->delivery_area === 'outside_dhaka')
@@ -240,7 +238,6 @@
                                                 {{ ucfirst(str_replace('_', ' ', $order->shippingAddress->delivery_area)) }}
                                             @endif
                                         </span>
-
                                         <div
                                             class="absolute top-1/2 -translate-y-1/2 right-full w-3 h-3 bg-gray-900 rotate-45">
                                         </div>
@@ -254,7 +251,20 @@
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap">
                                     <div class="text-gray-900">{{ $order->created_at->format('M j, Y') }}</div>
-                                    <div class="text-xs text-gray-400">{{ $order->created_at->format('h:i A') }}</div>
+                                    <div class="text-xs text-gray-400">
+                                        {{ $order->created_at->format('h:i A') }}
+                                        @php
+                                            $diff = now()->diff($order->created_at);
+                                            if ($diff->d > 0) {
+                                                $ago = $diff->d . ' day' . ($diff->d > 1 ? 's' : '') . ' ago';
+                                            } elseif ($diff->h > 0) {
+                                                $ago = $diff->h . ' hour' . ($diff->h > 1 ? 's' : '') . ' ago';
+                                            } else {
+                                                $ago = $diff->i . ' min ago';
+                                            }
+                                        @endphp
+                                        <span class="text-xs text-gray-400">{{ $ago }}</span>
+                                    </div>
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap">
                                     <form action="{{ route('admin.orders.update-status', $order->id) }}"

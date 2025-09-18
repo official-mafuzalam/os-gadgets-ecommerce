@@ -59,9 +59,9 @@
                  {{ config('app.name', 'OS Gadgets') }}.
                  All rights reserved.</a>
              <div class="flex space-x-6">
-                 <a href="#" class="text-gray-400 hover:text-white text-sm">Privacy Policy</a>
-                 <a href="#" class="text-gray-400 hover:text-white text-sm">Terms of Service</a>
-                 <a href="#" class="text-gray-400 hover:text-white text-sm">Return Policy</a>
+                 <a href="{{ route('public.privacy-policy') }}" class="text-gray-400 hover:text-white text-sm">Privacy Policy</a>
+                 <a href="{{ route('public.terms-of-service') }}" class="text-gray-400 hover:text-white text-sm">Terms of Service</a>
+                 <a href="{{ route('public.return-policy') }}" class="text-gray-400 hover:text-white text-sm">Return Policy</a>
              </div>
          </div>
      </div>

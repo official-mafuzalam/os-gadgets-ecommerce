@@ -365,15 +365,14 @@ class HomeController extends Controller
         return view('public.products.index', compact('products', 'categories', 'brands'))->with('deal', $deal);
     }
 
-
     public function about()
     {
-        return view('public.about');
+        return view('public.extra.about');
     }
 
     public function contact()
     {
-        return view('public.contact');
+        return view('public.extra.contact');
     }
 
     public function submitContact(Request $request)
@@ -401,6 +400,19 @@ class HomeController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Thank you for subscribing to our newsletter!');
+    }
+
+    public function privacyPolicy()
+    {
+        return view('public.extra.privacy-policy');
+    }
+    public function termsOfService()
+    {
+        return view('public.extra.terms-of-service');
+    }
+    public function returnPolicy()
+    {
+        return view('public.extra.return-policy');
     }
 
 }

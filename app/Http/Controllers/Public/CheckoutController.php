@@ -157,6 +157,27 @@ class CheckoutController extends Controller
         return view('public.order-complete', compact('order'));
     }
 
+    // Show order tracking form
+    public function orderTrack()
+    {
+        return view('public.parcel-tracking');
+    }
 
+    public function track(Request $request)
+    {
+        $request->validate([
+            'tracking_number' => 'required|string|max:255'
+        ]);
+
+        // Find order by tracking number
+        $order = Order::where('order_number', $request->tracking_number)
+            ->first();
+
+        if (!$order) {
+            return back()->withErrors(['message' => 'No order found with provided tracking number.'])->withInput();
+        }
+
+        return view('public.parcel-tracking', ['order' => $order]);
+    }
 
 }

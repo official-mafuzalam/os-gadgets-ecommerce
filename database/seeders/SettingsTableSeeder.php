@@ -188,7 +188,7 @@ class SettingsTableSeeder extends Seeder
         // Order Settings
         // -------------------
         $orderSettings = [
-            ['key' => 'order_form_language', 'value' => 'en', 'type' => 'text', 'group' => 'order', 'label' => 'Order Form Language (e.g., en, bn)', 'order' => 1],
+            ['key' => 'order_form_bangla', 'value' => '0', 'type' => 'boolean', 'group' => 'order', 'label' => 'Order Form Language in Bangla?', 'order' => 1],
             ['key' => 'order_email_need', 'value' => '0', 'type' => 'boolean', 'group' => 'order', 'label' => 'Is Email Required in Order Form?', 'order' => 2],
             ['key' => 'order_notes_need', 'value' => '0', 'type' => 'boolean', 'group' => 'order', 'label' => 'Are Additional Notes Required in Order Form?', 'order' => 5],
         ];
