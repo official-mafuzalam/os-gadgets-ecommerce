@@ -132,7 +132,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'iPhone 15 Pro Max',
                 'description' => 'The most powerful iPhone with advanced camera system and A17 Pro chip.',
-                'price' => 1199.99,
+                'price' => 1199.00,
                 'discount' => 0.00,
                 'stock_quantity' => 50,
                 'sku' => 'APP-IP15PM-256',
@@ -149,7 +149,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Samsung Galaxy S23 Ultra',
                 'description' => 'Premium Android smartphone with S Pen and advanced camera capabilities.',
-                'price' => 1099.99,
+                'price' => 1099.00,
                 'discount' => 50.00,
                 'stock_quantity' => 45,
                 'sku' => 'SAM-GS23U-256',
@@ -166,7 +166,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Google Pixel 8 Pro',
                 'description' => 'Google\'s flagship phone with advanced AI features and camera software.',
-                'price' => 899.99,
+                'price' => 899.00,
                 'discount' => 25.00,
                 'stock_quantity' => 30,
                 'sku' => 'GOO-PX8P-128',
@@ -183,7 +183,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'OnePlus 11',
                 'description' => 'Flagship killer with Hasselblad camera and fast charging.',
-                'price' => 699.99,
+                'price' => 699.00,
                 'discount' => 30.00,
                 'stock_quantity' => 25,
                 'sku' => 'OPL-OP11-256',
@@ -202,7 +202,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'MacBook Pro 16-inch',
                 'description' => 'Professional laptop with M2 Pro chip for extreme performance.',
-                'price' => 2499.99,
+                'price' => 2499.00,
                 'discount' => 100.00,
                 'stock_quantity' => 20,
                 'sku' => 'APP-MBP16-1TB',
@@ -219,7 +219,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Dell XPS 15',
                 'description' => 'Premium Windows laptop with stunning display and powerful performance.',
-                'price' => 1699.99,
+                'price' => 1699.00,
                 'discount' => 75.00,
                 'stock_quantity' => 18,
                 'sku' => 'DEL-XPS15-512',
@@ -236,7 +236,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Microsoft Surface Laptop 5',
                 'description' => 'Elegant Windows laptop with premium build quality and performance.',
-                'price' => 1299.99,
+                'price' => 1299.00,
                 'discount' => 50.00,
                 'stock_quantity' => 15,
                 'sku' => 'MS-SL5-512',
@@ -253,7 +253,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'ASUS ROG Zephyrus G14',
                 'description' => 'Powerful gaming laptop with AMD Ryzen and NVIDIA graphics.',
-                'price' => 1499.99,
+                'price' => 1499.00,
                 'discount' => 80.00,
                 'stock_quantity' => 12,
                 'sku' => 'ASU-ROG14-1TB',
@@ -272,7 +272,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Sony WH-1000XM5',
                 'description' => 'Industry-leading noise canceling headphones with exceptional sound quality.',
-                'price' => 349.99,
+                'price' => 349.00,
                 'discount' => 20.00,
                 'stock_quantity' => 40,
                 'sku' => 'SON-WH1000XM5',
@@ -289,7 +289,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Bose QuietComfort Ultra',
                 'description' => 'Premium noise canceling headphones with immersive audio.',
-                'price' => 429.99,
+                'price' => 429.00,
                 'discount' => 25.00,
                 'stock_quantity' => 35,
                 'sku' => 'BOS-QCULTRA',
@@ -306,7 +306,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Apple AirPods Pro (2nd Gen)',
                 'description' => 'Wireless earbuds with active noise cancellation and transparency mode.',
-                'price' => 249.99,
+                'price' => 249.00,
                 'discount' => 15.00,
                 'stock_quantity' => 60,
                 'sku' => 'APP-APP2',
@@ -323,7 +323,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Samsung Galaxy Buds2 Pro',
                 'description' => 'Premium wireless earbuds with intelligent ANC and 360 Audio.',
-                'price' => 199.99,
+                'price' => 199.00,
                 'discount' => 10.00,
                 'stock_quantity' => 45,
                 'sku' => 'SAM-GBUDS2P',
@@ -342,7 +342,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Apple Watch Series 9',
                 'description' => 'Advanced smartwatch with health features and powerful apps.',
-                'price' => 399.99,
+                'price' => 399.00,
                 'discount' => 30.00,
                 'stock_quantity' => 30,
                 'sku' => 'APP-AW9-45',
@@ -359,7 +359,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Samsung Galaxy Watch 6 Classic',
                 'description' => 'Premium smartwatch with rotating bezel and comprehensive health tracking.',
-                'price' => 369.99,
+                'price' => 369.00,
                 'discount' => 25.00,
                 'stock_quantity' => 25,
                 'sku' => 'SAM-GW6C-47',
@@ -376,7 +376,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Fitbit Sense 2',
                 'description' => 'Advanced health smartwatch with stress management tools.',
-                'price' => 299.99,
+                'price' => 299.00,
                 'discount' => 20.00,
                 'stock_quantity' => 20,
                 'sku' => 'FIT-SENSE2',
@@ -393,7 +393,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Garmin Forerunner 965',
                 'description' => 'Premium GPS running smartwatch with advanced training metrics.',
-                'price' => 599.99,
+                'price' => 599.00,
                 'discount' => 40.00,
                 'stock_quantity' => 15,
                 'sku' => 'GAR-FR965',
@@ -411,7 +411,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'iPad Pro 12.9-inch',
                 'description' => 'Professional tablet with M2 chip and Liquid Retina XDR display.',
-                'price' => 1099.99,
+                'price' => 1099.00,
                 'discount' => 50.00,
                 'stock_quantity' => 22,
                 'sku' => 'APP-IPADP129-256',
@@ -428,7 +428,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Samsung Galaxy Tab S9 Ultra',
                 'description' => 'Premium Android tablet with massive screen and S Pen included.',
-                'price' => 1199.99,
+                'price' => 1199.00,
                 'discount' => 60.00,
                 'stock_quantity' => 18,
                 'sku' => 'SAM-GTS9U-512',
@@ -445,7 +445,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Microsoft Surface Pro 9',
                 'description' => 'Versatile 2-in-1 tablet that replaces your laptop.',
-                'price' => 1299.99,
+                'price' => 1299.00,
                 'discount' => 70.00,
                 'stock_quantity' => 16,
                 'sku' => 'MS-SP9-I7',
@@ -462,7 +462,7 @@ class ProductSeeder extends Seeder
             [
                 'name' => 'Google Pixel Tablet',
                 'description' => 'Smart tablet with charging speaker dock that transforms into a smart display.',
-                'price' => 499.99,
+                'price' => 499.00,
                 'discount' => 25.00,
                 'stock_quantity' => 28,
                 'sku' => 'GOO-PT-128',
