@@ -117,7 +117,7 @@ class HomeController extends Controller
                 break;
         }
 
-        $products = $query->paginate(12);
+        $products = $query->paginate(20);
 
         $categories = Category::withCount('products')->active()->get();
         $brands = Brand::withCount('products')->active()->get();
@@ -185,7 +185,7 @@ class HomeController extends Controller
                 break;
         }
 
-        $products = $query->paginate(12);
+        $products = $query->paginate(20);
         $categories = Category::withCount('products')->active()->get();
         $brands = Brand::withCount('products')->active()->get();
 
@@ -236,7 +236,7 @@ class HomeController extends Controller
                 break;
         }
 
-        $products = $query->paginate(12);
+        $products = $query->paginate(20);
         $categories = Category::withCount('products')->active()->get();
         $brands = Brand::withCount('products')->active()->get();
 
@@ -270,7 +270,7 @@ class HomeController extends Controller
                 break;
         }
 
-        $products = $query->paginate(12);
+        $products = $query->paginate(20);
 
         $categories = Category::withCount('products')->active()->get();
         $brands = Brand::withCount('products')->active()->get();
@@ -357,7 +357,7 @@ class HomeController extends Controller
                 $query->latest();
                 break;
         }
-        $products = $query->paginate(12);
+        $products = $query->paginate(20);
 
         $categories = Category::withCount('products')->active()->get();
         $brands = Brand::withCount('products')->active()->get();

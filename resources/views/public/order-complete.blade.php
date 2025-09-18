@@ -132,5 +132,23 @@
                 </div>
             </div>
         </div>
+
+        @if (setting('google_tag_manager_id'))
+            @push('scripts')
+                <script>
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        event: "purchase",
+                        ecommerce: {
+                            transaction_id: "{{ $order->id }}",
+                            currency: "BDT",
+                            value: {{ $order->subtotal }},
+                            items: {!! json_encode($order->items) !!}
+                        }
+                    });
+                </script>
+            @endpush
+        @endif
+
     </x-slot>
 </x-app-layout>

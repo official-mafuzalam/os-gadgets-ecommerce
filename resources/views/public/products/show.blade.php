@@ -192,11 +192,13 @@
                             <ul class="space-y-2">
                                 <li class="flex items-center text-sm text-gray-700">
                                     <span class="w-32 font-medium">Inside Dhaka:</span>
-                                    <span class="ml-2">{{ number_format(setting('inside_dhaka_shipping_cost')) }} TK</span>
+                                    <span class="ml-2">{{ number_format(setting('inside_dhaka_shipping_cost')) }}
+                                        TK</span>
                                 </li>
                                 <li class="flex items-center text-sm text-gray-700">
                                     <span class="w-32 font-medium">Outside Dhaka:</span>
-                                    <span class="ml-2">{{ number_format(setting('outside_dhaka_shipping_cost')) }} TK</span>
+                                    <span class="ml-2">{{ number_format(setting('outside_dhaka_shipping_cost')) }}
+                                        TK</span>
                                 </li>
                             </ul>
                         </div>
@@ -353,6 +355,24 @@
                     @endforeach
                 </div>
             </div>
+        @endif
+
+        @if (setting('google_tag_manager_id'))
+            @push('scripts')
+                <script>
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        event: 'view_item',
+                        ecommerce: {
+                            items: [{
+                                item_id: {{ $product->id }},
+                                item_name: '{{ $product->name }}',
+                                price: {{ $product->price }}
+                            }]
+                        }
+                    });
+                </script>
+            @endpush
         @endif
 
         <script>

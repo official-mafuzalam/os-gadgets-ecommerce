@@ -219,10 +219,34 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($orders as $order)
                             <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-3 py-2 whitespace-nowrap">
+                                <td class="px-3 py-2 whitespace-nowrap group relative">
                                     <div class="font-medium text-gray-900">{{ $order->order_number }}</div>
                                     <div class="text-xs text-gray-500">via {{ ucfirst($order->payment_method) }}</div>
+
+                                    <div
+                                        class="absolute top-1/2 left-full ml-3 -translate-y-1/2 hidden group-hover:flex flex-col items-start bg-gray-900 text-white text-xs rounded-lg px-3 py-2
+                                        shadow-lg whitespace-normal w-56 z-20 transition-all duration-200 ease-out opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-2">
+
+                                        <span class="font-semibold text-gray-200">Address:</span>
+                                        <span class="text-gray-300">{{ $order->shippingAddress->full_address }}</span>
+
+                                        <span class="mt-1 font-semibold text-gray-200">Delivery Area:</span>
+                                        <span class="text-gray-300">
+                                            @if ($order->shippingAddress->delivery_area === 'outside_dhaka')
+                                                Outside Dhaka
+                                            @elseif ($order->shippingAddress->delivery_area === 'inside_dhaka')
+                                                Inside Dhaka
+                                            @else
+                                                {{ ucfirst(str_replace('_', ' ', $order->shippingAddress->delivery_area)) }}
+                                            @endif
+                                        </span>
+
+                                        <div
+                                            class="absolute top-1/2 -translate-y-1/2 right-full w-3 h-3 bg-gray-900 rotate-45">
+                                        </div>
+                                    </div>
                                 </td>
+
                                 <td class="px-3 py-2 whitespace-nowrap">
                                     <div class="font-medium text-gray-900">{{ $order->shippingAddress->full_name }}
                                     </div>

@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', setting('site_name', 'Octosync Software Ltd'))</title>
+    <meta name="description" content="@yield('meta_description', setting('meta_description', 'Best E-commerce website'))">
+    <meta name="keywords" content="@yield('meta_keywords', setting('meta_keywords', 'software, solutions, it'))">
+    <meta name="author" content="{{ setting('site_name', 'Octosync Software Ltd') }}">
 
+
+    <title>@yield('title', setting('site_name', 'Octosync Software Ltd'))</title>
     @if (setting('site_favicon'))
         <link rel="icon" href="{{ Storage::url(setting('site_favicon')) }}" type="image/x-icon">
     @else
@@ -31,12 +35,6 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        .hero-bg {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80');
-            background-size: cover;
-            background-position: center;
-        }
-
         .category-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
@@ -54,7 +52,6 @@
     @stack('styles')
 
     @if (setting('google_tag_manager_id'))
-        <!-- Google Tag Manager -->
         <script>
             (function(w, d, s, l, i) {
                 w[l] = w[l] || [];
@@ -70,11 +67,9 @@
                 f.parentNode.insertBefore(j, f);
             })(window, document, 'script', 'dataLayer', '{{ setting('google_tag_manager_id') }}');
         </script>
-        <!-- End Google Tag Manager -->
     @endif
 
     @if (setting('facebook_pixel_id'))
-        <!-- Meta Pixel Code -->
         <script>
             ! function(f, b, e, v, n, t, s) {
                 if (f.fbq) return;
@@ -101,19 +96,16 @@
             <img height="1" width="1" style="display:none"
                 src="https://www.facebook.com/tr?id={{ setting('facebook_pixel_id') }}&ev=PageView&noscript=1" />
         </noscript>
-        <!-- End Meta Pixel Code -->
     @endif
 
 </head>
 
 <body class="bg-gray-50">
     @if (setting('google_tag_manager_id'))
-        <!-- Google Tag Manager (noscript) -->
         <noscript>
             <iframe src="https://www.googletagmanager.com/ns.html?id={{ setting('google_tag_manager_id') }}"
                 height="0" width="0" style="display:none;visibility:hidden"></iframe>
         </noscript>
-        <!-- End Google Tag Manager (noscript) -->
     @endif
 
     <!-- Navigation -->

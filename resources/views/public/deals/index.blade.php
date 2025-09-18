@@ -10,8 +10,7 @@
                             @foreach ($activeDeals as $deal)
                                 <div
                                     class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
-                                    <div
-                                        class="bg-gradient-to-r bg-{{ $deal->background_color }} p-6">
+                                    <div class="bg-gradient-to-r bg-{{ $deal->background_color }} p-6">
                                         <div class="text-center text-white">
                                             <h3 class="text-xl font-bold mb-2">{{ $deal->title }}</h3>
                                             <p class="text-white text-opacity-90 mb-4">{{ $deal->description }}</p>
@@ -149,7 +148,7 @@
                                                     <div class="flex items-center">
                                                         <div class="flex-shrink-0 h-10 w-10">
                                                             <img class="h-10 w-10 rounded object-cover"
-                                                                src="{{ $product->images->where('is_primary', true)->first() ? Storage::url($product->images->where('is_primary', true)->first()->image_path) : 'https://via.placeholder.com/40' }}"
+                                                                src="{{ $product->images->where('is_primary', true)->first() ? Storage::url($product->images->where('is_primary', true)->first()->image_path) : 'https://placehold.co/400x400?text=No+Image' }}"
                                                                 alt="{{ $product->name }}">
                                                         </div>
 

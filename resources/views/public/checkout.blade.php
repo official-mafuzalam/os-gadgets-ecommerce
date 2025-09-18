@@ -230,18 +230,14 @@
                                     <div class="flex items-start">
                                         <div
                                             class="flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border border-gray-200">
-                                            <img src="{{ $item->product->images->where('is_primary', true)->first() ? Storage::url($item->product->images->where('is_primary', true)->first()->image_path) : 'https://via.placeholder.com/80' }}"
+                                            <img src="{{ $item->product->images->where('is_primary', true)->first() ? Storage::url($item->product->images->where('is_primary', true)->first()->image_path) : 'https://placehold.co/400x400?text=No+Image' }}"
                                                 alt="{{ $item->product->name }}" class="w-full h-full object-cover">
                                         </div>
                                         <div class="ml-4">
                                             <h3 class="text-sm font-medium text-gray-900">{{ $item->product->name }}
                                             </h3>
                                             <p class="text-xs text-gray-500 mt-1">
-                                                @if ($lang === 'bn')
-                                                    পরিমাণ:
-                                                @else
-                                                    Qty:
-                                                @endif {{ $item->quantity }}
+                                                Qty: {{ $item->quantity }}
                                             </p>
                                         </div>
                                     </div>
@@ -255,21 +251,13 @@
                         <div class="space-y-3 border-t border-gray-200 pt-4">
                             <div class="flex justify-between">
                                 <span class="text-gray-600">
-                                    @if ($lang === 'bn')
-                                        উপমোট
-                                    @else
-                                        Subtotal
-                                    @endif
+                                    Subtotal
                                 </span>
                                 <span class="text-gray-900">{{ number_format($subtotal, 2) }} TK</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">
-                                    @if ($lang === 'bn')
-                                        ডেলিভারি চার্জ
-                                    @else
-                                        Delivery charge
-                                    @endif
+                                    Delivery charge
                                 </span>
                                 <span id="delivery_charge" class="text-gray-900">
                                     {{ number_format(setting('inside_dhaka_shipping_cost'), 2) }} TK
@@ -277,11 +265,7 @@
                             </div>
                             <div class="flex justify-between text-lg font-semibold pt-3 border-t border-gray-200">
                                 <span class="text-gray-900">
-                                    @if ($lang === 'bn')
-                                        মোট
-                                    @else
-                                        Total
-                                    @endif
+                                    Total
                                 </span>
                                 <span id="total_amount" class="text-gray-900">
                                     {{ number_format($subtotal + setting('inside_dhaka_shipping_cost'), 2) }} TK
@@ -335,5 +319,23 @@
                 }
             });
         </script>
+
+        @if (setting('google_tag_manager_id'))
+            @push('scripts')
+                <script>
+                    window.dataLayer = window.dataLayer || [];
+                    window.dataLayer.push({
+                        event: "purchase",
+                        ecommerce: {
+                            transaction_id: "{{ $order->id }}",
+                            currency: "BDT",
+                            value: {{ $order->subtotal }},
+                            items: {!! json_encode($order->cartItems) !!}
+                        }
+                    });
+                </script>
+            @endpush
+        @endif
+
     </x-slot>
 </x-app-layout>

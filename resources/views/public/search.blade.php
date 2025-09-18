@@ -43,7 +43,7 @@
                             class="product-card bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
                             <a href="{{ route('public.products.show', $product) }}">
                                 <div class="relative">
-                                    <img src="{{ $product->image ? Storage::url($product->image) : 'https://via.placeholder.com/300' }}"
+                                    <img src="{{ $product->image ? Storage::url($product->image) : 'https://placehold.co/400x400?text=No+Image' }}"
                                         alt="{{ $product->name }}" class="w-full h-48 object-cover">
                                     @if ($product->discount > 0)
                                         <div

@@ -48,7 +48,7 @@
                                         <!-- Product Image -->
                                         <div
                                             class="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-gray-200">
-                                            <img src="{{ $item->product->images->where('is_primary', true)->first() ? Storage::url($item->product->images->where('is_primary', true)->first()->image_path) : 'https://via.placeholder.com/150' }}"
+                                            <img src="{{ $item->product->images->where('is_primary', true)->first() ? Storage::url($item->product->images->where('is_primary', true)->first()->image_path) : 'https://placehold.co/400x400?text=No+Image' }}"
                                                 alt="{{ $item->product->name }}" class="w-full h-full object-cover">
                                         </div>
 
