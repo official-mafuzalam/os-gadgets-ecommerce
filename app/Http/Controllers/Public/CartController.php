@@ -148,25 +148,4 @@ class CartController extends Controller
     }
 
 
-    public function buyNow(Product $product, Request $request)
-    {
-        $quantity = $request->input('quantity', 1);
-
-        if ($quantity < 1)
-            $quantity = 1;
-        if ($quantity > $product->stock_quantity) {
-            return redirect()->back()->with('error', 'Requested quantity exceeds available stock.');
-        }
-
-        $cart = $this->getCart();
-
-        // Clear current cart for single product checkout
-        $cart->clear();
-
-        $cart->addItem($product->id, $quantity);
-
-        return redirect()->route('public.checkout')->with('success', $product->name . ' added for checkout.');
-    }
-
-
 }

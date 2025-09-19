@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Public\CartController;
 use App\Http\Controllers\Public\CheckoutController;
 use App\Http\Controllers\Public\HomeController as PublicHomeController;
+use App\Http\Controllers\Public\ProductController as PublicProductController;
 use App\Http\Controllers\Public\SearchController;
 use Illuminate\Support\Facades\Artisan;
 
@@ -49,25 +50,24 @@ Route::post('/cart/update/{itemId}', [CartController::class, 'update'])->name('c
 Route::post('/cart/remove/{itemId}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
-Route::get('/buy-now/{product}', [CartController::class, 'buyNow'])->name('public.products.buy-now');
+Route::get('/buy-now/{product}', [CheckoutController::class, 'buyNow'])->name('public.products.buy-now');
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('public.checkout');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('public.checkout.process');
 Route::get('/order-complete', [CheckoutController::class, 'orderComplete'])->name('public.order.complete');
 Route::get('/track-parcel', [CheckoutController::class, 'orderTrack'])->name('public.parcel.tracking');
 Route::post('/track-parcel', [CheckoutController::class, 'track'])->name('public.parcel.tracking.submit');
 
-Route::get('/products', [PublicHomeController::class, 'products'])->name('public.products');
-Route::get('/product/{product}', [PublicHomeController::class, 'productShow'])->name('public.products.show');
-Route::get('/brands', [PublicHomeController::class, 'brands'])->name('public.brands');
-Route::get('/brands/{brand}', [PublicHomeController::class, 'brandShow'])->name('public.brands.show');
-Route::get('/categories', [PublicHomeController::class, 'categories'])->name('public.categories');
-Route::get('/categories/{category}', [PublicHomeController::class, 'categoryShow'])->name('public.categories.show');
-Route::get('/featured-products', [PublicHomeController::class, 'featuredProducts'])->name('public.featured.products');
+Route::get('/products', [PublicProductController::class, 'products'])->name('public.products');
+Route::get('/product/{product}', [PublicProductController::class, 'productShow'])->name('public.products.show');
+Route::get('/brands', [PublicProductController::class, 'brands'])->name('public.brands');
+Route::get('/brands/{brand}', [PublicProductController::class, 'brandShow'])->name('public.brands.show');
+Route::get('/categories', [PublicProductController::class, 'categories'])->name('public.categories');
+Route::get('/categories/{category}', [PublicProductController::class, 'categoryShow'])->name('public.categories.show');
+Route::get('/featured-products', [PublicProductController::class, 'featuredProducts'])->name('public.featured.products');
+Route::get('/deals', [PublicProductController::class, 'deals'])->name('public.deals');
+Route::get('/deals/{deal}', [PublicProductController::class, 'dealShow'])->name('public.deals.show');
 
-Route::get('/deals', [PublicHomeController::class, 'deals'])->name('public.deals');
-Route::get('/deals/{deal}', [PublicHomeController::class, 'dealShow'])->name('public.deals.show');
-
-Route::post('/products/{product}/review', [PublicHomeController::class, 'submitReview'])->name('public.products.review.submit');
+Route::post('/products/{product}/review', [PublicProductController::class, 'submitReview'])->name('public.products.review.submit');
 
 // Static Pages
 Route::get('/about', [PublicHomeController::class, 'about'])->name('public.about');

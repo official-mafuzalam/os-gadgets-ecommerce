@@ -79,7 +79,7 @@ class ProductController extends Controller
             'sku' => 'required|string|unique:products,sku',
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
-            'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:400',
             'specifications' => 'nullable|json',
             'is_active' => 'sometimes|boolean',
             'is_featured' => 'sometimes|boolean'
@@ -129,7 +129,7 @@ class ProductController extends Controller
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image_path' => $galleryPath,
-                        'is_primary' => $index === 0 // Set first image as primary
+                        'is_primary' => $index === 0
                     ]);
                 }
             }
@@ -188,8 +188,7 @@ class ProductController extends Controller
             'sku' => 'required|string|unique:products,sku,' . $product->id,
             'category_id' => 'required|exists:categories,id',
             'brand_id' => 'required|exists:brands,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:400',
             'specifications' => 'nullable|json',
             'is_active' => 'sometimes|boolean',
             'is_featured' => 'sometimes|boolean'

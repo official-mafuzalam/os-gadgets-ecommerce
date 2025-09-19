@@ -27,7 +27,7 @@
     <!-- Image -->
     <div class="md:col-span-2">
         <label for="image" class="block text-sm font-medium text-gray-700 mb-1">
-            {{ $carousel ? 'Update Image' : 'Image *' }}
+            {{ $carousel ? 'Update Image (Max Size: 600 KB)' : 'Image * (Max Size: 600 KB)' }}
         </label>
         @if ($carousel && $carousel->image)
             <div class="mb-3">
@@ -40,7 +40,7 @@
         @error('image')
             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
         @enderror
-        <p class="mt-1 text-sm text-gray-500">Recommended size: 1200×600 pixels</p>
+        <p class="mt-1 text-sm text-gray-500">Recommended ratio: 4:3</p>
     </div>
 
     <!-- Primary Button -->

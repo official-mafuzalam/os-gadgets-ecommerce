@@ -90,6 +90,7 @@
                             <!-- Image -->
                             <div>
                                 <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">Category Image
+                                    (Max size: 400 KB)
                                 </h3>
 
                                 <div class="space-y-4">
@@ -97,7 +98,7 @@
                                     <div>
                                         <label for="image"
                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category
-                                            Image</label>
+                                            Image (Recommended ratio 1:1)</label>
                                         <input type="file" id="image" name="image" accept="image/*"
                                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white py-2 px-3">
                                         @error('image')

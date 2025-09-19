@@ -91,7 +91,7 @@
                             <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
                         @foreach ($featuredProducts as $product)
                             @include('public.products.partial.product-card', ['product' => $product])
                         @endforeach
@@ -118,7 +118,7 @@
                             <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
                         @foreach ($featuredProducts as $product)
                             @include('public.products.partial.product-card', ['product' => $product])
                         @endforeach

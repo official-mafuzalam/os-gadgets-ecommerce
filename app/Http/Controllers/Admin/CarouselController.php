@@ -34,7 +34,7 @@ class CarouselController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:600',
             'button_text' => 'nullable|string|max:50',
             'button_url' => 'nullable|url|max:255',
             'secondary_button_text' => 'nullable|string|max:50',
@@ -78,7 +78,7 @@ class CarouselController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:600',
             'button_text' => 'nullable|string|max:50',
             'button_url' => 'nullable|url|max:255',
             'secondary_button_text' => 'nullable|string|max:50',

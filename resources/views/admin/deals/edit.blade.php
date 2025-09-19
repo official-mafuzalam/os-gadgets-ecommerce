@@ -153,7 +153,8 @@
                                 </div>
 
                                 <div class="sm:col-span-3">
-                                    <label for="image" class="block text-sm font-medium mb-2">Banner Image</label>
+                                    <label for="image" class="block text-sm font-medium mb-2">Banner Image (Max
+                                        size: 400 KB) | (Recommended ratio 4:3)</label>
                                     <input type="file" id="image" name="image"
                                         class="py-2 px-3 block w-full border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
                                         accept="image/*">

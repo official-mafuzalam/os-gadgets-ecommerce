@@ -36,7 +36,7 @@ class BrandController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:brands,name',
             'description' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:400',
             'is_active' => 'boolean'
         ]);
 
@@ -83,7 +83,7 @@ class BrandController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:brands,name,' . $brand->id,
             'description' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:400',
             'is_active' => 'boolean'
         ]);
 

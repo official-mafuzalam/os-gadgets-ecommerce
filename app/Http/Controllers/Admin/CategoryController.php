@@ -38,7 +38,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name',
             'description' => 'nullable|string',
             'parent_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:400',
             'is_active' => 'boolean'
         ]);
 
@@ -91,7 +91,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'description' => 'nullable|string',
             'parent_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:400',
             'is_active' => 'boolean'
         ]);
 

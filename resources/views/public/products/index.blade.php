@@ -221,7 +221,7 @@
 
                     <!-- Products Grid -->
                     @if ($products->count() > 0)
-                        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2">
                             @foreach ($products as $product)
                                 @include('public.products.partial.product-card', ['product' => $product])
                             @endforeach
