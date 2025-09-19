@@ -79,6 +79,10 @@
                 'admin.deals.create',
                 'admin.deals.edit',
                 'admin.deals.products.show',
+                'admin.attributes.index',
+                'admin.attributes.create',
+                'admin.attributes.edit',
+                'admin.attributes.show',
             ])
                 ? 'hs-accordion-active'
                 : '' }}"
@@ -127,6 +131,10 @@
                         'admin.deals.create',
                         'admin.deals.edit',
                         'admin.deals.products.show',
+                        'admin.attributes.index',
+                        'admin.attributes.create',
+                        'admin.attributes.edit',
+                        'admin.attributes.show',
                     ])
                         ? 'block'
                         : 'hidden' }}">
@@ -157,6 +165,13 @@
                                     {{ in_array(Route::currentRouteName(), ['admin.deals.index', 'admin.deals.create', 'admin.deals.edit', 'admin.deals.products.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
                                 href="{{ route('admin.deals.index') }}">
                                 Deals
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
+                                    {{ in_array(Route::currentRouteName(), ['admin.attributes.index', 'admin.attributes.create', 'admin.attributes.edit', 'admin.attributes.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                href="{{ route('admin.attributes.index') }}">
+                                Attributes
                             </a>
                         </li>
                     </ul>

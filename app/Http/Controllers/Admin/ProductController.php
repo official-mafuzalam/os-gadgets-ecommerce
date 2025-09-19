@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attribute;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Deal;
+use App\Models\ProductAttribute;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -61,8 +63,10 @@ class ProductController extends Controller
     {
         $categories = Category::where('is_active', true)->get();
         $brands = Brand::where('is_active', true)->get();
+        $allAttributes = Attribute::where('is_active', true)->get();
         $product = new Product();
-        return view('admin.products.create', compact('categories', 'brands', 'product'));
+
+        return view('admin.products.create', compact('categories', 'brands', 'product', 'allAttributes'));
     }
 
     /**
@@ -82,44 +86,44 @@ class ProductController extends Controller
             'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:400',
             'specifications' => 'nullable|json',
             'is_active' => 'sometimes|boolean',
-            'is_featured' => 'sometimes|boolean'
+            'is_featured' => 'sometimes|boolean',
+            'attributes' => 'nullable|array',
+            'attributes.*.id' => 'required|exists:attributes,id',
+            'attributes.*.values' => 'required|array',
         ]);
 
         try {
             DB::beginTransaction();
 
-            // Auto-generate SKU if not provided
-            if (empty($validated['sku'])) {
-                $validated['sku'] = 'SKU-' . strtoupper(uniqid());
-            }
-
-            // Generate slug from name
+            // Generate slug (handled also in model, but safe to keep)
             $validated['slug'] = Str::slug($validated['name']);
-
-            // Ensure unique slug
-            $originalSlug = $validated['slug'];
-            $count = 1;
-            while (Product::where('slug', $validated['slug'])->exists()) {
-                $validated['slug'] = $originalSlug . '-' . $count++;
-            }
-
-            // Handle main image upload
-            if ($request->hasFile('image')) {
-                $imagePath = $request->file('image')->store('products', 'public');
-                $validated['image'] = $imagePath;
-            }
-
-            // Set boolean fields
             $validated['is_active'] = $request->boolean('is_active');
             $validated['is_featured'] = $request->boolean('is_featured');
 
-            // Parse specifications JSON
+            if ($request->hasFile('image')) {
+                $validated['image'] = $request->file('image')->store('products', 'public');
+            }
+
             if ($request->has('specifications')) {
                 $validated['specifications'] = json_decode($validated['specifications'], true);
             }
 
-            // Create product
+            // Create Product
             $product = Product::create($validated);
+
+            // Attach Attributes
+            if ($request->filled('attributes')) {
+                foreach ($request->attributes as $order => $attribute) {
+                    foreach ($attribute['values'] as $value) {
+                        ProductAttribute::create([
+                            'product_id' => $product->id,
+                            'attribute_id' => $attribute['id'],
+                            'value' => $value,
+                            'order' => $order,
+                        ]);
+                    }
+                }
+            }
 
             // Handle gallery images upload
             if ($request->hasFile('image_gallery')) {
@@ -152,6 +156,7 @@ class ProductController extends Controller
         }
     }
 
+
     /**
      * Display the specified resource.
      */
@@ -169,9 +174,9 @@ class ProductController extends Controller
     {
         $categories = Category::where('is_active', true)->get();
         $brands = Brand::where('is_active', true)->get();
-        $product->load('images');
+        $allAttributes = Attribute::where('is_active', true)->get(); // Add this line
 
-        return view('admin.products.create', compact('categories', 'brands', 'product'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands', 'allAttributes'));
     }
 
     /**
@@ -191,7 +196,10 @@ class ProductController extends Controller
             'image_gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:400',
             'specifications' => 'nullable|json',
             'is_active' => 'sometimes|boolean',
-            'is_featured' => 'sometimes|boolean'
+            'is_featured' => 'sometimes|boolean',
+            'attributes' => 'nullable|array',
+            'attributes.*.id' => 'required|exists:attributes,id',
+            'attributes.*.values' => 'required|array',
         ]);
 
         try {
@@ -204,33 +212,54 @@ class ProductController extends Controller
                 // Ensure unique slug
                 $originalSlug = $validated['slug'];
                 $count = 1;
-                while (Product::where('slug', $validated['slug'])->where('id', '!=', $product->id)->exists()) {
+                while (
+                    Product::where('slug', $validated['slug'])
+                        ->where('id', '!=', $product->id)
+                        ->exists()
+                ) {
                     $validated['slug'] = $originalSlug . '-' . $count++;
                 }
             }
 
             // Handle main image upload
             if ($request->hasFile('image')) {
-                // Delete old image
                 if ($product->image) {
                     Storage::disk('public')->delete($product->image);
                 }
-
-                $imagePath = $request->file('image')->store('products', 'public');
-                $validated['image'] = $imagePath;
+                $validated['image'] = $request->file('image')->store('products', 'public');
             }
 
-            // Set boolean fields
+            // Boolean fields
             $validated['is_active'] = $request->boolean('is_active');
             $validated['is_featured'] = $request->boolean('is_featured');
 
-            // Parse specifications JSON
+            // Parse JSON specifications
             if ($request->has('specifications')) {
                 $validated['specifications'] = json_decode($validated['specifications'], true);
             }
 
             // Update product
             $product->update($validated);
+
+            /**
+             * 🔥 Update Attributes
+             */
+            if ($request->filled('attributes')) {
+                // Remove old ones
+                $product->attributes()->detach();
+
+                // Insert new ones
+                foreach ($request->attributes as $order => $attribute) {
+                    foreach ($attribute['values'] as $value) {
+                        ProductAttribute::create([
+                            'product_id' => $product->id,
+                            'attribute_id' => $attribute['id'],
+                            'value' => $value,
+                            'order' => $order,
+                        ]);
+                    }
+                }
+            }
 
             // Handle gallery images upload
             if ($request->hasFile('image_gallery')) {

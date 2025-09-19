@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CarouselController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -119,6 +120,15 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
 
         Route::resource('categories', CategoryController::class)->names('admin.categories');
         Route::resource('brands', BrandController::class)->names('admin.brands');
+        
+        Route::resource('attributes', AttributeController::class)->names('admin.attributes');
+        Route::get('products/{product}/attributes', [AttributeController::class, 'showAssignForm'])
+            ->name('products.attributes.assign');
+        Route::post('products/{product}/attributes', [AttributeController::class, 'assignToProduct'])
+            ->name('products.attributes.store');
+        Route::delete('products/{product}/attributes/{attribute}', [AttributeController::class, 'removeFromProduct'])
+            ->name('products.attributes.remove');
+
         Route::resource('orders', OrderController::class)->names('admin.orders');
         Route::resource('reviews', ReviewController::class)->names('admin.reviews');
         Route::patch('reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');

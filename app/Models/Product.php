@@ -66,13 +66,45 @@ class Product extends Model
 
     // Relationships
 
+    public function attributes()
+    {
+        return $this->belongsToMany(Attribute::class, 'product_attributes')
+            ->withPivot('value', 'order')
+            ->withTimestamps();
+    }
+
+    // Helper methods
+    public function getAttributeValues($attributeName)
+    {
+        return $this->attributes()
+            ->where('name', $attributeName)
+            ->pluck('value')
+            ->toArray();
+    }
+
+    public function hasAttribute($attributeName)
+    {
+        return $this->attributes()->where('name', $attributeName)->exists();
+    }
+
+    // Accessor for easy access
+    public function getColorAttribute()
+    {
+        return $this->getAttributeValues('color');
+    }
+
+    public function getSizeAttribute()
+    {
+        return $this->getAttributeValues('size');
+    }
+
     public function deals()
     {
         return $this->belongsToMany(Deal::class, 'deal_product')
             ->withPivot('order', 'is_featured')
             ->withTimestamps();
     }
-    
+
     public function category()
     {
         return $this->belongsTo(Category::class);
