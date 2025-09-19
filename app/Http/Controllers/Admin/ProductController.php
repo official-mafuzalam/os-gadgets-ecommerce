@@ -95,37 +95,35 @@ class ProductController extends Controller
         try {
             DB::beginTransaction();
 
-            // Generate slug (handled also in model, but safe to keep)
             $validated['slug'] = Str::slug($validated['name']);
             $validated['is_active'] = $request->boolean('is_active');
             $validated['is_featured'] = $request->boolean('is_featured');
 
-            if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('products', 'public');
-            }
-
-            if ($request->has('specifications')) {
+            // Decode specifications JSON
+            if (!empty($validated['specifications'])) {
                 $validated['specifications'] = json_decode($validated['specifications'], true);
             }
 
-            // Create Product
+            // Create product
             $product = Product::create($validated);
 
-            // Attach Attributes
+            // Handle product attributes
             if ($request->filled('attributes')) {
                 foreach ($request->attributes as $order => $attribute) {
-                    foreach ($attribute['values'] as $value) {
-                        ProductAttribute::create([
-                            'product_id' => $product->id,
-                            'attribute_id' => $attribute['id'],
-                            'value' => $value,
-                            'order' => $order,
-                        ]);
+                    if (!empty($attribute['id']) && !empty($attribute['values'])) {
+                        foreach ($attribute['values'] as $value) {
+                            ProductAttribute::create([
+                                'product_id' => $product->id,
+                                'attribute_id' => (int) $attribute['id'],
+                                'value' => $value,
+                                'order' => $order,
+                            ]);
+                        }
                     }
                 }
             }
 
-            // Handle gallery images upload
+            // Handle gallery images
             if ($request->hasFile('image_gallery')) {
                 foreach ($request->file('image_gallery') as $index => $image) {
                     $galleryPath = $image->store('products/gallery', 'public');
@@ -133,7 +131,7 @@ class ProductController extends Controller
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image_path' => $galleryPath,
-                        'is_primary' => $index === 0
+                        'is_primary' => $index === 0,
                     ]);
                 }
             }
@@ -157,6 +155,7 @@ class ProductController extends Controller
     }
 
 
+
     /**
      * Display the specified resource.
      */
@@ -176,7 +175,7 @@ class ProductController extends Controller
         $brands = Brand::where('is_active', true)->get();
         $allAttributes = Attribute::where('is_active', true)->get(); // Add this line
 
-        return view('admin.products.edit', compact('product', 'categories', 'brands', 'allAttributes'));
+        return view('admin.products.create', compact('product', 'categories', 'brands', 'allAttributes'));
     }
 
     /**
