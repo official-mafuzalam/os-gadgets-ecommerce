@@ -145,7 +145,7 @@
                                     <button class="px-3 py-2 text-gray-600 hover:text-gray-800"
                                         onclick="increaseQuantity()">+</button>
                                 </div>
-                                <span class="text-sm text-gray-500">{{ $product->stock_quantity }} available</span>
+                                {{-- <span class="text-sm text-gray-500">{{ $product->stock_quantity }} available</span> --}}
                             </div>
 
                             <!-- Categories -->

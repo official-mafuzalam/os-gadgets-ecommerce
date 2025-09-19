@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->integer('order')->default(0);
             $table->timestamps();
 
-            $table->unique(['product_id', 'attribute_id']);
+            $table->unique(['product_id', 'attribute_id', 'value']);
         });
     }
 

@@ -65,7 +65,7 @@ class CheckoutController extends Controller
         $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'nullable|email',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|size:11',
             'full_address' => 'required|string|max:500',
             'delivery_area' => 'required|in:inside_dhaka,outside_dhaka',
             'payment_method' => 'nullable|in:cash_on_delivery,bkash,nagad,sslcommerz',

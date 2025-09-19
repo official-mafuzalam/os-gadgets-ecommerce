@@ -72,7 +72,7 @@ class ProductController extends Controller
     {
         $product = Product::where('slug', $product)->firstOrFail();
         // Eager load relationships to avoid N+1 queries
-        $product->load(['category', 'brand', 'reviews.user']);
+        $product->load(['category', 'brand', 'attributes', 'reviews.user']);
 
         // Get related products (products from the same category)
         $relatedProducts = Product::where('category_id', $product->category_id)

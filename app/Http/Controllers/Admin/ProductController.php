@@ -74,6 +74,9 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        logger('All request data:', $request->all());
+        logger('Product attributes:', ['product_attributes' => $request->input('product_attributes')]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -87,10 +90,10 @@ class ProductController extends Controller
             'specifications' => 'nullable|json',
             'is_active' => 'sometimes|boolean',
             'is_featured' => 'sometimes|boolean',
-            'attributes' => 'nullable|array',
-            'attributes.*.id' => 'required|exists:attributes,id',
-            'attributes.*.values' => 'required|array',
-            'attributes.*.values.*' => 'string|max:255',
+            'product_attributes' => 'nullable|array',
+            'product_attributes.*.id' => 'required|exists:attributes,id',
+            'product_attributes.*.values' => 'required|array',
+            'product_attributes.*.values.*' => 'string|max:255',
         ]);
 
         try {
@@ -100,7 +103,6 @@ class ProductController extends Controller
             $validated['is_active'] = $request->boolean('is_active');
             $validated['is_featured'] = $request->boolean('is_featured');
 
-            // Decode specifications JSON
             if (!empty($validated['specifications'])) {
                 $validated['specifications'] = json_decode($validated['specifications'], true);
             }
@@ -108,26 +110,21 @@ class ProductController extends Controller
             // Create product
             $product = Product::create($validated);
 
-            // Handle product attributes
-            if ($request->filled('attributes')) {
-                $attributesToSync = [];
-
-                foreach ($request->attributes as $index => $attributeData) {
+            if ($request->filled('product_attributes')) { // Changed from attributes
+                foreach ($request->product_attributes as $index => $attributeData) { // Changed from attributes
                     if (!empty($attributeData['id']) && !empty($attributeData['values'])) {
-                        // Store all values as a comma-separated string
-                        $values = implode(',', array_map('trim', $attributeData['values']));
-
-                        $attributesToSync[$attributeData['id']] = [
-                            'value' => $values,
-                            'order' => $index
-                        ];
+                        foreach ($attributeData['values'] as $valueIndex => $value) {
+                            ProductAttribute::create([
+                                'product_id' => $product->id,
+                                'attribute_id' => $attributeData['id'],
+                                'value' => trim($value),
+                                'order' => $valueIndex
+                            ]);
+                        }
                     }
                 }
-                // Sync attributes with the product
-                $product->attributes()->sync($attributesToSync);
-
-                Log::info('Product attributes synced', ['product_id' => $product->id, 'attributes' => $attributesToSync]);
             }
+
 
             // Handle gallery images
             if ($request->hasFile('image_gallery')) {
@@ -177,19 +174,40 @@ class ProductController extends Controller
     {
         $categories = Category::where('is_active', true)->get();
         $brands = Brand::where('is_active', true)->get();
-        $allAttributes = Attribute::where('is_active', true)->get(); // Add this line
+        $allAttributes = Attribute::where('is_active', true)->get();
 
-        return view('admin.products.create', compact('product', 'categories', 'brands', 'allAttributes'));
+        // Load product attributes with pivot values
+        $product->load('attributes');
+
+        // Group attributes by attribute_id and collect values
+        $groupedAttributes = $product->attributes
+            ->groupBy('id')
+            ->map(function ($items) {
+                return [
+                    'id' => $items->first()->id,
+                    'name' => $items->first()->name,
+                    'values' => $items->pluck('pivot.value')->toArray()
+                ];
+            })->values(); // reset keys
+
+        return view('admin.products.edit', compact(
+            'product',
+            'categories',
+            'brands',
+            'allAttributes',
+            'groupedAttributes'
+        ));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, Product $product)
     {
-        // Debug the request data - FIXED
+        // Debug the request data
         logger('Request all data:', $request->all());
-        logger('Attributes in request:', $request->input('attributes', []));
+        logger('Product attributes in request:', $request->input('product_attributes', []));
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -204,10 +222,10 @@ class ProductController extends Controller
             'specifications' => 'nullable|json',
             'is_active' => 'sometimes|boolean',
             'is_featured' => 'sometimes|boolean',
-            'attributes' => 'nullable|array',
-            'attributes.*.id' => 'required|exists:attributes,id',
-            'attributes.*.values' => 'required|array',
-            'attributes.*.values.*' => 'string|max:255',
+            'product_attributes' => 'nullable|array', // Changed from attributes
+            'product_attributes.*.id' => 'required|exists:attributes,id',
+            'product_attributes.*.values' => 'required|array',
+            'product_attributes.*.values.*' => 'string|max:255',
         ]);
 
         try {
@@ -226,20 +244,21 @@ class ProductController extends Controller
             $product->update($validated);
 
             // --- Handle product attributes ---
-            $product->attributes()->delete(); // remove all old attributes
+            // Remove all old attributes
+            ProductAttribute::where('product_id', $product->id)->delete();
 
-            if ($request->filled('attributes')) {
-                foreach ($request->attributes as $order => $attribute) {
-                    $attrId = $attribute['id'] ?? null;
-                    $values = $attribute['values'] ?? [];
+            if ($request->filled('product_attributes')) { // Changed from attributes
+                foreach ($request->product_attributes as $order => $attributeData) { // Changed from attributes
+                    $attrId = $attributeData['id'] ?? null;
+                    $values = $attributeData['values'] ?? [];
 
                     if ($attrId && !empty($values)) {
-                        foreach ($values as $value) {
+                        foreach ($values as $valueIndex => $value) {
                             ProductAttribute::create([
                                 'product_id' => $product->id,
                                 'attribute_id' => (int) $attrId,
-                                'value' => $value,
-                                'order' => $order,
+                                'value' => trim($value),
+                                'order' => $valueIndex,
                             ]);
                         }
                     }
@@ -247,10 +266,9 @@ class ProductController extends Controller
 
                 Log::info('Product attributes synced', [
                     'product_id' => $product->id,
-                    'attributes' => $request->input('attributes', [])
+                    'product_attributes' => $request->input('product_attributes', []) // Changed from attributes
                 ]);
             }
-
 
             // Handle gallery images
             if ($request->hasFile('image_gallery')) {
@@ -303,6 +321,40 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Product deleted successfully.');
+    }
+
+    /**
+     * Display a listing of soft-deleted products.
+     */
+    public function trash()
+    {
+        $products = Product::onlyTrashed()
+            ->with(['category', 'brand'])
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.products.trash', compact('products'));
+    }
+    /**
+     * Restore a soft-deleted product.
+     */
+    public function restore($id)
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+        $product->restore();
+        return redirect()->route('admin.products.trash')
+            ->with('success', 'Product restored successfully.');
+    }
+    /**
+     * Permanently delete a soft-deleted product.
+     */
+    public function forceDelete($id)
+    {
+        $product = Product::onlyTrashed()->findOrFail($id);
+        $product->forceDelete();
+
+        return redirect()->route('admin.products.trash')
+            ->with('success', 'Product permanently deleted successfully.');
     }
 
     /**

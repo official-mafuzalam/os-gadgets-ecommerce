@@ -110,6 +110,9 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::get('reports/sales', [ReportController::class, 'salesReport'])->name('admin.reports.sales');
 
         Route::resource('products', ProductController::class)->names('admin.products');
+        Route::get('products/trash', [ProductController::class, 'trash'])->name('admin.products.trash');
+        Route::post('products/{product}/restore', [ProductController::class, 'restore'])->name('admin.products.restore');
+        Route::delete('products/{product}/force-delete', [ProductController::class, 'forceDelete'])->name('admin.products.force-delete');
         Route::patch('products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('admin.products.toggle-status');
         Route::patch('products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('admin.products.toggle-featured');
         Route::post('products/{product}/set-primary-image', [ProductController::class, 'setPrimaryImage'])->name('admin.products.set-primary-image');

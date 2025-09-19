@@ -208,7 +208,7 @@
                             <th class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Date</th>
                             <th class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Status
                             </th>
-                            <th class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Payment
+                            <th class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Address
                             </th>
                             <th class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider">Total
                             </th>
@@ -301,17 +301,7 @@
                                     </form>
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap">
-                                    <span @class([
-                                        'px-2 py-0.5 inline-flex rounded-full text-xs font-semibold',
-                                        'bg-green-100 text-green-800' => $order->payment_status == 'paid',
-                                        'bg-yellow-100 text-yellow-800' => $order->payment_status == 'pending',
-                                        'bg-red-100 text-red-800' => !in_array($order->payment_status, [
-                                            'paid',
-                                            'pending',
-                                        ]),
-                                    ])>
-                                        {{ ucfirst($order->payment_status) }}
-                                    </span>
+                                    {{ \Illuminate\Support\Str::limit($order->shippingAddress->full_address, 40) }}
                                 </td>
                                 <td class="px-3 py-2 whitespace-nowrap text-gray-900 text-sm">
                                     {{ number_format($order->total_amount) }} TK</td>

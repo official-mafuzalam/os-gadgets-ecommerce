@@ -257,7 +257,7 @@
                                         <div class="flex-1">
                                             <label
                                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Attribute</label>
-                                            <select name="attributes[{{ $loop->index }}][id]"
+                                            <select name="product_attributes[{{ $loop->index }}][id]"
                                                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:text-white py-2 px-3"
                                                 required>
                                                 <option value="">Select Attribute</option>
@@ -274,7 +274,7 @@
                                                 Values
                                             </label>
                                             <div class="tag-input w-full flex flex-wrap items-center rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-600 px-2 py-1 cursor-text"
-                                                data-name="attributes[{{ $loop->index }}][values]">
+                                                data-name="product_attributes[{{ $loop->index }}][values]">
                                                 @if ($attribute->pivot->value)
                                                     @foreach (explode(',', $attribute->pivot->value) as $val)
                                                         <span
@@ -283,7 +283,7 @@
                                                             <button type="button"
                                                                 class="remove-tag ml-1 text-red-600 hover:text-red-800">×</button>
                                                             <input type="hidden"
-                                                                name="attributes[{{ $loop->parent->index }}][values][]"
+                                                                name="product_attributes[{{ $loop->parent->index }}][values][]"
                                                                 value="{{ trim($val) }}">
                                                         </span>
                                                     @endforeach
@@ -349,7 +349,7 @@
         </div>
 
         <script>
-            // Handle attributes
+            // Handle dynamic addition/removal of product attributes
             document.addEventListener('DOMContentLoaded', function() {
                 const attributesContainer = document.getElementById('attributes-container');
                 const addAttributeBtn = document.getElementById('add-attribute');
@@ -377,10 +377,10 @@
                     tag.className =
                         "tag bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-sm mr-2 mb-1 flex items-center";
                     tag.innerHTML = `
-                        ${value}
-                        <button type="button" class="remove-tag ml-1 text-red-600 hover:text-red-800">×</button>
-                        <input type="hidden" name="${name}[]" value="${value}">
-                    `;
+            ${value}
+            <button type="button" class="remove-tag ml-1 text-red-600 hover:text-red-800">×</button>
+            <input type="hidden" name="${name}[]" value="${value}">
+        `;
 
                     const input = container.querySelector('.tag-input-field');
                     container.insertBefore(tag, input);
@@ -398,31 +398,31 @@
                     attributeRow.className =
                         'attribute-row flex items-end space-x-4 p-4 bg-gray-50 dark:bg-gray-700 rounded-md';
                     attributeRow.innerHTML = `
-                        <div class="flex-1">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Attribute</label>
-                            <select name="attributes[${attributeCount}][id]"
-                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:text-white py-2 px-3" required>
-                                <option value="">Select Attribute</option>
-                                @foreach ($allAttributes as $attribute)
-                                    <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Values</label>
-                            <div class="tag-input w-full flex flex-wrap items-center rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-600 px-2 py-1 cursor-text"
-                                 data-name="attributes[${attributeCount}][values]">
-                                <input type="text"
-                                       class="tag-input-field flex-1 bg-transparent border-none focus:ring-0 focus:outline-none dark:text-white"
-                                       placeholder="Type and press Enter">
-                            </div>
-                        </div>
-                        <div>
-                            <button type="button" class="remove-attribute text-red-600 hover:text-red-800 bg-red-100 hover:bg-red-200 px-3 py-2 rounded-md transition-colors">
-                                Remove
-                            </button>
-                        </div>
-                    `;
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Attribute</label>
+                <select name="product_attributes[${attributeCount}][id]"
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:text-white py-2 px-3" required>
+                    <option value="">Select Attribute</option>
+                    @foreach ($allAttributes as $attribute)
+                        <option value="{{ $attribute->id }}">{{ $attribute->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Values</label>
+                <div class="tag-input w-full flex flex-wrap items-center rounded-md border border-gray-300 dark:border-gray-500 bg-white dark:bg-gray-600 px-2 py-1 cursor-text"
+                     data-name="product_attributes[${attributeCount}][values]">
+                    <input type="text"
+                           class="tag-input-field flex-1 bg-transparent border-none focus:ring-0 focus:outline-none dark:text-white"
+                           placeholder="Type and press Enter">
+                </div>
+            </div>
+            <div>
+                <button type="button" class="remove-attribute text-red-600 hover:text-red-800 bg-red-100 hover:bg-red-200 px-3 py-2 rounded-md transition-colors">
+                    Remove
+                </button>
+            </div>
+        `;
 
                     attributesContainer.appendChild(attributeRow);
 
