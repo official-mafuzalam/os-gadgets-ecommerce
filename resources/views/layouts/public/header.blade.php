@@ -193,8 +193,15 @@
                     <a href="{{ route('public.deals') }}"
                         class="text-gray-800 hover:text-indigo-600 font-medium">Deals</a>
                     <a href="{{ route('public.parcel.tracking') }}"
-                        class="text-red-500 hover:text-indigo-600 font-medium">Track
-                        Your Order</a>
+                        class="relative inline-flex items-center px-5 py-1 rounded-lg bg-red-500 text-white font-medium shadow-md hover:bg-indigo-600 transition duration-300">
+                        Order Tracking
+                        <span class="absolute -top-2 -right-2 flex h-3 w-3">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+                        </span>
+                    </a>
+
                 </div>
 
                 <!-- Right Icons -->

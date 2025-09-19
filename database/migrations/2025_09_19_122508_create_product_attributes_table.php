@@ -14,11 +14,11 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('attribute_id')->constrained()->onDelete('cascade');
-            $table->string('value'); // red, blue, XL, etc.
+            $table->string('value');
             $table->integer('order')->default(0);
             $table->timestamps();
 
-            $table->unique(['product_id', 'attribute_id', 'value']);
+            $table->unique(['product_id', 'attribute_id']);
         });
     }
 

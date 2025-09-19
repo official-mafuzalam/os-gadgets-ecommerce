@@ -90,6 +90,7 @@ class ProductController extends Controller
             'attributes' => 'nullable|array',
             'attributes.*.id' => 'required|exists:attributes,id',
             'attributes.*.values' => 'required|array',
+            'attributes.*.values.*' => 'string|max:255',
         ]);
 
         try {
@@ -109,18 +110,23 @@ class ProductController extends Controller
 
             // Handle product attributes
             if ($request->filled('attributes')) {
-                foreach ($request->attributes as $order => $attribute) {
-                    if (!empty($attribute['id']) && !empty($attribute['values'])) {
-                        foreach ($attribute['values'] as $value) {
-                            ProductAttribute::create([
-                                'product_id' => $product->id,
-                                'attribute_id' => (int) $attribute['id'],
-                                'value' => $value,
-                                'order' => $order,
-                            ]);
-                        }
+                $attributesToSync = [];
+
+                foreach ($request->attributes as $index => $attributeData) {
+                    if (!empty($attributeData['id']) && !empty($attributeData['values'])) {
+                        // Store all values as a comma-separated string
+                        $values = implode(',', array_map('trim', $attributeData['values']));
+
+                        $attributesToSync[$attributeData['id']] = [
+                            'value' => $values,
+                            'order' => $index
+                        ];
                     }
                 }
+                // Sync attributes with the product
+                $product->attributes()->sync($attributesToSync);
+
+                Log::info('Product attributes synced', ['product_id' => $product->id, 'attributes' => $attributesToSync]);
             }
 
             // Handle gallery images
@@ -154,8 +160,6 @@ class ProductController extends Controller
         }
     }
 
-
-
     /**
      * Display the specified resource.
      */
@@ -183,6 +187,10 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        // Debug the request data - FIXED
+        logger('Request all data:', $request->all());
+        logger('Attributes in request:', $request->input('attributes', []));
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -199,76 +207,60 @@ class ProductController extends Controller
             'attributes' => 'nullable|array',
             'attributes.*.id' => 'required|exists:attributes,id',
             'attributes.*.values' => 'required|array',
+            'attributes.*.values.*' => 'string|max:255',
         ]);
 
         try {
             DB::beginTransaction();
 
-            // Generate slug if name changed
-            if ($product->name !== $validated['name']) {
-                $validated['slug'] = Str::slug($validated['name']);
-
-                // Ensure unique slug
-                $originalSlug = $validated['slug'];
-                $count = 1;
-                while (
-                    Product::where('slug', $validated['slug'])
-                        ->where('id', '!=', $product->id)
-                        ->exists()
-                ) {
-                    $validated['slug'] = $originalSlug . '-' . $count++;
-                }
-            }
-
-            // Handle main image upload
-            if ($request->hasFile('image')) {
-                if ($product->image) {
-                    Storage::disk('public')->delete($product->image);
-                }
-                $validated['image'] = $request->file('image')->store('products', 'public');
-            }
-
-            // Boolean fields
+            $validated['slug'] = Str::slug($validated['name']);
             $validated['is_active'] = $request->boolean('is_active');
             $validated['is_featured'] = $request->boolean('is_featured');
 
-            // Parse JSON specifications
-            if ($request->has('specifications')) {
+            // Decode specifications JSON
+            if (!empty($validated['specifications'])) {
                 $validated['specifications'] = json_decode($validated['specifications'], true);
             }
 
             // Update product
             $product->update($validated);
 
-            /**
-             * 🔥 Update Attributes
-             */
-            if ($request->filled('attributes')) {
-                // Remove old ones
-                $product->attributes()->detach();
+            // --- Handle product attributes ---
+            $product->attributes()->delete(); // remove all old attributes
 
-                // Insert new ones
+            if ($request->filled('attributes')) {
                 foreach ($request->attributes as $order => $attribute) {
-                    foreach ($attribute['values'] as $value) {
-                        ProductAttribute::create([
-                            'product_id' => $product->id,
-                            'attribute_id' => $attribute['id'],
-                            'value' => $value,
-                            'order' => $order,
-                        ]);
+                    $attrId = $attribute['id'] ?? null;
+                    $values = $attribute['values'] ?? [];
+
+                    if ($attrId && !empty($values)) {
+                        foreach ($values as $value) {
+                            ProductAttribute::create([
+                                'product_id' => $product->id,
+                                'attribute_id' => (int) $attrId,
+                                'value' => $value,
+                                'order' => $order,
+                            ]);
+                        }
                     }
                 }
+
+                Log::info('Product attributes synced', [
+                    'product_id' => $product->id,
+                    'attributes' => $request->input('attributes', [])
+                ]);
             }
 
-            // Handle gallery images upload
+
+            // Handle gallery images
             if ($request->hasFile('image_gallery')) {
-                foreach ($request->file('image_gallery') as $image) {
+                foreach ($request->file('image_gallery') as $index => $image) {
                     $galleryPath = $image->store('products/gallery', 'public');
 
                     ProductImage::create([
                         'product_id' => $product->id,
                         'image_path' => $galleryPath,
-                        'is_primary' => false
+                        'is_primary' => $index === 0 && $product->images()->where('is_primary', true)->doesntExist(),
                     ]);
                 }
             }
@@ -290,7 +282,6 @@ class ProductController extends Controller
                 ->withErrors(['error' => 'Something went wrong while updating the product.']);
         }
     }
-
 
     /**
      * Remove the specified resource from storage.
