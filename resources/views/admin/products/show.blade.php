@@ -172,34 +172,35 @@
                                         Stock</h3>
                                     <dl class="space-y-3">
                                         <div>
+                                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Buy Price
+                                            </dt>
+                                            <dd class="text-sm text-gray-900 dark:text-gray-200">
+                                                {{ number_format($product->buy_price, 2) }} TK</dd>
+                                        </div>
+                                        <div>
                                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Price</dt>
                                             <dd class="text-sm text-gray-900 dark:text-gray-200">
-                                                ${{ number_format($product->price, 2) }}</dd>
+                                                {{ number_format($product->price, 2) }} TK</dd>
                                         </div>
                                         @if ($product->discount > 0)
                                             <div>
                                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
                                                     Discount</dt>
                                                 <dd class="text-sm text-gray-900 dark:text-gray-200">
-                                                    ${{ number_format($product->discount, 2) }}</dd>
+                                                    {{ number_format($product->discount, 2) }} TK</dd>
                                             </div>
                                             <div>
                                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Final
                                                     Price</dt>
                                                 <dd class="text-sm text-green-600 dark:text-green-400 font-semibold">
-                                                    ${{ number_format($product->final_price, 2) }}</dd>
+                                                    {{ number_format($product->final_price, 2) }} TK</dd>
                                             </div>
                                         @endif
                                         <div>
                                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Stock
                                                 Quantity</dt>
                                             <dd class="text-sm text-gray-900 dark:text-gray-200">
-                                                {{ $product->stock_quantity }}</dd>
-                                        </div>
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Stock
-                                                Status</dt>
-                                            <dd>
+                                                {{ $product->stock_quantity }}
                                                 <span @class([
                                                     'px-2 py-1 rounded-md text-xs font-medium',
                                                     'bg-green-500/10 text-green-600 dark:text-green-400' =>
@@ -277,6 +278,27 @@
                                         </div>
                                     </dl>
                                 </div>
+
+                                <!-- Attributes -->
+                                @if ($groupedAttributes->count() > 0)
+                                    <div class="md:col-span-2">
+                                        <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">
+                                            Attributes
+                                        </h3>
+                                        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            @foreach ($groupedAttributes as $attribute)
+                                                <div>
+                                                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                                        {{ $attribute['name'] }}
+                                                    </dt>
+                                                    <dd class="text-sm text-gray-900 dark:text-gray-200">
+                                                        {{ implode(', ', $attribute['values']) }}
+                                                    </dd>
+                                                </div>
+                                            @endforeach
+                                        </dl>
+                                    </div>
+                                @endif
 
                                 <!-- Specifications -->
                                 @if ($product->specifications && count($product->specifications) > 0)

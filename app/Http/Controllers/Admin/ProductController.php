@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
+    protected $perPageProducts = 20;
     /**
      * Display a listing of the resource.
      */
@@ -49,7 +50,7 @@ class ProductController extends Controller
                 }
             })
             ->latest()
-            ->paginate(10)
+            ->paginate($this->perPageProducts)
             ->appends($request->all());
 
         return view('admin.products.index', compact('products', 'brands', 'categories'));
@@ -80,6 +81,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'buy_price' => 'nullable|numeric|min:0',
             'price' => 'required|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
@@ -164,7 +166,17 @@ class ProductController extends Controller
     {
         $allDeals = Deal::active()->ordered()->get();
         $product->load(['category', 'brand', 'images']);
-        return view('admin.products.show', compact('product', 'allDeals'));
+
+        $groupedAttributes = $product->attributes
+            ->groupBy('id')
+            ->map(function ($items) {
+                return [
+                    'name' => $items->first()->name,
+                    'values' => $items->pluck('pivot.value')->unique()->toArray(),
+                ];
+            });
+
+        return view('admin.products.show', compact('product', 'allDeals', 'groupedAttributes'));
     }
 
     /**
@@ -212,6 +224,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'buy_price' => 'nullable|numeric|min:0',
             'price' => 'required|numeric|min:0',
             'discount' => 'nullable|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
@@ -328,12 +341,15 @@ class ProductController extends Controller
      */
     public function trash()
     {
+        $brands = Brand::where('is_active', true)->get();
+        $categories = Category::where('is_active', true)->get();
+
         $products = Product::onlyTrashed()
             ->with(['category', 'brand'])
             ->latest()
-            ->paginate(10);
+            ->paginate($this->perPageProducts);
 
-        return view('admin.products.trash', compact('products'));
+        return view('admin.products.trash', compact('brands', 'categories', 'products'));
     }
     /**
      * Restore a soft-deleted product.

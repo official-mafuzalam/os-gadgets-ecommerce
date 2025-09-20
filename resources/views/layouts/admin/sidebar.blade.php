@@ -67,14 +67,17 @@
                 'admin.products.create',
                 'admin.products.edit',
                 'admin.products.show',
+                'admin.products.trash',
                 'admin.categories.index',
                 'admin.categories.create',
                 'admin.categories.edit',
                 'admin.categories.show',
+                'admin.categories.trash',
                 'admin.brands.index',
                 'admin.brands.create',
                 'admin.brands.edit',
                 'admin.brands.show',
+                'admin.brands.trash',
                 'admin.deals.index',
                 'admin.deals.create',
                 'admin.deals.edit',
@@ -119,14 +122,17 @@
                         'admin.products.create',
                         'admin.products.edit',
                         'admin.products.show',
+                        'admin.products.trash',
                         'admin.categories.index',
                         'admin.categories.create',
                         'admin.categories.edit',
                         'admin.categories.show',
+                        'admin.categories.trash',
                         'admin.brands.index',
                         'admin.brands.create',
                         'admin.brands.edit',
                         'admin.brands.show',
+                        'admin.brands.trash',
                         'admin.deals.index',
                         'admin.deals.create',
                         'admin.deals.edit',
@@ -141,35 +147,73 @@
                     <ul class="pt-2 pl-2">
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
-                        {{ in_array(Route::currentRouteName(), ['admin.products.index', 'admin.products.create', 'admin.products.edit', 'admin.products.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                        {{ in_array(Route::currentRouteName(), [
+                            'admin.products.index',
+                            'admin.products.create',
+                            'admin.products.edit',
+                            'admin.products.show',
+                            'admin.products.trash',
+                        ])
+                            ? 'bg-gray-200 dark:bg-gray-900'
+                            : 'text-slate-700' }}"
                                 href="{{ route('admin.products.index') }}">
                                 All Products
                             </a>
                         </li>
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
-                        {{ in_array(Route::currentRouteName(), ['admin.categories.index', 'admin.categories.create', 'admin.categories.edit', 'admin.categories.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                        {{ in_array(Route::currentRouteName(), [
+                            'admin.categories.index',
+                            'admin.categories.create',
+                            'admin.categories.edit',
+                            'admin.categories.show',
+                            'admin.categories.trash',
+                        ])
+                            ? 'bg-gray-200 dark:bg-gray-900'
+                            : 'text-slate-700' }}"
                                 href="{{ route('admin.categories.index') }}">
                                 Categories
                             </a>
                         </li>
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
-                        {{ in_array(Route::currentRouteName(), ['admin.brands.index', 'admin.brands.create', 'admin.brands.edit', 'admin.brands.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                        {{ in_array(Route::currentRouteName(), [
+                            'admin.brands.index',
+                            'admin.brands.create',
+                            'admin.brands.edit',
+                            'admin.brands.show',
+                            'admin.brands.trash'
+                        ])
+                            ? 'bg-gray-200 dark:bg-gray-900'
+                            : 'text-slate-700' }}"
                                 href="{{ route('admin.brands.index') }}">
                                 Brands
                             </a>
                         </li>
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
-                                    {{ in_array(Route::currentRouteName(), ['admin.deals.index', 'admin.deals.create', 'admin.deals.edit', 'admin.deals.products.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                    {{ in_array(Route::currentRouteName(), [
+                                        'admin.deals.index',
+                                        'admin.deals.create',
+                                        'admin.deals.edit',
+                                        'admin.deals.products.show',
+                                    ])
+                                        ? 'bg-gray-200 dark:bg-gray-900'
+                                        : 'text-slate-700' }}"
                                 href="{{ route('admin.deals.index') }}">
                                 Deals
                             </a>
                         </li>
                         <li>
                             <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
-                                    {{ in_array(Route::currentRouteName(), ['admin.attributes.index', 'admin.attributes.create', 'admin.attributes.edit', 'admin.attributes.show']) ? 'bg-gray-200 dark:bg-gray-900' : 'text-slate-700' }}"
+                                    {{ in_array(Route::currentRouteName(), [
+                                        'admin.attributes.index',
+                                        'admin.attributes.create',
+                                        'admin.attributes.edit',
+                                        'admin.attributes.show',
+                                    ])
+                                        ? 'bg-gray-200 dark:bg-gray-900'
+                                        : 'text-slate-700' }}"
                                 href="{{ route('admin.attributes.index') }}">
                                 Attributes
                             </a>

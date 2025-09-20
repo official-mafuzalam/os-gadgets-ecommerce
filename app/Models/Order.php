@@ -63,7 +63,7 @@ class Order extends Model
     // Methods
     public static function generateOrderNumber()
     {
-        return 'OS-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+        return 'OS-' . date('Ymd') . '-' . rand(1000, 9999);
     }
 
     public function canBeCancelled()

@@ -145,4 +145,42 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category deleted successfully.');
     }
+    /**
+     * Display a listing of soft-deleted categories.
+     */
+    public function trash()
+    {
+        // Get soft-deleted categories with parent relation
+        $categories = Category::onlyTrashed()->with('parent')->latest()->paginate(10);
+
+        return view('admin.categories.trash', compact('categories'));
+    }
+
+    /**
+     * Restore a soft-deleted category.
+     */
+    public function restore($id)
+    {
+        $category = Category::onlyTrashed()->findOrFail($id);
+
+        $category->restore();
+
+        return redirect()->route('admin.categories.trash')
+            ->with('success', 'Category restored successfully.');
+    }
+
+    /**
+     * Permanently delete a soft-deleted category.
+     */
+    public function forceDelete($id)
+    {
+        $category = Category::onlyTrashed()->findOrFail($id);
+
+        // Optional: delete related data if needed (like images)
+        $category->forceDelete();
+
+        return redirect()->route('admin.categories.trash')
+            ->with('success', 'Category permanently deleted.');
+    }
+
 }

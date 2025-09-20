@@ -39,8 +39,8 @@ class Setting extends Model
 
     public static function getGroupedSettings()
     {
-        return static::orderBy('group')
-            ->orderBy('order')
+        return static::orderBy('order')
+            ->orderBy('group')
             ->get()
             ->groupBy('group');
     }

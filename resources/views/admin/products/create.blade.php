@@ -62,7 +62,7 @@
                                             Description *
                                         </label>
                                         <div class="flex items-center mb-1">
-                                            <span class="text-sm text-gray-500 dark:text-gray-400 mr-2">Auto-generate
+                                            <span class="text-sm text-gray-500 dark:text-gray-400 mr-2">AI-generate
                                                 from product name</span>
                                             <button type="button" id="generate-description"
                                                 class="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 py-1 px-2 rounded-md transition-colors">
@@ -108,7 +108,20 @@
                                         @enderror
                                     </div>
 
-                                    <div class="col-span-2">
+                                    <div>
+                                        <label for="buy_price"
+                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Buy
+                                            Price *</label>
+                                        <input type="number" id="buy_price" name="buy_price" step="0.01"
+                                            min="0" value="{{ old('buy_price', $product->buy_price) }}"
+                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white py-2 px-3"
+                                            required>
+                                        @error('buy_price')
+                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <div>
                                         <label for="stock_quantity"
                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stock
                                             Quantity *</label>

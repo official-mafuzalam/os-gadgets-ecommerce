@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderPlaced;
 use App\Models\ShoppingCart;
 use App\Models\Product;
 use App\Models\ShippingAddress;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CheckoutController extends Controller
 {
@@ -155,6 +158,12 @@ class CheckoutController extends Controller
             // Clear cart after checkout
             if ($items->count() > 0) {
                 $cart->clear();
+            }
+
+            setMailConfigFromDB();
+
+            if ($request->email) {
+                Mail::to($request->email)->send(new OrderPlaced($order));
             }
 
             DB::commit();

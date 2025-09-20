@@ -16,6 +16,7 @@ class Product extends Model
         'slug',
         'sku',
         'description',
+        'buy_price',
         'price',
         'discount',
         'stock_quantity',

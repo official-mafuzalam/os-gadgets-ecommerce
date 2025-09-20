@@ -378,8 +378,7 @@
 
                     let html = '<div class="space-y-2">';
                     data.forEach(product => {
-                        const primaryImage = product.images?.find(img => img.is_primary);
-                        const imageUrl = primaryImage?.image_url || 'data:image/svg+xml;base64,...';
+                        const imageUrl = product.image_url || 'https://placehold.co/100?text=No+Image';
 
                         html += `
                         <a href="{{ route('public.products.show', '') }}/${product.slug}" class="flex items-center p-2 hover:bg-gray-100 rounded-lg">
@@ -399,5 +398,6 @@
                     resultsContainer.innerHTML = '<div class="p-4 text-center text-gray-500">Search failed</div>';
                     resultsContainer.classList.remove('hidden');
                 });
+
         }
     </script>

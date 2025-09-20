@@ -75,6 +75,7 @@ Route::get('/about', [PublicHomeController::class, 'about'])->name('public.about
 Route::get('/contact', [PublicHomeController::class, 'contact'])->name('public.contact');
 Route::post('/contact', [PublicHomeController::class, 'submitContact'])->name('public.contact.submit');
 Route::post('/subscribe', [PublicHomeController::class, 'subscribe'])->name('public.subscribe');
+Route::post('/unsubscribe', [PublicHomeController::class, 'unsubscribe'])->name('public.unsubscribe');
 Route::get('/privacy-policy', [PublicHomeController::class, 'privacyPolicy'])->name('public.privacy-policy');
 Route::get('/terms-of-service', [PublicHomeController::class, 'termsOfService'])->name('public.terms-of-service');
 Route::get('/return-policy', [PublicHomeController::class, 'returnPolicy'])->name('public.return-policy');
@@ -99,19 +100,18 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
             Route::patch('/{id}/status', [OrderController::class, 'updateStatus'])->name('update-status');
             Route::patch('/{id}/mark-paid', [OrderController::class, 'markAsPaid'])->name('mark-paid');
             Route::delete('/{id}', [OrderController::class, 'destroy'])->name('destroy');
+            Route::get('/{order}/invoice/pdf', [OrderController::class, 'downloadInvoice'])->name('invoice.pdf');
+            Route::get('/{order}/invoice/email', [OrderController::class, 'emailInvoice'])->name('invoice.email');
         });
 
-        // Invoice routes
-        Route::prefix('/orders/{order}/invoice')->name('admin.orders.invoice.')->group(function () {
-            Route::get('/pdf', [OrderController::class, 'downloadInvoice'])->name('pdf');
-            Route::get('/email', [OrderController::class, 'emailInvoice'])->name('email');
-        });
-
+        // Reports Routes
         Route::get('reports/sales', [ReportController::class, 'salesReport'])->name('admin.reports.sales');
 
-        Route::resource('products', ProductController::class)->names('admin.products');
-        Route::get('products/trash', [ProductController::class, 'trash'])->name('admin.products.trash');
+
+        // Products Routes
+        Route::get('products/trashed', [ProductController::class, 'trash'])->name('admin.products.trash');
         Route::post('products/{product}/restore', [ProductController::class, 'restore'])->name('admin.products.restore');
+        Route::resource('products', ProductController::class)->names('admin.products');
         Route::delete('products/{product}/force-delete', [ProductController::class, 'forceDelete'])->name('admin.products.force-delete');
         Route::patch('products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('admin.products.toggle-status');
         Route::patch('products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('admin.products.toggle-featured');
@@ -121,21 +121,32 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::post('{product}/deals/assign', [ProductController::class, 'assignDeals'])->name('admin.products.deals.assign');
         Route::delete('{product}/deals/{deal}/remove', [ProductController::class, 'removeDeal'])->name('admin.products.deals.remove');
 
+        // Categories Routes
+        Route::get('categories/trashed', [CategoryController::class, 'trash'])->name('admin.categories.trash');
+        Route::post('categories/{category}/restore', [CategoryController::class, 'restore'])->name('admin.categories.restore');
+        Route::delete('categories/{category}/force-delete', [CategoryController::class, 'forceDelete'])->name('admin.categories.force-delete');
         Route::resource('categories', CategoryController::class)->names('admin.categories');
-        Route::resource('brands', BrandController::class)->names('admin.brands');
-        
-        Route::resource('attributes', AttributeController::class)->names('admin.attributes');
-        Route::get('products/{product}/attributes', [AttributeController::class, 'showAssignForm'])
-            ->name('products.attributes.assign');
-        Route::post('products/{product}/attributes', [AttributeController::class, 'assignToProduct'])
-            ->name('products.attributes.store');
-        Route::delete('products/{product}/attributes/{attribute}', [AttributeController::class, 'removeFromProduct'])
-            ->name('products.attributes.remove');
 
+        // Brands Routes
+        Route::get('brands/trashed', [BrandController::class, 'trash'])->name('admin.brands.trash');
+        Route::post('brands/{brand}/restore', [BrandController::class, 'restore'])->name('admin.brands.restore');
+        Route::delete('brands/{brand}/force-delete', [BrandController::class, 'forceDelete'])->name('admin.brands.force-delete');
+        Route::resource('brands', BrandController::class)->names('admin.brands');
+
+        // Attributes Routes
+        Route::resource('attributes', AttributeController::class)->names('admin.attributes');
+        Route::get('products/{product}/attributes', [AttributeController::class, 'showAssignForm'])->name('products.attributes.assign');
+        Route::post('products/{product}/attributes', [AttributeController::class, 'assignToProduct'])->name('products.attributes.store');
+        Route::delete('products/{product}/attributes/{attribute}', [AttributeController::class, 'removeFromProduct'])->name('products.attributes.remove');
+
+        // Order Routes
         Route::resource('orders', OrderController::class)->names('admin.orders');
+
+        // Reviews Routes
         Route::resource('reviews', ReviewController::class)->names('admin.reviews');
         Route::patch('reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');
 
+        // Deals Routes
         Route::resource('deals', DealController::class)->names('admin.deals');
         Route::patch('deals/{deal}/toggle-status', [DealController::class, 'toggleStatus'])->name('admin.deals.toggle-status');
         Route::patch('deals/{deal}/toggle-featured', [DealController::class, 'toggleDealFeatured'])->name('admin.deals.toggle-featured');
@@ -144,14 +155,18 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::delete('deals/{deal}/products/{product}/remove', [DealController::class, 'removeProduct'])->name('admin.deals.products.remove');
         Route::patch('deals/{deal}/products/{product}/toggle-featured', [DealController::class, 'toggleFeatured'])->name('admin.deals.products.toggle-featured');
 
+        // Settings Routes
         Route::get('settings', [SettingController::class, 'index'])->name('admin.settings.index');
         Route::put('settings', [SettingController::class, 'update'])->name('admin.settings.update');
 
+        // Carousel Routes
         Route::resource('carousels', CarouselController::class)->names('admin.carousels');
         Route::post('carousels/reorder', [CarouselController::class, 'reorder'])->name('admin.carousels.reorder');
 
         // Subscribers
         Route::resource('subscribers', SubscriberController::class)->names('admin.subscribers');
+        Route::post('/subscribers/send-bulk-deal', [SubscriberController::class, 'sendBulkDeal'])->name('admin.subscribers.sendBulkDeal');
+        Route::post('/subscribers/bulk-action', [SubscriberController::class, 'bulkAction'])->name('admin.subscribers.bulkAction');
 
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

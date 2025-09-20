@@ -159,6 +159,49 @@
                                 </div>
                             </div>
 
+                            @if ($groupedAttributes->count() > 0)
+                                <div class="md:col-span-2">
+                                    <h3 class="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">Choose Options
+                                    </h3>
+                                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        @foreach ($groupedAttributes as $attribute)
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                                                    {{ $attribute['name'] }}
+                                                </dt>
+                                                <dd class="text-sm text-gray-900 dark:text-gray-200 mt-1">
+                                                    <div class="flex flex-wrap gap-3">
+                                                        @foreach ($attribute['values'] as $value)
+                                                            @php
+                                                                $inputName = 'attributes[' . $attribute['id'] . ']';
+                                                                $valueId =
+                                                                    $attribute['id'] .
+                                                                    '_' .
+                                                                    \Illuminate\Support\Str::slug($value, '_');
+                                                            @endphp
+
+                                                            <label for="{{ $valueId }}" class="cursor-pointer">
+                                                                <input type="radio" id="{{ $valueId }}"
+                                                                    name="{{ $inputName }}"
+                                                                    value="{{ $value }}" class="peer hidden"
+                                                                    required>
+                                                                <span
+                                                                    class="inline-block px-3 py-1 rounded-md border border-gray-300 text-sm peer-checked:bg-indigo-600 peer-checked:text-white hover:bg-indigo-100 transition-colors">
+                                                                    {{ $value }}
+                                                                </span>
+                                                            </label>
+                                                        @endforeach
+                                                    </div>
+                                                </dd>
+                                            </div>
+                                        @endforeach
+                                    </dl>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Product Details -->
+                        <div class="border-t border-gray-200 pt-4">
                             <div class="flex space-x-4">
                                 <form action="{{ route('public.products.buy-now', $product) }}" method="GET"
                                     class="flex-1">
@@ -181,26 +224,6 @@
                                     </button>
                                 </form>
                             </div>
-                        </div>
-
-                        <!-- Product Details -->
-                        <div class="border-t border-gray-200 pt-4">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                                <i class="fas fa-shipping-fast mr-2 text-indigo-600"></i>
-                                Delivery Charges
-                            </h3>
-                            <ul class="space-y-2">
-                                <li class="flex items-center text-sm text-gray-700">
-                                    <span class="w-32 font-medium">Inside Dhaka:</span>
-                                    <span class="ml-2">{{ number_format(setting('inside_dhaka_shipping_cost')) }}
-                                        TK</span>
-                                </li>
-                                <li class="flex items-center text-sm text-gray-700">
-                                    <span class="w-32 font-medium">Outside Dhaka:</span>
-                                    <span class="ml-2">{{ number_format(setting('outside_dhaka_shipping_cost')) }}
-                                        TK</span>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>

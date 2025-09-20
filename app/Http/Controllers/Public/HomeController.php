@@ -99,15 +99,30 @@ class HomeController extends Controller
     public function subscribe(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|unique:subscribers,email',
+            'email' => ['required', 'email', 'max:255'],
         ]);
 
+        $email = strtolower(trim($request->email));
+
+        // Check if email is already subscribed
+        if (Subscriber::where('email', $email)->exists()) {
+            return redirect()->back()->with('error', 'This email is already subscribed.');
+        }
+
+        // Allow only Gmail addresses
+        $domain = substr(strrchr($email, "@"), 1);
+        if ($domain !== 'gmail.com') {
+            return redirect()->back()->with('error', 'Please use a valid Gmail address.');
+        }
+
+        // Store subscriber
         Subscriber::create([
-            'email' => $request->email,
+            'email' => $email,
         ]);
 
         return redirect()->back()->with('success', 'Thank you for subscribing to our newsletter!');
     }
+
 
     public function privacyPolicy()
     {

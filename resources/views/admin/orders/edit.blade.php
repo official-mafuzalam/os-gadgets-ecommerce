@@ -15,12 +15,12 @@
                 </div>
             </div>
         </div>
-        
+
         <form action="{{ route('admin.orders.update', $order->id) }}" method="POST">
             @csrf
             @method('PUT')
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <!-- Left Column -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Order Status Card -->
@@ -65,14 +65,27 @@
                                         </option>
                                     </select>
                                 </div>
-                            </div>
 
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tracking Number</label>
-                                <input type="text" name="tracking_number"
-                                    value="{{ old('tracking_number', $order->tracking_number) }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                    placeholder="Enter tracking number">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <input type="text" name="full_name"
+                                        value="{{ old('full_name', $order->shippingAddress->full_name) }}"
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                    <input type="text" name="customer_phone"
+                                        value="{{ old('customer_phone', $order->customer_phone) }}"
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                                </div>
+                                @if ($order->customer_email)
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Registered
+                                            Email</label>
+                                        <input type="email" value="{{ $order->customer_email }}" disabled
+                                            class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-100 cursor-not-allowed">
+                                    </div>
+                                @endif
                             </div>
 
                             <div>
@@ -87,6 +100,14 @@
                                 <textarea name="notes" rows="1"
                                     class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                                     placeholder="Add any notes about this order">{{ old('notes', $order->notes) }}</textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tracking Number</label>
+                                <input type="text" name="tracking_number"
+                                    value="{{ old('tracking_number', $order->tracking_number) }}"
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                                    placeholder="Enter tracking number">
                             </div>
                         </div>
                     </div>
@@ -143,35 +164,6 @@
 
                 <!-- Right Column -->
                 <div class="space-y-6">
-                    <!-- Customer Information -->
-                    <div class="bg-white shadow-sm rounded-lg">
-                        <div class="px-6 py-4 border-b border-gray-200">
-                            <h2 class="text-lg font-medium text-gray-900">Customer Information</h2>
-                        </div>
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                <input type="text" name="full_name"
-                                    value="{{ old('full_name', $order->shippingAddress->full_name) }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                                <input type="text" name="customer_phone"
-                                    value="{{ old('customer_phone', $order->customer_phone) }}"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
-                            </div>
-                            @if ($order->customer_email)
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Registered
-                                        Email</label>
-                                    <input type="email" value="{{ $order->customer_email }}" disabled
-                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-100 cursor-not-allowed">
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
                     <!-- Order Summary -->
                     <div class="bg-white shadow-sm rounded-lg">
                         <div class="px-6 py-4 border-b border-gray-200">

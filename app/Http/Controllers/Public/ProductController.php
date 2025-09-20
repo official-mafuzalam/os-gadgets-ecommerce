@@ -83,7 +83,19 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('public.products.show', compact('product', 'relatedProducts'));
+        $groupedAttributes = $product->attributes
+            ->groupBy('id')
+            ->map(function ($items) {
+                return [
+                    'id' => $items->first()->id,  // add this line
+                    'name' => $items->first()->name,
+                    'values' => $items->pluck('pivot.value')->unique()->toArray(),
+                ];
+            })
+            ->values(); // optional: reset keys
+
+
+        return view('public.products.show', compact('product', 'relatedProducts', 'groupedAttributes'));
     }
 
     public function brands()
