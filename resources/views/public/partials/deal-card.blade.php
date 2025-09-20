@@ -5,7 +5,7 @@
 
         <!-- Overlay content -->
         <div
-            class="absolute inset-0 flex flex-col justify-end p-3 md:p-4 bg-gradient-to-t from-black/60 to-transparent text-white">
+            class="absolute inset-0 flex flex-col justify-end p-3 md:p-4 bg-gradient-to-t from-black/30 to-transparent text-white">
             <h3 class="text-base md:text-lg font-semibold mb-1">{{ $deal->title }}</h3>
             <p class="text-xs md:text-sm mb-2 line-clamp-2">{{ $deal->description }}</p>
 

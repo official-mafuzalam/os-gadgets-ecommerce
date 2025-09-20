@@ -37,7 +37,7 @@
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-gray-600">Shipping</span>
-                                        <span class="font-medium">{{ number_format($order->shipping_cos) }} TK</span>
+                                        <span class="font-medium">{{ number_format($order->shipping_cost) }} TK</span>
                                     </div>
                                     <div class="flex justify-between pt-3 border-t border-gray-200">
                                         <span class="text-lg font-semibold">Total</span>

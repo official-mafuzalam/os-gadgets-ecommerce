@@ -260,7 +260,7 @@
                                 <span class="text-gray-900">{{ number_format($order->subtotal, 2) }} TK</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Shipping Cost</span>
+                                <span class="text-gray-600">Delivery Charge</span>
                                 <span class="text-gray-900">{{ number_format($order->shipping_cost, 2) }} TK</span>
                             </div>
                             @if ($order->discount_amount > 0)

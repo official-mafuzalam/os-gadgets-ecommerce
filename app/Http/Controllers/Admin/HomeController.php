@@ -23,6 +23,7 @@ class HomeController extends Controller
         $today = now()->toDateString();
         $orderStats = [
             'total' => Order::count(),
+            'total_cancelled' => Order::where('status', 'cancelled')->count(),
             'today' => Order::whereDate('created_at', $today)->count(),
             'today_pending' => Order::whereDate('created_at', $today)->where('status', 'pending')->count(),
             'today_processing' => Order::whereDate('created_at', $today)->where('status', 'processing')->count(),
@@ -30,6 +31,7 @@ class HomeController extends Controller
             'today_delivered' => Order::whereDate('created_at', $today)->where('status', 'delivered')->count(),
             'today_cancelled' => Order::whereDate('created_at', $today)->where('status', 'cancelled')->count(),
             'today_revenue' => Order::whereDate('created_at', $today)->where('status', 'delivered')->sum('total_amount'),
+            'total_revenue' => Order::where('status', 'delivered')->sum('total_amount'),
         ];
 
         // Weekly sales data for charts

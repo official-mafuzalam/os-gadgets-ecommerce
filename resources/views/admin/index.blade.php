@@ -65,6 +65,25 @@
                         </div>
                     </div>
 
+                    <!-- Total Cancelled Orders -->
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-times-circle text-red-500 text-xl"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">
+                                            Total Cancelled Orders</dt>
+                                        <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                                            {{ $orderStats['total_cancelled'] ?? 0 }}</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Today's Revenue -->
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
                         <div class="p-5">
@@ -77,7 +96,26 @@
                                         <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">
                                             Today's Revenue</dt>
                                         <dd class="text-lg font-medium text-gray-900 dark:text-white">
-                                            ${{ number_format($orderStats['today_revenue'] ?? 0, 2) }}</dd>
+                                            {{ number_format($orderStats['today_revenue'] ?? 0, 2) }}</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Revenue -->
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-dollar-sign text-green-500 text-xl"></i>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">
+                                            Total Revenue</dt>
+                                        <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                                            {{ $orderStats['total_revenue'] ?? 0 }}</dd>
                                     </dl>
                                 </div>
                             </div>
@@ -122,25 +160,6 @@
                         </div>
                     </div>
 
-                    <!-- Todays Processing Orders -->
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
-                        <div class="p-5">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <i class="fas fa-cogs text-yellow-500 text-xl"></i>
-                                </div>
-                                <div class="ml-5 w-0 flex-1">
-                                    <dl>
-                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">
-                                            Today's Processing Orders</dt>
-                                        <dd class="text-lg font-medium text-gray-900 dark:text-white">
-                                            {{ $orderStats['today_processing'] ?? 0 }}</dd>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Today's Shipped Orders -->
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
                         <div class="p-5">
@@ -161,7 +180,7 @@
                     </div>
 
                     <!-- Today's Delivered Orders -->
-                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+                    {{-- <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
                         <div class="p-5">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0">
@@ -177,7 +196,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Today's Cancelled Orders -->
                     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
