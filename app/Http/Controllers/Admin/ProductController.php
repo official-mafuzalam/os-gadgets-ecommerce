@@ -361,6 +361,79 @@ class ProductController extends Controller
         return redirect()->route('admin.products.trash')
             ->with('success', 'Product restored successfully.');
     }
+
+    /**
+     * Bulk delete products
+     */
+    public function bulkDestroy(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'selected_products' => 'required|string'
+        ]);
+
+        // Decode the JSON string
+        $selectedProducts = json_decode($request->selected_products);
+
+        if (empty($selectedProducts)) {
+            return redirect()->back()->with('error', 'No products selected.');
+        }
+
+        // Soft delete the selected products
+        Product::whereIn('id', $selectedProducts)->delete();
+
+        return redirect()->route('admin.products.index')
+            ->with('success', count($selectedProducts) . ' products moved to trash successfully.');
+    }
+
+    /**
+     * Bulk permanently delete products
+     */
+    public function bulkForceDelete(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'selected_products' => 'required|string'
+        ]);
+
+        // Decode the JSON string
+        $selectedProducts = json_decode($request->selected_products);
+
+        if (empty($selectedProducts)) {
+            return redirect()->back()->with('error', 'No products selected.');
+        }
+
+        // Permanently delete the selected products
+        Product::onlyTrashed()->whereIn('id', $selectedProducts)->forceDelete();
+
+        return redirect()->route('admin.products.trash')
+            ->with('success', count($selectedProducts) . ' products permanently deleted successfully.');
+    }
+
+    /**
+     * Bulk restore products
+     */
+    public function bulkRestore(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'selected_products' => 'required|string'
+        ]);
+
+        // Decode the JSON string
+        $selectedProducts = json_decode($request->selected_products);
+
+        if (empty($selectedProducts)) {
+            return redirect()->back()->with('error', 'No products selected.');
+        }
+
+        // Restore the selected products
+        Product::onlyTrashed()->whereIn('id', $selectedProducts)->restore();
+
+        return redirect()->route('admin.products.trash')
+            ->with('success', count($selectedProducts) . ' products restored successfully.');
+    }   
+
     /**
      * Permanently delete a soft-deleted product.
      */

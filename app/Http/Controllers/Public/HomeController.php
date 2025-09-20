@@ -47,7 +47,7 @@ class HomeController extends Controller
 
         $leftDeals = $allDeals->slice(0, 2);     // first 2 deals for left sidebar
         $rightDeals = $allDeals->slice(2, 2);    // next 2 deals for right sidebar
-        $bottomDeals = $allDeals->slice(4, 6);   // next 6 deals for bottom grid
+        $bottomDeals = $allDeals->slice(4, 2);   // next 2 deals for bottom grid
 
         return view('public.index', compact(
             'carousels',

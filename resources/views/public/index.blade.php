@@ -13,11 +13,14 @@
                 <div class="col-span-1 lg:col-span-2">
                     @include('public.partials.carousel', ['carousels' => $carousels])
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6 justify-items-center">
                         @foreach ($bottomDeals as $deal)
-                            @include('public.partials.deal-card', ['deal' => $deal])
+                            <div class="w-full max-w-sm">
+                                @include('public.partials.deal-card', ['deal' => $deal])
+                            </div>
                         @endforeach
                     </div>
+
                 </div>
 
                 <div class="hidden lg:flex flex-col space-y-4 md:space-y-6 col-span-1">

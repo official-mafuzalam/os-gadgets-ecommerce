@@ -111,6 +111,10 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         // Products Routes
         Route::get('products/trashed', [ProductController::class, 'trash'])->name('admin.products.trash');
         Route::post('products/{product}/restore', [ProductController::class, 'restore'])->name('admin.products.restore');
+        Route::delete('products/bulk-destroy', [ProductController::class, 'bulkDestroy'])->name('admin.products.bulk-destroy');
+        Route::delete('admin/products/bulk-force-delete', [ProductController::class, 'bulkForceDelete'])->name('admin.products.bulk-force-delete');
+        Route::post('admin/products/bulk-restore', [ProductController::class, 'bulkRestore'])->name('admin.products.bulk-restore');
+
         Route::resource('products', ProductController::class)->names('admin.products');
         Route::delete('products/{product}/force-delete', [ProductController::class, 'forceDelete'])->name('admin.products.force-delete');
         Route::patch('products/{product}/toggle-status', [ProductController::class, 'toggleStatus'])->name('admin.products.toggle-status');
