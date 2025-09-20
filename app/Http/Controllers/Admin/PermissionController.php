@@ -10,8 +10,18 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-    //
-
+    public function __construct()
+    {
+        $this->middleware('can:permissions_manage')->only([
+            'permission',
+            'permissionCreatePage',
+            'permissionCreate',
+            'permissionEditPage',
+            'permissionUpdate',
+            'givePermission',
+            'removeRole'
+        ]);
+    }
     public function permission()
     {
         $permission = Permission::paginate(10);

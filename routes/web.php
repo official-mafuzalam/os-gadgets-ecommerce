@@ -143,9 +143,7 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::post('products/{product}/attributes', [AttributeController::class, 'assignToProduct'])->name('products.attributes.store');
         Route::delete('products/{product}/attributes/{attribute}', [AttributeController::class, 'removeFromProduct'])->name('products.attributes.remove');
 
-        // Order Routes
-        Route::resource('orders', OrderController::class)->names('admin.orders');
-
+        
         // Reviews Routes
         Route::resource('reviews', ReviewController::class)->names('admin.reviews');
         Route::patch('reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');

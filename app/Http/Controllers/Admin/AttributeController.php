@@ -11,6 +11,21 @@ use Illuminate\Support\Str;
 
 class AttributeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:attributes_manage')->only([
+            'index',
+            'create',
+            'store',
+            'edit',
+            'update',
+            'destroy',
+            'showAssignForm',
+            'assignToProduct',
+            'removeFromProduct'
+        ]);
+    }
+
     /**
      * Display a listing of the attributes.
      */

@@ -20,6 +20,31 @@ use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:products_manage')->only([
+            'index',
+            'create',
+            'store',
+            'edit',
+            'update',
+            'destroy',
+            'trash',
+            'restore',
+            'forceDelete',
+            'bulkDestroy',
+            'bulkForceDelete',
+            'bulkRestore',
+            'toggleStatus',
+            'toggleFeatured',
+            'setPrimaryImage',
+            'editDeals',
+            'assignDeals',
+            'removeDeal',
+            'generateDescription'
+        ]);
+    }
+
     protected $perPageProducts = 20;
     /**
      * Display a listing of the resource.
@@ -432,7 +457,7 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.trash')
             ->with('success', count($selectedProducts) . ' products restored successfully.');
-    }   
+    }
 
     /**
      * Permanently delete a soft-deleted product.

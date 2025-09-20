@@ -10,6 +10,11 @@ use Carbon\Carbon;
 
 class ReportController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:reports_view')->only(['salesReport']);
+    }
+    
     public function salesReport(Request $request)
     {
         // Get filter parameters

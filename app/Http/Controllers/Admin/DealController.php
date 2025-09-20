@@ -11,6 +11,25 @@ use Illuminate\Support\Facades\Validator;
 
 class DealController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:deals_manage')->only([
+            'index',
+            'create',
+            'store',
+            'edit',
+            'update',
+            'destroy',
+            'toggleStatus',
+            'toggleDealFeatured',
+            'productsShow',
+            'manageProducts',
+            'assignProducts',
+            'removeProduct',
+            'toggleFeatured'
+        ]);
+    }
+
     /**
      * Display a listing of the deals.
      */

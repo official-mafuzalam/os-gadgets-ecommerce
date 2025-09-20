@@ -10,6 +10,21 @@ use Illuminate\Support\Str;
 
 class BrandController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:brands_manage')->only([
+            'index',
+            'create',
+            'store',
+            'edit',
+            'update',
+            'destroy',
+            'trash',
+            'restore',
+            'forceDelete'
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      */

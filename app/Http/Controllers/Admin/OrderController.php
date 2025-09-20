@@ -13,6 +13,20 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:orders_manage')->only([
+            'index',
+            'show',
+            'edit',
+            'update',
+            'destroy',
+            'updateStatus',
+            'markAsPaid',
+            'downloadInvoice',
+            'emailInvoice'
+        ]);
+    }
     /**
      * Display a listing of the orders with filtering.
      */

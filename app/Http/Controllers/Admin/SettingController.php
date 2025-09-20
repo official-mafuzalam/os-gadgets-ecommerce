@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:settings_manage')->only(['index', 'update']);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+
     public function index()
     {
         $groups = Setting::getGroupedSettings();

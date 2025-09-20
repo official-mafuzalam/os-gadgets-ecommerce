@@ -224,6 +224,24 @@
                                     </button>
                                 </form>
                             </div>
+                            <div class="flex space-x-4 mt-2">
+                                {{-- Call --}}
+                                @if (setting('site_phone'))
+                                    <a href="tel:{{ setting('site_phone', '+8801621833839') }}"
+                                        class="flex-1 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-md transition-colors flex items-center justify-center">
+                                        <i class="fas fa-phone-alt mr-2"></i>
+                                        Call
+                                    </a>
+                                @endif
+                                @if (setting('whatsapp_enabled', true))
+                                    <a href="https://wa.me/{{ setting('whatsapp_number', '+8801621833839') }}?text={{ urlencode('I want to know about ' . $product->name) }}"
+                                        target="_blank"
+                                        class="flex-1 w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-md transition-colors flex items-center justify-center">
+                                        <i class="fab fa-whatsapp mr-2"></i>
+                                        WhatsApp
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

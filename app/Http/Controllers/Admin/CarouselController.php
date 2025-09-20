@@ -9,6 +9,19 @@ use Illuminate\Support\Facades\Storage;
 
 class CarouselController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:settings_manage')->only([
+            'index',
+            'create',
+            'store',
+            'edit',
+            'update',
+            'destroy',
+            'reorder'
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -117,7 +130,7 @@ class CarouselController extends Controller
         return redirect()->route('admin.carousels.index')
             ->with('success', 'Carousel item deleted successfully.');
     }
-    
+
     public function reorder(Request $request)
     {
         $order = $request->input('order');

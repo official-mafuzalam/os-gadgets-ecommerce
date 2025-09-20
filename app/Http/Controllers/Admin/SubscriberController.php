@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Mail;
 
 class SubscriberController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:subscribers_manage')->only(['index', 'sendBulkDeal']);
+    }
+
     /**
      * Display a listing of the resource.
      */

@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:reviews_manage')->only(['index', 'approve', 'destroy']);
+    }
+
     /**
      * Display a listing of the resource.
      */

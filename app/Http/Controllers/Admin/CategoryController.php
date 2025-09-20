@@ -10,6 +10,24 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:categories_manage')->only([
+            'index',
+            'create',
+            'store',
+            'edit',
+            'update',
+            'destroy',
+            'trash',
+            'restore',
+            'forceDelete',
+            'bulkDestroy',
+            'bulkForceDelete',
+            'bulkRestore'
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      */

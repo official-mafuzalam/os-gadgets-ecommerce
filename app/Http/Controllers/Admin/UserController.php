@@ -14,7 +14,19 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    //
+    public function __construct()
+    {
+        $this->middleware('can:user_create')->only(['create', 'store', 'show']);
+        $this->middleware('can:user_assign_role')->only(['assignRole', 'removeRole']);
+        $this->middleware('can:user_assign_permission')->only(['givePermission', 'revokePermission']);
+        $this->middleware('can:user_edit')->only(['passRegenerate']);
+        $this->middleware('can:block_user')->only(['block', 'unblock']);
+        $this->middleware('can:user_delete')->only('destroy');
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
 
     public function user()
     {
