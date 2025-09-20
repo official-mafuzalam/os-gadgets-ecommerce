@@ -320,7 +320,7 @@
             });
         </script>
 
-        @if (setting('google_tag_manager_id'))
+        {{-- @if (setting('google_tag_manager_id'))
             @push('scripts')
                 <script>
                     window.dataLayer = window.dataLayer || [];
@@ -335,7 +335,7 @@
                     });
                 </script>
             @endpush
-        @endif
+        @endif --}}
 
     </x-slot>
 </x-app-layout>

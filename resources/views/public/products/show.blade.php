@@ -224,8 +224,7 @@
                                     </button>
                                 </form>
                             </div>
-                            <div class="flex space-x-4 mt-2">
-                                {{-- Call --}}
+                            {{-- <div class="flex space-x-4 mt-2">
                                 @if (setting('site_phone'))
                                     <a href="tel:{{ setting('site_phone', '+8801621833839') }}"
                                         class="flex-1 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-md transition-colors flex items-center justify-center">
@@ -241,7 +240,7 @@
                                         WhatsApp
                                     </a>
                                 @endif
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
