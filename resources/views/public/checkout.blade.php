@@ -320,22 +320,21 @@
             });
         </script>
 
-        {{-- @if (setting('google_tag_manager_id'))
+        @if (setting('google_tag_manager_id'))
             @push('scripts')
                 <script>
                     window.dataLayer = window.dataLayer || [];
                     window.dataLayer.push({
                         event: "purchase",
                         ecommerce: {
-                            transaction_id: "{{ $order->id }}",
                             currency: "BDT",
-                            value: {{ $order->subtotal }},
-                            items: {!! json_encode($order->cartItems) !!}
+                            value: {{ $cart->subtotal + ($order->delivery_charge ?? 0) }},
+                            items: {!! json_encode($cartItems) !!}
                         }
                     });
                 </script>
             @endpush
-        @endif --}}
+        @endif
 
     </x-slot>
 </x-app-layout>
