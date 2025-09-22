@@ -97,6 +97,9 @@ class ProductController extends Controller
             })
             ->values();
 
+        // 🔹 Initialize eventId to avoid undefined variable error
+        $eventId = null;
+
         // 🔹 Facebook Pixel + CAPI Event
         if (setting('fb_pixel_id') && setting('facebook_access_token')) {
             $eventId = fb_event_id();
@@ -122,8 +125,12 @@ class ProductController extends Controller
             ]);
         }
 
-        // dd($eventId);
-        return view('public.products.show', compact('product', 'relatedProducts', 'groupedAttributes', 'eventId'));
+        return view('public.products.show', compact(
+            'product',
+            'relatedProducts',
+            'groupedAttributes',
+            'eventId'
+        ));
     }
 
 

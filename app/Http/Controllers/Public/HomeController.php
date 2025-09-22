@@ -48,10 +48,13 @@ class HomeController extends Controller
         $leftDeals = collect();
         $rightDeals = collect();
         $bottomDeals = collect();
+        $layout1Deals = collect();
 
         if (setting('default_layout_type') === 'layout1') {
+            $allDeals = Deal::featured()->latest()->take(2)->get();
+            $layout1Deals = $allDeals->slice(0, 2);
+        } elseif (setting('default_layout_type') === 'layout2') {
             $allDeals = Deal::featured()->latest()->take(10)->get();
-
             $leftDeals = $allDeals->slice(0, 2);     // first 2 deals for left sidebar
             $rightDeals = $allDeals->slice(2, 2);    // next 2 deals for right sidebar
             $bottomDeals = $allDeals->slice(4, 2);   // next 2 deals for bottom grid
@@ -65,7 +68,8 @@ class HomeController extends Controller
             'categories',
             'leftDeals',
             'rightDeals',
-            'bottomDeals'
+            'bottomDeals',
+            'layout1Deals'
         ));
     }
 

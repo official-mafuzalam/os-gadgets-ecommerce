@@ -5,22 +5,32 @@
         @endphp
 
         @if ($layoutSetting === 'layout1')
-            <!-- Layout 1: Multi-column with side deals, main carousel, and bottom deals -->
-            <section class="container mx-auto px-3 md:px-4 mt-4 md:mt-6">
+            <!-- Layout 1: Full-width carousel -->
+            <section class="hero-bg text-white">
+                <div class="px-4">
+                    @include('public.partials.carousel', ['carousels' => $carousels])
+                </div>
+                @if ($deal)
+                    <div class="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-4">
+                        @foreach ($layout1Deals as $item)
+                            @include('public.partials.deal-banner', ['deal' => $item])
+                        @endforeach
+                    </div>
+                @endif
+            </section>
+        @elseif ($layoutSetting === 'layout2')
+            <!-- Layout 2: Multi-column with side deals, main carousel, and bottom deals -->
+            <section class="container mx-auto px-3 md:px-4">
                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
-
-                    <!-- Left Deals Column -->
                     <div class="hidden lg:flex flex-col space-y-4 md:space-y-6 col-span-1">
                         @foreach ($leftDeals as $deal)
                             @include('public.partials.deal-card', ['deal' => $deal])
                         @endforeach
                     </div>
-
-                    <!-- Main Carousel + Bottom Deals -->
                     <div class="col-span-1 lg:col-span-2">
                         @include('public.partials.carousel', ['carousels' => $carousels])
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mt-4 md:mt-6 justify-items-center">
+                        <div class="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 justify-items-center mt-4">
                             @foreach ($bottomDeals as $deal)
                                 <div class="w-full max-w-sm">
                                     @include('public.partials.deal-card', ['deal' => $deal])
@@ -28,8 +38,6 @@
                             @endforeach
                         </div>
                     </div>
-
-                    <!-- Right Deals Column -->
                     <div class="hidden lg:flex flex-col space-y-4 md:space-y-6 col-span-1">
                         @foreach ($rightDeals as $deal)
                             @include('public.partials.deal-card', ['deal' => $deal])
@@ -37,11 +45,6 @@
                     </div>
 
                 </div>
-            </section>
-        @elseif ($layoutSetting === 'layout2')
-            <!-- Layout 2: Full-width carousel -->
-            <section class="hero-bg text-white">
-                @include('public.partials.carousel', ['carousels' => $carousels])
             </section>
         @endif
 
