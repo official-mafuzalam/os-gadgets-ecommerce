@@ -106,6 +106,20 @@ class SettingsTableSeeder extends Seeder
         }
 
         // --------------------
+        // Default Layout Setting
+        // --------------------
+        Setting::updateOrCreate(
+            ['key' => 'default_layout_type', 'group' => 'general'],
+            [
+                'value' => 'layout1', // default layout
+                'type' => 'text',
+                'label' => 'Default Public Page Layout',
+                'order' => 6, // after other general settings
+            ]
+        );
+
+
+        // --------------------
         // Branding Settings
         // --------------------
         $brandingSettings = [

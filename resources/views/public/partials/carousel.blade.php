@@ -1,39 +1,39 @@
+<!-- Carousel Partial -->
 <div class="col-span-2">
     <section class="relative overflow-hidden rounded-xl">
-        <div class="hero-carousel h-64 md:h-80 lg:h-96">
+        <div class="hero-carousel h-80 md:h-96 lg:h-[600px]">
             @foreach ($carousels as $index => $carousel)
                 <div
                     class="hero-slide {{ $index === 0 ? 'active' : '' }} bg-{{ $carousel->background_color }} text-white">
                     <div class="container mx-auto px-4 flex flex-col md:flex-row items-center h-full py-6 md:py-0">
-                        <div
-                            class="md:w-1/2 flex flex-col justify-center order-2 md:order-1 text-center md:text-left mt-4 md:mt-0">
-                            <h3 class="text-xl md:text-2xl lg:text-3xl font-bold leading-tight mb-2 md:mb-4">
-                                {{ $carousel->title }}</h3>
+                        <div class="md:w-1/2 flex flex-col justify-center text-center md:text-left mt-4 md:mt-0">
+                            <h3 class="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight mb-4">
+                                {{ $carousel->title }}
+                            </h3>
                             @if ($carousel->description)
-                                <p class="text-sm md:text-base mb-4 md:mb-6 line-clamp-2">{{ $carousel->description }}
-                                </p>
+                                <p class="text-base md:text-lg mb-6 line-clamp-2">{{ $carousel->description }}</p>
                             @endif
 
-                            <div class="flex flex-wrap gap-2 md:gap-4 justify-center md:justify-start">
+                            <div class="flex flex-wrap gap-3 justify-center md:justify-start">
                                 @if ($carousel->button_text && $carousel->button_url)
                                     <a href="{{ $carousel->button_url }}"
-                                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 md:py-3 md:px-6 rounded-lg transition duration-300 text-sm md:text-base">
+                                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-6 rounded-lg transition duration-300 text-base md:text-lg">
                                         {{ $carousel->button_text }}
                                     </a>
                                 @endif
 
                                 @if ($carousel->secondary_button_text && $carousel->secondary_button_url)
                                     <a href="{{ $carousel->secondary_button_url }}"
-                                        class="bg-transparent hover:bg-white hover:text-indigo-600 text-white font-medium py-2 px-4 md:py-3 md:px-6 rounded-lg border border-white md:border-2 transition duration-300 text-sm md:text-base">
+                                        class="bg-transparent hover:bg-white hover:text-indigo-600 text-white font-medium py-3 px-6 rounded-lg border border-white md:border-2 transition duration-300 text-base md:text-lg">
                                         {{ $carousel->secondary_button_text }}
                                     </a>
                                 @endif
                             </div>
                         </div>
 
-                        <div class="md:w-1/2 order-1 md:order-2">
+                        <div class="md:w-1/2 mt-6 md:mt-0">
                             <img src="{{ $carousel->image_url }}" alt="{{ $carousel->title }}"
-                                class="rounded-xl shadow-lg md:shadow-2xl max-h-40 md:max-h-64 lg:max-h-80 object-contain mx-auto">
+                                class="rounded-xl shadow-lg md:shadow-2xl h-[250px] md:h-[400px] lg:h-[500px] object-contain mx-auto">
                         </div>
                     </div>
                 </div>
@@ -42,22 +42,22 @@
 
         {{-- Indicators --}}
         @if ($carousels->count() > 1)
-            <div class="absolute bottom-2 md:bottom-4 left-0 right-0 flex justify-center space-x-2">
+            <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
                 @foreach ($carousels as $index => $carousel)
                     <button
-                        class="carousel-dot w-2 h-2 md:w-3 md:h-3 rounded-full bg-white bg-opacity-40 {{ $index === 0 ? 'active' : '' }}"
+                        class="carousel-dot w-3 h-3 rounded-full bg-white bg-opacity-40 {{ $index === 0 ? 'active' : '' }}"
                         data-slide="{{ $index }}"></button>
                 @endforeach
             </div>
 
             {{-- Navigation Arrows --}}
             <button
-                class="carousel-prev absolute left-1 md:left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-800 p-2 md:p-3 rounded-full shadow-lg">
-                <i class="fas fa-chevron-left text-xs md:text-base"></i>
+                class="carousel-prev absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-800 p-3 rounded-full shadow-lg">
+                <i class="fas fa-chevron-left text-base"></i>
             </button>
             <button
-                class="carousel-next absolute right-1 md:right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-800 p-2 md:p-3 rounded-full shadow-lg">
-                <i class="fas fa-chevron-right text-xs md:text-base"></i>
+                class="carousel-next absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-60 hover:bg-opacity-80 text-gray-800 p-3 rounded-full shadow-lg">
+                <i class="fas fa-chevron-right text-base"></i>
             </button>
         @endif
     </section>
@@ -65,12 +65,9 @@
 
 @push('styles')
     <style>
-        /* ===== Hero Carousel Base ===== */
         .hero-carousel {
             position: relative;
             overflow: hidden;
-            height: 320px;
-            /* Reduced for mobile */
         }
 
         .hero-slide {
@@ -80,7 +77,6 @@
             height: 100%;
             opacity: 0;
             transition: opacity 0.8s ease-in-out;
-            /* Slightly faster transition */
             display: flex;
             align-items: center;
         }
@@ -91,62 +87,47 @@
         }
 
         .hero-slide img {
-            height: 100%;
-            max-height: 280px;
-            /* Reduced for mobile */
             object-fit: contain;
+            width: 100%;
         }
 
-        /* ===== Indicators ===== */
         .carousel-dot.active {
             background-color: white !important;
         }
 
-        /* ===== Responsive ===== */
-        @media (min-width: 768px) {
+        /* Responsive Heights */
+        @media (max-width: 640px) {
             .hero-carousel {
-                height: 380px;
-                /* Medium screens */
+                height: 320px;
             }
 
             .hero-slide img {
-                max-height: 340px;
-                /* Medium screens */
+                height: 220px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .hero-carousel {
+                height: 420px;
+            }
+
+            .hero-slide img {
+                height: 350px;
             }
         }
 
         @media (min-width: 1024px) {
             .hero-carousel {
-                height: 420px;
-                /* Large screens */
+                height: 600px;
             }
 
             .hero-slide img {
-                max-height: 400px;
-                /* Large screens */
-            }
-        }
-
-        /* Mobile-specific adjustments */
-        @media (max-width: 640px) {
-            .hero-carousel {
-                height: 280px;
-                /* Even smaller for very small screens */
-            }
-
-            .hero-slide img {
-                max-height: 180px;
-                /* Even smaller for very small screens */
-            }
-
-            .carousel-prev,
-            .carousel-next {
-                display: none;
-                /* Hide arrows on very small screens */
+                height: 500px;
             }
         }
     </style>
 @endpush
+
 
 @push('scripts')
     <script>

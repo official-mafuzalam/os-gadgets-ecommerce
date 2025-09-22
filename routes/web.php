@@ -160,6 +160,8 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         // Settings Routes
         Route::get('settings', [SettingController::class, 'index'])->name('admin.settings.index');
         Route::put('settings', [SettingController::class, 'update'])->name('admin.settings.update');
+        Route::get('settings/homepage-sections', [SettingController::class, 'homepageSections'])->name('admin.settings.homepage-sections');
+        Route::put('settings/homepage-sections', [SettingController::class, 'updateHomepageSections'])->name('admin.settings.homepage-sections.update');
 
         // Carousel Routes
         Route::resource('carousels', CarouselController::class)->names('admin.carousels');

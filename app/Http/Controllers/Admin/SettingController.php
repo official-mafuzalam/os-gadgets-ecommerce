@@ -79,4 +79,10 @@ class SettingController extends Controller
         return redirect()->route('admin.settings.index')
             ->with('success', 'Settings updated successfully.');
     }
+
+    public function homepageSections()
+    {
+        $groups = Setting::getGroupedSettings();
+        return view('admin.settings.homepage_sections', compact('groups'));
+    }
 }
