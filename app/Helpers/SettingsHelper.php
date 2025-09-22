@@ -14,6 +14,13 @@ if (!function_exists('setting')) {
     }
 }
 
+if (!function_exists('fb_event_id')) {
+    function fb_event_id()
+    {
+        return uniqid('fb_', true);
+    }
+}
+
 
 if (!function_exists('setMailConfigFromDB')) {
     function setMailConfigFromDB()

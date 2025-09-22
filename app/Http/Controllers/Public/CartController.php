@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\ShoppingCart;
 use App\Models\Product;
+use App\Services\FacebookCapiService;
 use Illuminate\Http\Request;
 
 use function Symfony\Component\String\b;
@@ -34,7 +35,7 @@ class CartController extends Controller
     }
 
     // Add product to cart
-    public function add(Request $request, Product $product)
+    public function add(Request $request, Product $product, FacebookCapiService $fbService)
     {
         try {
             $request->validate([
@@ -44,11 +45,39 @@ class CartController extends Controller
             $cart = $this->getCart();
             $cart->addItem($product->id, $request->quantity);
 
+            // 🔹 Facebook Pixel + CAPI AddToCart Event
+            if (setting('fb_pixel_id') && setting('facebook_access_token')) {
+                $eventId = fb_event_id();
+
+                // Send to Facebook CAPI
+                $fbService->sendEvent('AddToCart', $eventId, [
+                    'em' => [hash('sha256', strtolower(auth()->user()->email ?? ''))],
+                    'ph' => [hash('sha256', auth()->user()->phone ?? '')],
+                    'client_ip_address' => request()->ip(),
+                    'client_user_agent' => request()->userAgent(),
+                ], [
+                    'currency' => 'USD',
+                    'value' => $product->price * $request->quantity,
+                    'content_type' => 'product',
+                    'content_ids' => [$product->sku],
+                    'contents' => [
+                        [
+                            'id' => $product->sku,
+                            'quantity' => $request->quantity,
+                        ]
+                    ],
+                ]);
+
+                // Save eventId to flash session for Blade use
+                session()->flash('fb_event_id', $eventId);
+            }
+
             return back()->with('success', 'Product added to cart!');
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to add product to cart: ' . $e->getMessage());
         }
     }
+
 
     // Update quantity of a cart item
     public function update(Request $request, $itemId)

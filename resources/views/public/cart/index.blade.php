@@ -292,5 +292,19 @@
                     });
             }
         </script>
+
+        @if (session()->has('fb_event_id'))
+            <script>
+                fbq('track', 'AddToCart', {
+                    content_ids: ['{{ $product->sku ?? '' }}'],
+                    content_type: 'product',
+                    value: {{ $product->price ?? 0 }},
+                    currency: "USD"
+                }, {
+                    eventID: "{{ session('fb_event_id') }}"
+                });
+            </script>
+        @endif
+
     </x-slot>
 </x-app-layout>

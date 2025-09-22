@@ -150,5 +150,17 @@
             @endpush
         @endif
 
+        @if (setting('fb_pixel_id') && session()->has('fb_event_id'))
+            <script>
+                fbq('track', 'Purchase', {
+                    value: {{ $order->total_amount }},
+                    currency: "USD",
+                    content_ids: {!! json_encode($order->items->pluck('product.sku')->toArray()) !!},
+                    contents: {!! json_encode($order->items->map(fn($i) => ['id' => $i->product->sku, 'quantity' => $i->quantity])->toArray()) !!}
+                }, {
+                    eventID: "{{ session('fb_event_id') }}"
+                });
+            </script>
+        @endif
     </x-slot>
 </x-app-layout>

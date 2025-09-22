@@ -432,6 +432,19 @@
                 </script>
             @endpush
         @endif
+        @if (setting('fb_pixel_id') && !empty($eventId))
+            <script>
+                fbq('track', 'ViewContent', {
+                    content_ids: ['{{ $product->sku }}'],
+                    content_type: 'product',
+                    value: {{ $product->price }},
+                    currency: "USD"
+                }, {
+                    eventID: "{{ $eventId }}"
+                });
+            </script>
+        @endif
+
 
         <script>
             // Function to change the main product image

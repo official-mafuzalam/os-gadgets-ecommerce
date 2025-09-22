@@ -159,7 +159,10 @@ class SettingsTableSeeder extends Seeder
         // --------------------
         $analyticsSettings = [
             ['key' => 'google_tag_manager_id', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Google Tag Manager ID', 'order' => 1],
-            ['key' => 'facebook_pixel_id', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Facebook Pixel ID', 'order' => 2],
+            ['key' => 'fb_pixel_id', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Facebook Pixel ID', 'order' => 2],
+            ['key' => 'facebook_access_token', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Facebook Access Token', 'order' => 3],
+            ['key' => 'facebook_test_event_code', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Facebook Test Event Code', 'order' => 4],
+            ['key' => 'google_analytics_id', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Google Analytics ID', 'order' => 5],
         ];
 
         foreach ($analyticsSettings as $setting) {

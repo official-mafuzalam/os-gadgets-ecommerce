@@ -336,5 +336,26 @@
             @endpush
         @endif
 
+        @if (session()->has('fb_event_id'))
+            <script>
+                fbq('track', 'InitiateCheckout', {
+                    value: {{ $total }},
+                    currency: "USD",
+                    num_items: {{ $cartItems->sum('quantity') }},
+                    content_ids: {!! json_encode($cartItems->pluck('product.sku')->toArray()) !!},
+                    contents: {!! json_encode(
+                        $cartItems->map(function ($item) {
+                                return [
+                                    'id' => $item->product->sku,
+                                    'quantity' => $item->quantity,
+                                ];
+                            })->toArray(),
+                    ) !!}
+                }, {
+                    eventID: "{{ session('fb_event_id') }}"
+                });
+            </script>
+        @endif
+
     </x-slot>
 </x-app-layout>

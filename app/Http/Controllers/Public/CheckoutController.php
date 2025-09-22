@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ShippingAddress;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Services\FacebookCapiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -23,13 +24,40 @@ class CheckoutController extends Controller
     }
 
     // Show checkout page for cart items
-    public function index()
+    public function index(FacebookCapiService $fbService)
     {
         $cart = $this->getCart();
         $items = $cart->items()->with('product')->get();
 
         if ($items->isEmpty()) {
             return redirect()->route('public.products')->with('error', 'Your cart is empty.');
+        }
+
+        // 🔹 Facebook Pixel + CAPI InitiateCheckout Event
+        if (setting('fb_pixel_id') && setting('facebook_access_token')) {
+            $eventId = fb_event_id();
+
+            $fbService->sendEvent('InitiateCheckout', $eventId, [
+                'em' => [hash('sha256', strtolower(auth()->user()->email ?? ''))],
+                'ph' => [hash('sha256', auth()->user()->phone ?? '')],
+                'client_ip_address' => request()->ip(),
+                'client_user_agent' => request()->userAgent(),
+            ], [
+                'currency' => 'USD',
+                'value' => $cart->subtotal,
+                'content_type' => 'product',
+                'num_items' => $items->sum('quantity'),
+                'content_ids' => $items->pluck('product.sku')->toArray(),
+                'contents' => $items->map(function ($item) {
+                    return [
+                        'id' => $item->product->sku,
+                        'quantity' => $item->quantity,
+                    ];
+                })->toArray(),
+            ]);
+
+            // Pass eventId to view for Pixel script
+            session()->flash('fb_event_id', $eventId);
         }
 
         return view('public.checkout', [
@@ -40,6 +68,7 @@ class CheckoutController extends Controller
             'total' => $cart->subtotal,
         ]);
     }
+
 
     // Buy now for a single product
     public function buyNow(Product $product, Request $request)
@@ -63,7 +92,7 @@ class CheckoutController extends Controller
     }
 
     // Process checkout (cart or single product)
-    public function process(Request $request)
+    public function process(Request $request, FacebookCapiService $fbService)
     {
         $request->validate([
             'full_name' => 'required|string|max:255',
@@ -168,6 +197,27 @@ class CheckoutController extends Controller
 
             DB::commit();
 
+            // After creating order
+            $eventId = fb_event_id(); // generate unique event ID
+
+            // Send Facebook CAPI Purchase event
+            if (setting('fb_pixel_id') && setting('facebook_access_token')) {
+                $fbService->sendEvent('Purchase', $eventId, [
+                    'em' => [hash('sha256', strtolower($order->customer_email))],
+                    'ph' => [hash('sha256', $order->customer_phone)],
+                    'client_ip_address' => request()->ip(),
+                    'client_user_agent' => request()->userAgent(),
+                ], [
+                    'currency' => 'USD',
+                    'value' => $order->total_amount,
+                    'content_ids' => $order->items->pluck('product.sku')->toArray(),
+                    'contents' => $order->items->map(fn($i) => ['id' => $i->product->sku, 'quantity' => $i->quantity])->toArray(),
+                ]);
+
+                // Pass eventId to view via session
+                session()->flash('fb_event_id', $eventId);
+            }
+
             return redirect()->route('public.order.complete', ['order_number' => $order->order_number]);
 
         } catch (\Exception $e) {
@@ -181,11 +231,14 @@ class CheckoutController extends Controller
     {
         $orderNumber = $request->query('order_number');
         $order = Order::with('items.product', 'shippingAddress')->where('order_number', $orderNumber)->first();
+
         if (!$order) {
             return redirect()->route('public.products')->with('error', 'Order not found.');
         }
+
         return view('public.order-complete', compact('order'));
     }
+
 
     // Show order tracking form
     public function orderTrack()

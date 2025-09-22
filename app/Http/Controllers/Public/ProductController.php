@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Deal;
 use App\Models\Product;
 use App\Models\Review;
+use App\Services\FacebookCapiService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -68,13 +69,14 @@ class ProductController extends Controller
         return view('public.products.index', compact('products', 'categories', 'brands'));
     }
 
-    public function productShow($product)
+    public function productShow($slug, FacebookCapiService $fbService)
     {
-        $product = Product::where('slug', $product)->firstOrFail();
-        // Eager load relationships to avoid N+1 queries
+        $product = Product::where('slug', $slug)->firstOrFail();
+
+        // Eager load relationships
         $product->load(['category', 'brand', 'attributes', 'reviews.user']);
 
-        // Get related products (products from the same category)
+        // Related products
         $relatedProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where('is_active', true)
@@ -83,20 +85,47 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
+        // Group attributes
         $groupedAttributes = $product->attributes
             ->groupBy('id')
             ->map(function ($items) {
                 return [
-                    'id' => $items->first()->id,  // add this line
+                    'id' => $items->first()->id,
                     'name' => $items->first()->name,
                     'values' => $items->pluck('pivot.value')->unique()->toArray(),
                 ];
             })
-            ->values(); // optional: reset keys
+            ->values();
 
+        // 🔹 Facebook Pixel + CAPI Event
+        if (setting('fb_pixel_id') && setting('facebook_access_token')) {
+            $eventId = fb_event_id();
 
-        return view('public.products.show', compact('product', 'relatedProducts', 'groupedAttributes'));
+            // Fire Pixel in Blade view (pass eventId to JS)
+            // and fire CAPI from backend
+            $fbService->sendEvent('ViewContent', $eventId, [
+                'em' => [hash('sha256', strtolower(auth()->user()->email ?? ''))],
+                'ph' => [hash('sha256', auth()->user()->phone ?? '')],
+                'client_ip_address' => request()->ip(),
+                'client_user_agent' => request()->userAgent(),
+            ], [
+                'currency' => 'USD',
+                'value' => $product->price,
+                'content_type' => 'product',
+                'content_ids' => [$product->sku],
+                'contents' => [
+                    [
+                        'id' => $product->sku,
+                        'quantity' => 1,
+                    ]
+                ],
+            ]);
+        }
+
+        // dd($eventId);
+        return view('public.products.show', compact('product', 'relatedProducts', 'groupedAttributes', 'eventId'));
     }
+
 
     public function brands()
     {
