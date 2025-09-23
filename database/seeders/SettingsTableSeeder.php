@@ -111,10 +111,14 @@ class SettingsTableSeeder extends Seeder
         Setting::updateOrCreate(
             ['key' => 'default_layout_type', 'group' => 'general'],
             [
-                'value' => 'layout1', // default layout
-                'type' => 'text',
+                'value' => 'layout1', // default
+                'type' => 'radio',
                 'label' => 'Default Public Page Layout',
-                'order' => 6, // after other general settings
+                'options' => json_encode([
+                    'layout1' => 'Layout 1',
+                    'layout2' => 'Layout 2',
+                ]),
+                'order' => 6,
             ]
         );
 

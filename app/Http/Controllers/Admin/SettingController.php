@@ -21,7 +21,11 @@ class SettingController extends Controller
 
     public function index()
     {
-        $groups = Setting::getGroupedSettings();
+        $groups = Setting::getGroupedSettings()
+            ->map(function ($group) {
+                return $group->reject(fn($setting) => $setting->key === 'default_layout_type');
+            });
+
         return view('admin.settings.index', compact('groups'));
     }
 
@@ -82,7 +86,24 @@ class SettingController extends Controller
 
     public function homepageSections()
     {
-        $groups = Setting::getGroupedSettings();
-        return view('admin.settings.homepage_sections', compact('groups'));
+        $layoutSetting = Setting::where('key', 'default_layout_type')->first();
+
+        return view('admin.settings.homepage_sections', compact('layoutSetting'));
     }
+
+    public function updateHomepageSections(Request $request)
+    {
+        $request->validate([
+            'default_layout_type' => 'required|in:layout1,layout2',
+        ]);
+
+        Setting::updateOrCreate(
+            ['key' => 'default_layout_type', 'group' => 'general'],
+            ['value' => $request->default_layout_type]
+        );
+        Cache::flush();
+        return redirect()->back()->with('success', 'Layout updated successfully!');
+    }
+
+
 }

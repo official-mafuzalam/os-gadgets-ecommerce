@@ -6,12 +6,12 @@
 
         @if ($layoutSetting === 'layout1')
             <!-- Layout 1: Full-width carousel -->
-            <section class="hero-bg text-white">
+            <section class="container mx-auto px-3 md:px-4">
                 <div class="px-4">
                     @include('public.partials.carousel', ['carousels' => $carousels])
                 </div>
                 @if ($deal)
-                    <div class="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-4">
+                    <div class="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-2 mt-2">
                         @foreach ($layout1Deals as $item)
                             @include('public.partials.deal-banner', ['deal' => $item])
                         @endforeach
@@ -21,30 +21,28 @@
         @elseif ($layoutSetting === 'layout2')
             <!-- Layout 2: Multi-column with side deals, main carousel, and bottom deals -->
             <section class="container mx-auto px-3 md:px-4">
-                <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
-                    <div class="hidden lg:flex flex-col space-y-4 md:space-y-6 col-span-1">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 p-4">
+                    <div class="hidden lg:flex flex-col space-y-2 md:space-y-6 col-span-1">
                         @foreach ($leftDeals as $deal)
                             @include('public.partials.deal-card', ['deal' => $deal])
                         @endforeach
                     </div>
                     <div class="col-span-1 lg:col-span-2">
                         @include('public.partials.carousel', ['carousels' => $carousels])
-
-                        <div class="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 justify-items-center mt-4">
-                            @foreach ($bottomDeals as $deal)
-                                <div class="w-full max-w-sm">
-                                    @include('public.partials.deal-card', ['deal' => $deal])
-                                </div>
-                            @endforeach
-                        </div>
                     </div>
                     <div class="hidden lg:flex flex-col space-y-4 md:space-y-6 col-span-1">
                         @foreach ($rightDeals as $deal)
                             @include('public.partials.deal-card', ['deal' => $deal])
                         @endforeach
                     </div>
-
                 </div>
+                @if ($bottomDeals)
+                    <div class="hidden sm:grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-4">
+                        @foreach ($bottomDeals as $item)
+                            @include('public.partials.deal-banner', ['deal' => $item])
+                        @endforeach
+                    </div>
+                @endif
             </section>
         @endif
 
@@ -120,7 +118,9 @@
         @endif
 
         @if ($deal)
-            @include('public.partials.deal-banner', ['deal' => $deal])
+            <section class="py-10 bg-white">
+                @include('public.partials.deal-banner', ['deal' => $deal])
+            </section>
         @endif
 
         @if ($allProducts->isNotEmpty())
