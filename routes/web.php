@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CarouselController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DealController;
+use App\Http\Controllers\Admin\ExpenseCategoryController;
+use App\Http\Controllers\Admin\ExpenseController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PermissionController;
@@ -17,6 +19,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SubscriberController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserManualController;
 use App\Http\Controllers\Public\CartController;
 use App\Http\Controllers\Public\CheckoutController;
 use App\Http\Controllers\Public\HomeController as PublicHomeController;
@@ -157,6 +160,12 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::delete('deals/{deal}/products/{product}/remove', [DealController::class, 'removeProduct'])->name('admin.deals.products.remove');
         Route::patch('deals/{deal}/products/{product}/toggle-featured', [DealController::class, 'toggleFeatured'])->name('admin.deals.products.toggle-featured');
 
+        // Expense Categories Routes
+        Route::resource('expense-categories', ExpenseCategoryController::class)->names('admin.expense-categories');
+
+        // Expenses Routes
+        Route::resource('expenses', ExpenseController::class)->names('admin.expenses');
+
         // Settings Routes
         Route::get('settings', [SettingController::class, 'index'])->name('admin.settings.index');
         Route::put('settings', [SettingController::class, 'update'])->name('admin.settings.update');
@@ -175,7 +184,7 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         // Profile
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     });
 

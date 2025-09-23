@@ -111,11 +111,10 @@
                                     <div>
                                         <label for="buy_price"
                                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Buy
-                                            Price *</label>
+                                            Price</label>
                                         <input type="number" id="buy_price" name="buy_price" step="0.01"
                                             min="0" value="{{ old('buy_price', $product->buy_price) }}"
-                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white py-2 px-3"
-                                            required>
+                                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white py-2 px-3">
                                         @error('buy_price')
                                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                         @enderror

@@ -20,13 +20,27 @@
                     </div>
                 </div>
 
-                <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                    <div class="max-w-xl">
-                        @include('profile.partials.delete-user-form')
+                @if (\Illuminate\Support\Facades\Route::has('profile.destroy'))
+                    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                        <div class="max-w-xl">
+                            @include('profile.partials.delete-user-form')
+                        </div>
                     </div>
-                </div>
+                @endif
+
                 <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                     <div class="max-w-xl">
+                        <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
+                            <a href="http://octosyncsoftware.com" target="_blank"
+                                class="text-gray-500 hover:text-gray-700 text-sm">Developed by
+                                <span class="text-gray-800 hover:text-green-500 font-semibold font-sans text-lg">
+                                    OctoSync Software Ltd
+                                </span>
+                            </a>
+                        </div>
+                        <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
+                            Version: {{ env('APP_VERSION', '1.0.0') }}
+                        </div>
                         <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
                             Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
                         </div>

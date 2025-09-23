@@ -223,6 +223,83 @@
             </li>
 
             <li class="hs-accordion {{ in_array(Route::currentRouteName(), [
+                'admin.expense-categories.index',
+                'admin.expense-categories.create',
+                'admin.expense-categories.edit',
+                'admin.expenses.index',
+                'admin.expenses.create',
+                'admin.expenses.show',
+                'admin.expenses.edit',
+            ])
+                ? 'hs-accordion-active'
+                : '' }}"
+                id="settings-accordion">
+                <a class="hs-accordion-toggle flex items-center gap-x-3.5 py-2 px-2.5 hs-accordion-active:text-blue-600 hs-accordion-active:hover:bg-transparent text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-900 dark:text-slate-400 dark:hover:text-slate-300 dark:hs-accordion-active:text-white"
+                    href="javascript:;">
+                    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="M2 2.5A.5.5 0 0 1 2.5 2h11a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11zm1 .5v10h10V3H3zm2 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5z" />
+                    </svg>
+                    Finances
+                    <svg class="hs-accordion-active:block ml-auto hidden w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
+                        width="16" height="16" viewBox="0 0 16 16" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 11L8.16086 5.31305C8.35239 5.13625 8.64761 5.13625 8.83914 5.31305L15 11"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    </svg>
+                    <svg class="hs-accordion-active:hidden ml-auto block w-3 h-3 text-gray-600 group-hover:text-gray-500 dark:text-gray-400"
+                        width="16" height="16" viewBox="0 0 16 16" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2 5L8.16086 10.6869C8.35239 10.8637 8.64761 10.8637 8.83914 10.6869L15 5"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                    </svg>
+                </a>
+                <div id="settings-accordion-sub"
+                    class="hs-accordion-content w-full overflow-hidden transition-[height] duration-300 {{ in_array(Route::currentRouteName(), [
+                        'admin.expense-categories.index',
+                        'admin.expense-categories.create',
+                        'admin.expense-categories.edit',
+                        'admin.expenses.index',
+                        'admin.expenses.create',
+                        'admin.expenses.show',
+                        'admin.expenses.edit',
+                    ])
+                        ? 'block'
+                        : 'hidden' }}">
+                    <ul class="pt-2 pl-2">
+                        <li>
+                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
+                                    {{ in_array(Route::currentRouteName(), [
+                                        'admin.expenses.index',
+                                        'admin.expenses.create',
+                                        'admin.expenses.show',
+                                        'admin.expenses.edit',
+                                    ])
+                                        ? 'bg-gray-200 dark:bg-gray-900'
+                                        : 'text-slate-700' }}"
+                                href="{{ route('admin.expenses.index') }}">
+                                Expenses
+                            </a>
+                        </li>
+                        <li>
+                            <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white 
+                                    {{ in_array(Route::currentRouteName(), [
+                                        'admin.expense-categories.index',
+                                        'admin.expense-categories.create',
+                                        'admin.expense-categories.edit',
+                                    ])
+                                        ? 'bg-gray-200 dark:bg-gray-900'
+                                        : 'text-slate-700' }}"
+                                href="{{ route('admin.expense-categories.index') }}">
+                                Expenses Categories
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="hs-accordion {{ in_array(Route::currentRouteName(), [
                 'admin.settings.index',
                 'admin.carousels.index',
                 'admin.carousels.create',
@@ -385,6 +462,22 @@
                     </ul>
                 </div>
             </li>
+            <li>
+                <a class="flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-slate-700 rounded-md hover:bg-gray-100 dark:bg-gray-800 dark:text-white"
+                    href="https://docs.google.com/document/d/{{ env('APP_USER_MANUAL_ID') }}/preview"
+                    target="_blank">
+                    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="M4.5 1A1.5 1.5 0 0 0 3 2.5v11A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-11A1.5 1.5 0 0 0 11.5 1h-7zM4 2.5A.5.5 0 0 1 4.5 2h7a.5.5 0 0 1 .5.5V4H4V2.5zm7 .75V14a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5V6h8v-.75z" />
+                        <path
+                            d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 .875-.252 1.02-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.126-.304-.464l.216-1 .645-.08c.294-.036.352-.176.288-.47l-.545-2.56c-.07-.33-.304-.42-.614-.384z" />
+                        <circle cx="8" cy="4.496" r="1" />
+                    </svg>
+                    User Manual
+                </a>
+            </li>
+
             @role('admin')
             @endrole
         </ul>
