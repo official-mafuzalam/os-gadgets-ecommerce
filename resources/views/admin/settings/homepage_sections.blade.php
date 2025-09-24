@@ -44,25 +44,21 @@
                             <div class="p-4 space-y-3">
                                 <h3 class="font-semibold text-center">Layout 2</h3>
                                 <div class="grid grid-cols-1 lg:grid-cols-4 gap-2 h-32">
-                                    <div class="hidden lg:flex flex-col space-y-1">
-                                        <div class="bg-gray-300 rounded h-10 flex items-center justify-center text-xs">
+                                    <div class="hidden lg:flex flex-col space-y-2">
+                                        <div class="bg-gray-300 rounded h-16 flex items-center justify-center text-xs">
                                             Deal 1</div>
-                                        <div class="bg-gray-300 rounded h-10 flex items-center justify-center text-xs">
+                                        <div class="bg-gray-300 rounded h-16 flex items-center justify-center text-xs">
                                             Deal 2</div>
-                                        <div class="bg-gray-300 rounded h-10 flex items-center justify-center text-xs">
-                                            Deal 3</div>
                                     </div>
                                     <div
                                         class="col-span-1 lg:col-span-2 bg-blue-600 rounded flex items-center justify-center text-white font-bold">
                                         Carousel
                                     </div>
-                                    <div class="hidden lg:flex flex-col space-y-1">
-                                        <div class="bg-gray-300 rounded h-10 flex items-center justify-center text-xs">
+                                    <div class="hidden lg:flex flex-col space-y-2">
+                                        <div class="bg-gray-300 rounded h-16 flex items-center justify-center text-xs">
                                             Deal 1</div>
-                                        <div class="bg-gray-300 rounded h-10 flex items-center justify-center text-xs">
+                                        <div class="bg-gray-300 rounded h-16 flex items-center justify-center text-xs">
                                             Deal 2</div>
-                                        <div class="bg-gray-300 rounded h-10 flex items-center justify-center text-xs">
-                                            Deal 3</div>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-2 gap-2 mt-2">

@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\ArtisanController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CarouselController;
@@ -7,8 +10,6 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DealController;
 use App\Http\Controllers\Admin\ExpenseCategoryController;
 use App\Http\Controllers\Admin\ExpenseController;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\OrderController;
@@ -19,7 +20,6 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SubscriberController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\UserManualController;
 use App\Http\Controllers\Public\CartController;
 use App\Http\Controllers\Public\CheckoutController;
 use App\Http\Controllers\Public\HomeController as PublicHomeController;
@@ -33,10 +33,7 @@ Route::get('/session', function () {
     dd($session);
 });
 
-Route::get('/clear-cache', function () {
-    $exitCode = Artisan::call('optimize:clear');
-    return to_route('public.welcome')->with('success', 'Cache cleared successfully! ' . $exitCode);
-})->name('clear.cache');
+Route::get('/clear-cache', [ArtisanController::class, 'clearCache'])->name('clear.cache');
 
 
 // For all public pages -->
@@ -146,7 +143,7 @@ Route::middleware(['auth', 'role:super_admin|admin|user'])->group(function () {
         Route::post('products/{product}/attributes', [AttributeController::class, 'assignToProduct'])->name('products.attributes.store');
         Route::delete('products/{product}/attributes/{attribute}', [AttributeController::class, 'removeFromProduct'])->name('products.attributes.remove');
 
-        
+
         // Reviews Routes
         Route::resource('reviews', ReviewController::class)->names('admin.reviews');
         Route::patch('reviews/{review}/approve', [ReviewController::class, 'approve'])->name('admin.reviews.approve');
@@ -231,6 +228,11 @@ Route::middleware(['auth', 'role:super_admin'])->group(function () {
         Route::patch('/user/{user}/unblock', [UserController::class, 'unblock'])->name('users.unblock');
 
         Route::get('/check-permissions', [PermissionController::class, 'checkPer']);
+
+        Route::get('octosyncsoftwareltd/os-e-commerce/database-make-fresh', [ArtisanController::class, 'freshDatabase'])->name('database.fresh');
+
+        Route::get('octosyncsoftwareltd/os-e-commerce/database-make-fresh-seed', [ArtisanController::class, 'freshDatabaseSeed'])->name('database.fresh.seed');
+
 
     });
 

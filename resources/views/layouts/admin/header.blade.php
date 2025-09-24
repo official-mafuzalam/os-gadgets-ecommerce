@@ -12,7 +12,7 @@
     @else
         <link rel="icon" href="{{ asset('assets/logo/icon.png') }}" type="image/x-icon">
     @endif
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -45,6 +45,19 @@
             <div class="w-full flex items-center justify-end sm:order-3">
 
                 <div class="flex flex-row items-center justify-end gap-2">
+
+                    <div id="visitor-count" class="p-2">Loading...</div>
+
+                    <script>
+                        setInterval(() => {
+                            fetch('/api/active-visitors')
+                                .then(res => res.json())
+                                .then(data => {
+                                    document.getElementById('visitor-count').innerText = data.activeVisitors;
+                                });
+                        }, 5000); // updates every 5 seconds
+                    </script>
+
                     <a class="hs-dark-mode-active:hidden block hs-dark-mode group items-center text-gray-600 hover:text-blue-600 font-medium dark:text-gray-400 dark:hover:text-gray-500"
                         data-hs-theme-click-value="dark">
                         <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16"

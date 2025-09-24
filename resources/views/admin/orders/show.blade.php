@@ -356,10 +356,16 @@
             <div class="bg-white p-8 max-w-4xl mx-auto">
                 <!-- Invoice Header -->
                 <div class="flex justify-between items-start mb-8">
-                    <div>
-                        <h1 class="text-3xl font-bold text-gray-900">INVOICE</h1>
-                        <p class="text-gray-600">Order #: {{ $order->order_number }}</p>
-                        <p class="text-gray-600">Date: {{ $order->created_at->format('F j, Y') }}</p>
+                    <div class="flex items-start space-x-4">
+                        <div>
+                            @if (setting('site_logo'))
+                                <img src="{{ Storage::url(setting('site_logo')) }}" alt="Site Logo"
+                                    class="h-16 w-auto object-contain">
+                            @endif
+                            <h1 class="text-3xl font-bold text-gray-900">INVOICE</h1>
+                            <p class="text-gray-600">Order #: {{ $order->order_number }}</p>
+                            <p class="text-gray-600">Date: {{ $order->created_at->format('F j, Y') }}</p>
+                        </div>
                     </div>
                     <div class="text-right">
                         <h2 class="text-xl font-semibold">{{ setting('site_name') }}</h2>

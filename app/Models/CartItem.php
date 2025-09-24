@@ -15,6 +15,12 @@ class CartItem extends Model
         'quantity'
     ];
 
+    public function attributes()
+    {
+        return $this->belongsToMany(Attribute::class, 'cart_item_attributes')
+            ->withPivot('value', 'order')
+            ->withTimestamps();
+    }
     public function cart()
     {
         return $this->belongsTo(ShoppingCart::class, 'cart_id');

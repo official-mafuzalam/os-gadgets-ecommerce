@@ -18,4 +18,19 @@ class Attribute extends Model
             ->withPivot('value', 'order')
             ->withTimestamps();
     }
+
+    public function cartItems()
+    {
+        return $this->belongsToMany(CartItem::class, 'cart_item_attributes')
+            ->withPivot('value', 'order')
+            ->withTimestamps();
+    }
+
+    public function orderItems()
+    {
+        return $this->belongsToMany(OrderItem::class, 'order_item_attributes')
+            ->withPivot('value', 'order')
+            ->withTimestamps();
+    }
+
 }

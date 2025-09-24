@@ -93,27 +93,35 @@
                 src="https://www.facebook.com/tr?id={{ setting('fb_pixel_id') }}&ev=PageView&noscript=1" />
         </noscript>
     @endif
-        
 
 
-    {{-- <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "WebPage",
-          "url": {{ setting('og_url', url()->current()) }},
-          "name": {{ setting('og_title', setting('site_name', 'Octosync Software Ltd')) }},
-          "logo": {{ setting('og_image') }},
-          "description": {{ setting('meta_description', 'Best E-commerce website') }},
-          "sameAs": [
-            {{ setting('facebook_url') }}
-          ],
-          "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": {{ setting('site_phone') }},
-            "contactType": "Customer Service"
-          }
-        }
-    </script> --}}
+
+    @if (setting('og_url') &&
+            setting('og_title') &&
+            setting('og_image') &&
+            setting('meta_description') &&
+            setting('site_phone'))
+        <script type="application/ld+json">
+            {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "url": "{{ setting('og_url', url()->current()) }}",
+            "name": "{{ setting('og_title', setting('site_name', 'Octosync Software Ltd')) }}",
+            "logo": "{{ setting('og_image') }}",
+            "description": "{{ setting('meta_description', 'Best E-commerce website') }}",
+            "sameAs": [
+                @if(setting('facebook_url'))
+                    "{{ setting('facebook_url') }}"
+                @endif
+            ],
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "{{ setting('site_phone') }}",
+                "contactType": "Customer Service"
+            }
+            }
+        </script>
+    @endif
 
 </head>
 

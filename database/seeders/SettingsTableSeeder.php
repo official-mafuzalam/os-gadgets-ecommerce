@@ -96,6 +96,22 @@ class SettingsTableSeeder extends Seeder
                 'label' => 'Address',
                 'order' => 5,
             ],
+            [
+                'key' => 'site_logo',
+                'value' => null,
+                'type' => 'image',
+                'group' => 'general',
+                'label' => 'Site Logo',
+                'order' => 6,
+            ],
+            [
+                'key' => 'site_favicon',
+                'value' => null,
+                'type' => 'image',
+                'group' => 'general',
+                'label' => 'Favicon',
+                'order' => 7,
+            ],
         ];
 
         foreach ($generalSettings as $setting) {
@@ -118,39 +134,9 @@ class SettingsTableSeeder extends Seeder
                     'layout1' => 'Layout 1',
                     'layout2' => 'Layout 2',
                 ]),
-                'order' => 6,
+                'order' => 8,
             ]
         );
-
-
-        // --------------------
-        // Branding Settings
-        // --------------------
-        $brandingSettings = [
-            [
-                'key' => 'site_logo',
-                'value' => null,
-                'type' => 'image',
-                'group' => 'branding',
-                'label' => 'Site Logo',
-                'order' => 1,
-            ],
-            [
-                'key' => 'site_favicon',
-                'value' => null,
-                'type' => 'image',
-                'group' => 'branding',
-                'label' => 'Favicon',
-                'order' => 2,
-            ],
-        ];
-
-        foreach ($brandingSettings as $setting) {
-            Setting::updateOrCreate(
-                ['key' => $setting['key'], 'group' => $setting['group']],
-                $setting
-            );
-        }
 
         // --------------------
         // Social Media
@@ -180,7 +166,7 @@ class SettingsTableSeeder extends Seeder
             ['key' => 'fb_pixel_id', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Facebook Pixel ID', 'order' => 2],
             ['key' => 'facebook_access_token', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Facebook Access Token', 'order' => 3],
             ['key' => 'facebook_test_event_code', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Facebook Test Event Code', 'order' => 4],
-            ['key' => 'google_analytics_id', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Google Analytics ID', 'order' => 5],
+            // ['key' => 'google_analytics_id', 'value' => null, 'type' => 'text', 'group' => 'analytics', 'label' => 'Google Analytics ID', 'order' => 5],
         ];
 
         foreach ($analyticsSettings as $setting) {
@@ -196,7 +182,10 @@ class SettingsTableSeeder extends Seeder
         $orderSettings = [
             ['key' => 'order_form_bangla', 'value' => '0', 'type' => 'boolean', 'group' => 'order', 'label' => 'Order Form Language in Bangla?', 'order' => 1],
             ['key' => 'order_email_need', 'value' => '0', 'type' => 'boolean', 'group' => 'order', 'label' => 'Is Email Required in Order Form?', 'order' => 2],
-            ['key' => 'order_notes_need', 'value' => '0', 'type' => 'boolean', 'group' => 'order', 'label' => 'Are Additional Notes Required in Order Form?', 'order' => 5],
+            ['key' => 'order_notes_need', 'value' => '0', 'type' => 'boolean', 'group' => 'order', 'label' => 'Are Additional Notes Required in Order Form?', 'order' => 3],
+            ['key' => 'inside_dhaka_shipping_cost', 'value' => '80', 'type' => 'text', 'group' => 'order', 'label' => 'Inside Dhaka Shipping Cost (TK)', 'order' => 4],
+            ['key' => 'outside_dhaka_shipping_cost', 'value' => '150', 'type' => 'text', 'group' => 'order', 'label' => 'Outside Dhaka Shipping Cost (TK)', 'order' => 5],
+            // ['key' => 'free_shipping_threshold', 'value' => '2000', 'type' => 'text', 'group' => 'order', 'label' => 'Free Shipping Threshold (TK)', 'order' => 6],
         ];
 
         foreach ($orderSettings as $setting) {
@@ -205,23 +194,6 @@ class SettingsTableSeeder extends Seeder
                 $setting
             );
         }
-
-        // --------------------
-        // Delivery
-        // --------------------
-        $deliverySettings = [
-            ['key' => 'inside_dhaka_shipping_cost', 'value' => '80', 'type' => 'text', 'group' => 'delivery', 'label' => 'Inside Dhaka Shipping Cost (TK)', 'order' => 1],
-            ['key' => 'outside_dhaka_shipping_cost', 'value' => '150', 'type' => 'text', 'group' => 'delivery', 'label' => 'Outside Dhaka Shipping Cost (TK)', 'order' => 2],
-            ['key' => 'free_shipping_threshold', 'value' => '2000', 'type' => 'text', 'group' => 'delivery', 'label' => 'Free Shipping Threshold (TK)', 'order' => 3],
-        ];
-
-        foreach ($deliverySettings as $setting) {
-            Setting::updateOrCreate(
-                ['key' => $setting['key'], 'group' => $setting['group']],
-                $setting
-            );
-        }
-
 
         // --------------------
         // SEO & Meta Tags

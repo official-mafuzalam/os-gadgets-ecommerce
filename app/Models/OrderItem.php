@@ -21,6 +21,12 @@ class OrderItem extends Model
         'unit_price' => 'decimal:2',
         'total_price' => 'decimal:2'
     ];
+    public function attributes()
+    {
+        return $this->belongsToMany(Attribute::class, 'order_item_attributes')
+            ->withPivot('value', 'order')
+            ->withTimestamps();
+    }
 
     public function order()
     {
