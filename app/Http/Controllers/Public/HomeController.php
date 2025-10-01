@@ -60,7 +60,7 @@ class HomeController extends Controller
             $bottomDeals = $allDeals->slice(4, 2);   // next 2 deals for bottom grid
         }
 
-        return view('public.index', compact(
+        return view('public.layout-2.index', compact(
             'carousels',
             'deal',
             'allProducts',
